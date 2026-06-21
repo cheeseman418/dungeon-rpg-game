@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ダンジョン討伐RPG - 完全版</title>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: white; min-height: 100vh; display: flex; justify-content: center; padding: 10px;
+    }
+    .game-container {
+      background: rgba(22, 33, 62, 0.97); border-radius: 25px; width: 100%; max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 2px solid rgba(15,52,96,0.8);
+      overflow: hidden; height: fit-content;
+    }
+
+    /* ヘッダー */
+    .header {
+      background: linear-gradient(135deg, #e94560, #f38ba8); padding: 14px 18px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .game-title { font-size: 19px; font-weight: 900; }
+    .resources { display: flex; gap: 15px; font-size: 14px; font-weight: 900; }
+    .gold { color: #FFD700; }
+    .gem { color: #00f2fe; }
+
+    /* タブシステム */
+    .tabs { display: flex; background: rgba(0,0,0,0.4); }
+    .tab-btn {
+      flex: 1; padding: 12px 4px; background: none; border: none;
+      color: rgba(255,255,255,0.6); font-family: inherit; font-weight: 900;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+    .tab-btn.active { color: white; border-bottom-color: #e94560; background: rgba(233,69,96,0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* バトルエリア */
+    .battle-area {
+      background: linear-gradient(180deg, #0d1b2a 0%, #1a1a2e 100%);
+      padding: 22px 20px 15px; text-align: center; cursor: pointer;
+      position: relative; min-height: 210px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .stage-info {
+      position: absolute; top: 8px; left: 15px; font-size: 13px; font-weight: 900;
+      color: #a8edea; opacity: 0.9;
+    }
+    .enemy-container { position: relative; margin-bottom: 12px; }
+    .boss-crown {
+      position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+      font-size: 26px; animation: crown-glow 2s ease-in-out infinite;
+    }
+    @keyframes crown-glow {
+      0%,100% { filter: drop-shadow(0 0 8px #FFD700); }
+      50% { filter: drop-shadow(0 0 18px #FFD700); }
+    }
+    .enemy-emoji {
+      font-size: 78px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
+      animation: enemy-float 3s ease-in-out infinite; transition: all 0.15s;
+    }
+    @keyframes enemy-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .enemy-emoji.hit { animation: enemy-hit 0.3s ease-out; }
+    @keyframes enemy-hit {
+      0% { transform: scale(1); filter: brightness(4) drop-shadow(0 0 20px #ff6b6b); }
+      50% { transform: scale(0.9) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0); filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8)); }
+    }
+    .enemy-name { font-size: 15px; font-weight: 900; color: #ff6b6b; margin-bottom: 10px; }
+    .hp-container { width: 88%; }
+    .hp-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+    .hp-bar-bg {
+      background: rgba(0,0,0,0.6); border-radius: 10px; height: 14px; overflow: hidden;
+      border: 1px solid rgba(255,107,107,0.4);
+    }
+    .hp-bar-fill {
+      height: 100%; background: linear-gradient(90deg, #ff6b6b, #ff4757);
+      border-radius: 10px; transition: width 0.3s ease;
+    }
+
+    /* 仲間エリア */
+    .party-area {
+      background: rgba(0,0,0,0.35); padding: 12px 15px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .party-title { font-size: 12px; opacity: 0.7; margin-bottom: 8px; }
+    .party-members { display: flex; flex-wrap: wrap; gap: 8px; min-height: 35px; }
+    .party-member {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; padding: 6px 10px; font-size: 12px;
+      display: flex; align-items: center; gap: 6px; position: relative;
+      transition: all 0.2s;
+    }
+    .party-member.attacking { animation: member-attack 0.4s ease-out; }
+    @keyframes member-attack {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.15); background: rgba(255,200,0,0.3); }
+      100% { transform: scale(1); }
+    }
+    .member-emoji { font-size: 18px; }
+    .member-info { line-height: 1.2; }
+    .member-name { font-size: 12px; font-weight: 900; }
+    .member-atk { font-size: 10px; opacity: 0.7; }
+
+    /* ステータスバー */
+    .stats-bar {
+      background: rgba(0,0,0,0.4); padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .total-atk { font-size: 18px; font-weight: 900; color: #FFD700; }
+    .weapon-bonus { font-size: 12px; opacity: 0.8; color: #a8edea; }
+
+    /* アップグレードボタン */
+    .upgrade-section { padding: 14px; }
+    .upgrade-btn {
+      width: 100%; padding: 14px 15px; margin-bottom: 10px;
+      background: linear-gradient(135deg, #0f3460, #16213e);
+      border: 2px solid #4a69bb; border-radius: 14px;
+      color: white; font-family: inherit; font-weight: 900;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .upgrade-btn:active { transform: scale(0.98); }
+    .upgrade-btn.disabled { opacity: 0.45; border-color: #333; cursor: not-allowed; }
+    .btn-left { text-align: left; }
+    .btn-title { font-size: 14px; margin-bottom: 3px; }
+    .btn-desc { font-size: 11px; opacity: 0.75; }
+    .btn-cost { color: #FFD700; font-size: 14px; font-weight: 900; text-align: right; }
+    .btn-ad { background: linear-gradient(135deg, #ff6b6b, #feca57); border-color: #ff4757; color: #1a1a1a; }
+    .btn-prestige { background: linear-gradient(135deg, #a8edea, #fed6e3); border-color: #FFD700; color: #1a1a1a; display: none; }
+    .btn-prestige.visible { display: flex; }
+
+    /* ガチャタブ */
+    .gacha-section { padding: 18px; }
+    .section-title { text-align: center; font-size: 18px; font-weight: 900; margin-bottom: 15px; }
+    .gem-display {
+      background: rgba(0,242,254,0.1); border: 2px solid rgba(0,242,254,0.3);
+      border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px;
+    }
+    .gem-count { font-size: 26px; font-weight: 900; color: #00f2fe; }
+    .rates-box {
+      background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 15px;
+    }
+    .rate-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 4px 0; font-size: 13px;
+    }
+    .gacha-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+    .gacha-btn {
+      padding: 16px 12px; border: none; border-radius: 14px;
+      font-family: inherit; font-weight: 900; font-size: 14px;
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .gacha-btn:active { transform: scale(0.97); }
+    .gacha-single { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #1a1a2e; }
+    .gacha-ten { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; grid-column: 1/-1; }
+
+    /* 武器タブ */
+    .weapon-section { padding: 16px; }
+    .weapon-stats {
+      background: rgba(255,215,0,0.1); border: 2px solid rgba(255,215,0,0.3);
+      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px;
+    }
+    .weapon-bonus-display { font-size: 20px; font-weight: 900; color: #FFD700; }
+    .weapon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .weapon-card {
+      background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px;
+      border: 2px solid rgba(255,255,255,0.1); text-align: center;
+      position: relative; transition: all 0.2s;
+    }
+    .weapon-card.can-evolve { border-color: #FFD700; background: rgba(255,215,0,0.1); }
+    .weapon-emoji { font-size: 30px; margin-bottom: 6px; }
+    .weapon-name { font-size: 12px; font-weight: 900; margin-bottom: 4px; }
+    .weapon-rarity { font-size: 10px; margin-bottom: 5px; }
+    .weapon-effect { font-size: 10px; opacity: 0.8; margin-bottom: 6px; }
+    .weapon-progress {
+      background: rgba(255,255,255,0.1); border-radius: 6px; height: 8px;
+      overflow: hidden; margin-bottom: 4px;
+    }
+    .weapon-progress-fill {
+      height: 100%; background: linear-gradient(90deg, #4facfe, #00f2fe);
+      border-radius: 6px; transition: width 0.3s;
+    }
+    .weapon-count { font-size: 10px; opacity: 0.7; }
+    .evolve-btn {
+      background: #FFD700; color: #1a1a1a; border: none; border-radius: 8px;
+      padding: 6px 12px; font-family: inherit; font-weight: 900; font-size: 11px;
+      cursor: pointer; margin-top: 6px;
+    }
+
+    /* ミッションタブ */
+    .mission-section { padding: 16px; }
+    .mission-card {
+      background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 13px; margin-bottom: 10px;
+    }
+    .mission-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .mission-name { font-size: 14px; font-weight: 900; }
+    .mission-reward { font-size: 13px; color: #00f2fe; font-weight: 900; }
+    .mission-progress-bg {
+      background: rgba(255,255,255,0.1); border-radius: 8px; height: 10px;
+      overflow: hidden; margin-bottom: 6px;
+    }
+    .mission-progress-fill {
+      height: 100%; background: linear-gradient(90deg, #4facfe, #00f2fe);
+      border-radius: 8px; transition: width 0.5s ease;
+    }
+    .mission-desc {
+      font-size: 11px; opacity: 0.7; display: flex; justify-content: space-between;
+    }
+    .mission-claim {
+      background: linear-gradient(135deg, #00f2fe, #4facfe); color: #1a1a2e;
+      border: none; border-radius: 8px; padding: 8px 15px;
+      font-family: inherit; font-weight: 900; font-size: 12px;
+      cursor: pointer; margin-top: 8px; transition: all 0.2s;
+    }
+    .mission-claim:active { transform: scale(0.97); }
+
+    /* レアリティカラー */
+    .rarity-common { background: rgba(150,150,150,0.15); border-color: #999; color: #ccc; }
+    .rarity-rare { background: rgba(100,149,237,0.2); border-color: #6495ED; color: #6495ED; }
+    .rarity-sr { background: rgba(255,165,0,0.2); border-color: #FFA500; color: #FFA500; }
+    .rarity-legend {
+      background: rgba(255,215,0,0.15); border-color: #FFD700; color: #FFD700;
+      animation: legend-glow 2s ease-in-out infinite;
+    }
+    @keyframes legend-glow {
+      0%,100% { box-shadow: 0 0 8px rgba(255,215,0,0.4); }
+      50% { box-shadow: 0 0 18px rgba(255,215,0,0.8); }
+    }
+
+    /* エフェクト */
+    .damage-effect {
+      position: fixed; pointer-events: none; font-size: 22px; font-weight: 900;
+      color: #ff6b6b; text-shadow: 0 0 5px #ff6b6b, 0 2px 4px rgba(0,0,0,0.8);
+      animation: damage-float 1s ease-out forwards; z-index: 1000;
+    }
+    @keyframes damage-float {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-55px) scale(1.2); }
+    }
+    .attack-effect {
+      position: fixed; pointer-events: none; font-size: 24px;
+      animation: attack-fly 0.6s ease-out forwards; z-index: 999;
+    }
+    @keyframes attack-fly {
+      0% { opacity: 1; transform: translate(0,0) scale(1.2); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.4); }
+    }
+    .drop-notice {
+      position: fixed; top: 70px; right: 15px; border-radius: 12px; padding: 10px 15px;
+      font-size: 13px; font-weight: 900; pointer-events: none; z-index: 1001;
+      animation: drop-notice-anim 3s ease-out forwards;
+    }
+    @keyframes drop-notice-anim {
+      0% { opacity: 0; transform: translateX(30px); }
+      15% { opacity: 1; transform: translateX(0); }
+      75% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(30px); }
+    }
+    .gacha-result {
+      background: rgba(0,0,0,0.5); border-radius: 14px; padding: 15px;
+      margin-top: 15px; display: none;
+    }
+    .gacha-result.show { display: block; }
+    .result-title { text-align: center; font-weight: 900; margin-bottom: 10px; }
+    .result-items { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .result-item {
+      border-radius: 10px; padding: 8px; text-align: center; font-size: 11px;
+      font-weight: 900; min-width: 70px; border: 2px solid;
+      animation: item-appear 0.4s ease-out;
+    }
+    @keyframes item-appear {
+      0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+      70% { transform: scale(1.1) rotate(3deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="game-title">⚔️ ダンジョン討伐RPG</div>
+    <div class="resources">
+      <div class="gold">💰 <span id="goldDisplay">0</span></div>
+      <div class="gem">💎 <span id="gemDisplay">0</span></div>
+    </div>
+  </div>
+
+  <!-- タブメニュー -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('battle')">⚔️ バトル</button>
+    <button class="tab-btn" onclick="switchTab('weapon')">🗡️ 武器</button>
+    <button class="tab-btn" onclick="switchTab('gacha')">🎰 ガチャ</button>
+    <button class="tab-btn" onclick="switchTab('mission')">📋 任務</button>
+  </div>
+
+  <!-- バトルタブ -->
+  <div class="tab-content active" id="tab-battle">
+    <div class="battle-area" onclick="attackEnemy(event)">
+      <div class="stage-info">ダンジョン <span id="stageDisplay">1</span>階</div>
+      <div class="enemy-container">
+        <div class="boss-crown" id="bossCrown" style="display:none;">👑</div>
+        <div class="enemy-emoji" id="enemyEmoji">🐀</div>
+      </div>
+      <div class="enemy-name" id="enemyName">ダークラット</div>
+      <div class="hp-container">
+        <div class="hp-label">
+          <span>❤️ HP</span>
+          <span><span id="currentHp">10</span> / <span id="maxHp">10</span></span>
+        </div>
+        <div class="hp-bar-bg">
+          <div class="hp-bar-fill" id="hpBar" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 仲間エリア -->
+    <div class="party-area">
+      <div class="party-title">👥 冒険者パーティー (<span id="partyCount">0</span>人)</div>
+      <div class="party-members" id="partyMembers">
+        <div style="font-size:12px;opacity:0.5;">仲間を雇って自動攻撃力アップ！</div>
+      </div>
+    </div>
+
+    <!-- ステータスバー -->
+    <div class="stats-bar">
+      <div>
+        <div class="total-atk">総攻撃力: <span id="totalAtkDisplay">1</span></div>
+        <div class="weapon-bonus">武器ボーナス: ×<span id="weaponBonusDisplay">1.00</span></div>
+      </div>
+      <div style="text-align:right;font-size:12px;opacity:0.8;">
+        <div>プレイヤー: <span id="playerAtkDisplay">1</span></div>
+        <div>仲間合計: <span id="memberAtkDisplay">0</span>/秒</div>
+      </div>
+    </div>
+
+    <!-- アップグレード -->
+    <div class="upgrade-section">
+      <button class="upgrade-btn" id="btnAttack" onclick="upgradeAttack()">
+        <div class="btn-left">
+          <div class="btn-title">⚔️ 剣術訓練</div>
+          <div class="btn-desc">プレイヤーの攻撃力を強化</div>
+        </div>
+        <div class="btn-cost">💰 <span id="attackCost">10</span></div>
+      </button>
+
+      <button class="upgrade-btn" id="btnHire" onclick="hireMember()">
+        <div class="btn-left">
+          <div class="btn-title">👥 仲間を雇う</div>
+          <div class="btn-desc">剣士・弓使い・魔法使いがランダム参加</div>
+        </div>
+        <div class="btn-cost">💰 <span id="hireCost">50</span></div>
+      </button>
+
+      <button class="upgrade-btn btn-ad" onclick="watchAd()">
+        <div class="btn-left">
+          <div class="btn-title">📺 広告でジェム獲得</div>
+          <div class="btn-desc">広告視聴で 💎5 + 攻撃力30秒5倍</div>
+        </div>
+        <div class="btn-cost">FREE</div>
+      </button>
+
+      <button class="upgrade-btn btn-prestige" id="btnPrestige" onclick="prestige()">
+        <div class="btn-left">
+          <div class="btn-title">✨ 転生</div>
+          <div class="btn-desc">全リセット + 永続攻撃力ボーナス</div>
+        </div>
+        <div class="btn-cost">RESET</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 武器タブ -->
+  <div class="tab-content" id="tab-weapon">
+    <div class="weapon-section">
+      <div class="section-title">🗡️ 武器コレクション</div>
+      
+      <div class="weapon-stats">
+        <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">装備中の武器効果</div>
+        <div class="weapon-bonus-display">攻撃力 ×<span id="weaponBonusDetail">1.00</span></div>
+      </div>
+
+      <div class="weapon-grid" id="weaponGrid">
+        <div style="grid-column:1/-1;text-align:center;opacity:0.4;font-size:13px;padding:30px;">
+          敵を倒すと5%の確率で武器ドロップ！<br>
+          ガチャでも武器を入手できます
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ガチャタブ -->
+  <div class="tab-content" id="tab-gacha">
+    <div class="gacha-section">
+      <div class="section-title">🎰 武器ガチャ</div>
+
+      <div class="gem-display">
+        <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">所持ジェム</div>
+        <div class="gem-count">💎 <span id="gemGachaDisplay">0</span></div>
+        <div style="font-size:11px;opacity:0.7;margin-top:4px;">広告視聴・ミッションで獲得</div>
+      </div>
+
+      <div class="rates-box">
+        <div class="rate-row">
+          <span>⚪ コモン</span>
+          <span style="color:#ccc">60%</span>
+        </div>
+        <div class="rate-row">
+          <span>🔵 レア</span>
+          <span style="color:#6495ED">25%</span>
+        </div>
+        <div class="rate-row">
+          <span>🟠 スーパーレア</span>
+          <span style="color:#FFA500">12%</span>
+        </div>
+        <div class="rate-row">
+          <span>🌟 レジェンド</span>
+          <span style="color:#FFD700">3%</span>
+        </div>
+      </div>
+
+      <div class="gacha-buttons">
+        <button class="gacha-btn gacha-single" onclick="doGacha(1)">
+          🎲 1回ガチャ<br>
+          <span style="font-size:12px;">💎 10</span>
+        </button>
+        <button class="gacha-btn gacha-single" onclick="doGacha(3)">
+          🎲 3回ガチャ<br>
+          <span style="font-size:12px;">💎 28</span>
+        </button>
+        <button class="gacha-btn gacha-ten" onclick="doGacha(10)">
+          🎰 10連ガチャ（💎 90）※お得！
+        </button>
+      </div>
+
+      <div class="gacha-result" id="gachaResult">
+        <div class="result-title">✨ ガチャ結果</div>
+        <div class="result-items" id="gachaItems"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ミッションタブ -->
+  <div class="tab-content" id="tab-mission">
+    <div class="mission-section">
+      <div class="section-title">📋 デイリーミッション</div>
+      <div id="missionList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ================================================================
+// データ定義
+// ================================================================
+const RARITIES = {
+  common: { name: 'コモン', symbol: '⚪', class: 'rarity-common', rate: 0.60, bonus: 0.15 },
+  rare: { name: 'レア', symbol: '🔵', class: 'rarity-rare', rate: 0.25, bonus: 0.50 },
+  sr: { name: 'スーパーレア', symbol: '🟠', class: 'rarity-sr', rate: 0.12, bonus: 2.00 },
+  legend: { name: 'レジェンド', symbol: '🌟', class: 'rarity-legend', rate: 0.03, bonus: 8.00 }
+};
+
+const WEAPONS = {
+  common: [
+    { id: 'w1', name: '木の剣', emoji: '🗡️' },
+    { id: 'w2', name: '革の弓', emoji: '🏹' },
+    { id: 'w3', name: '見習いの杖', emoji: '🪄' }
+  ],
+  rare: [
+    { id: 'w4', name: '鋼の剣', emoji: '⚔️' },
+    { id: 'w5', name: '狩人の弓', emoji: '🎯' },
+    { id: 'w6', name: '魔法の杖', emoji: '🔮' }
+  ],
+  sr: [
+    { id: 'w7', name: '炎の剣', emoji: '🔥' },
+    { id: 'w8', name: 'エルフの弓', emoji: '✨' },
+    { id: 'w9', name: '賢者の杖', emoji: '🔯' }
+  ],
+  legend: [
+    { id: 'w10', name: 'エクスカリバー', emoji: '🌟' },
+    { id: 'w11', name: '神弓オリオン', emoji: '💫' },
+    { id: 'w12', name: '創世の杖', emoji: '🌠' }
+  ]
+};
+
+const MEMBER_TYPES = [
+  { name: '剣士', emoji: '🗡️', atkEmoji: '⚔️', color: '#ff6b6b' },
+  { name: '弓使い', emoji: '🏹', atkEmoji: '🏹', color: '#4facfe' },
+  { name: '魔法使い', emoji: '🔮', atkEmoji: '✨', color: '#f093fb' }
+];
+
+const ENEMIES = {
+  normal: [
+    { name: 'ダークラット', emoji: '🐀' }, { name: 'コウモリ', emoji: '🦇' },
+    { name: 'スライム', emoji: '🟢' }, { name: '毒グモ', emoji: '🕷️' },
+    { name: 'スケルトン', emoji: '💀' }, { name: 'ゴブリン', emoji: '👺' },
+    { name: 'オーク', emoji: '👹' }, { name: 'ドラゴンの子', emoji: '🐲' }
+  ],
+  boss: [
+    { name: 'フロアボス・ドラゴン', emoji: '🐉' },
+    { name: 'フロアボス・悪魔', emoji: '😈' },
+    { name: 'フロアボス・死神', emoji: '💀' },
+    { name: 'フロアボス・魔王', emoji: '👿' }
+  ]
+};
+
+const MISSIONS = [
+  { id: 'm1', name: '初心者討伐者', desc: '敵を10体倒す', target: 10, gem: 15, type: 'kills' },
+  { id: 'm2', name: '熟練戦士', desc: '敵を50体倒す', target: 50, gem: 30, type: 'kills' },
+  { id: 'm3', name: '百戦錬磨', desc: '敵を100体倒す', target: 100, gem: 50, type: 'kills' },
+  { id: 'm4', name: 'ダンジョン探索者', desc: '10階に到達', target: 10, gem: 20, type: 'stage' },
+  { id: 'm5', name: '深層探索者', desc: '30階に到達', target: 30, gem: 40, type: 'stage' },
+  { id: 'm6', name: 'パーティーリーダー', desc: '仲間を5人雇う', target: 5, gem: 25, type: 'members' },
+  { id: 'm7', name: '武器コレクター', desc: '武器を10個集める', target: 10, gem: 35, type: 'weapons' }
+];
+
+// ================================================================
+// ゲーム状態
+// ================================================================
+let game = {
+  gold: 0, gems: 0, stage: 1, attackLevel: 1, prestigeLevel: 0,
+  enemyHp: 10, enemyMaxHp: 10, boostTimer: 0,
+  totalKills: 0, totalWeapons: 0,
+  members: [], // { id, name, emoji, atkEmoji, color, level }
+  weapons: {}, // { weaponId: { count, rarity } }
+  completedMissions: []
+};
+
+// ================================================================
+// 計算関数
+// ================================================================
+function getWeaponBonus() {
+  let bonus = 1.0;
+  Object.entries(game.weapons).forEach(([weaponId, weaponData]) => {
+    const rarity = weaponData.rarity;
+    const rarityData = RARITIES[rarity];
+    bonus += rarityData.bonus * weaponData.count;
+  });
+  return parseFloat(bonus.toFixed(2));
+}
+
+function getPlayerAttack() {
+  const base = game.attackLevel * 2.0;
+  const prestigeBonus = 1 + game.prestigeLevel * 0.5;
+  const weaponBonus = getWeaponBonus();
+  const boostMultiplier = game.boostTimer > 0 ? 5 : 1;
+  return Math.floor(base * prestigeBonus * weaponBonus * boostMultiplier);
+}
+
+function getMemberAttack(member) {
+  const base = (member.level || 1) * 1.5;
+  const prestigeBonus = 1 + game.prestigeLevel * 0.5;
+  const weaponBonus = getWeaponBonus();
+  const boostMultiplier = game.boostTimer > 0 ? 5 : 1;
+  return Math.floor(base * prestigeBonus * weaponBonus * boostMultiplier);
+}
+
+function getTotalMemberAttack() {
+  return game.members.reduce((sum, member) => sum + getMemberAttack(member), 0);
+}
+
+function getTotalAttack() {
+  return getPlayerAttack() + getTotalMemberAttack();
+}
+
+function getAttackCost() { return Math.floor(10 * Math.pow(1.3, game.attackLevel - 1)); }
+function getHireCost() { return Math.floor(50 * Math.pow(1.5, game.members.length)); }
+
+function getEnemyMaxHp() {
+  const base = Math.floor(10 * Math.pow(1.25, game.stage - 1));
+  return game.stage % 10 === 0 ? base * 3 : base;
+}
+
+function getGoldReward() {
+  const base = Math.floor(5 * Math.pow(1.15, game.stage - 1));
+  const prestigeBonus = 1 + game.prestigeLevel * 0.3;
+  return Math.floor(base * prestigeBonus);
+}
+
+// ================================================================
+// 敵・バトルシステム
+// ================================================================
+function spawnEnemy() {
+  game.enemyMaxHp = getEnemyMaxHp();
+  game.enemyHp = game.enemyMaxHp;
+
+  const isBoss = game.stage % 10 === 0;
+  const enemyData = isBoss
+    ? ENEMIES.boss[Math.floor((game.stage / 10 - 1) % ENEMIES.boss.length)]
+    : ENEMIES.normal[(game.stage - 1) % ENEMIES.normal.length];
+
+  document.getElementById('enemyEmoji').textContent = enemyData.emoji;
+  document.getElementById('enemyName').textContent = enemyData.name;
+  document.getElementById('bossCrown').style.display = isBoss ? 'block' : 'none';
+  document.getElementById('enemyEmoji').style.fontSize = isBoss ? '88px' : '78px';
+
+  updateDisplay();
+}
+
+function attackEnemy(event) {
+  const damage = getPlayerAttack();
+  dealDamage(damage, event.clientX, event.clientY);
+}
+
+function dealDamage(damage, x, y) {
+  game.enemyHp -= damage;
+  if (x !== null) createDamageEffect(x, y, damage);
+
+  const enemyEl = document.getElementById('enemyEmoji');
+  enemyEl.classList.remove('hit');
+  void enemyEl.offsetWidth;
+  enemyEl.classList.add('hit');
+
+  if (game.enemyHp <= 0) killEnemy();
+  updateDisplay();
+}
+
+function killEnemy() {
+  const gold = getGoldReward();
+  game.gold += gold;
+  game.totalKills++;
+
+  // 5%で武器ドロップ
+  if (Math.random() < 0.05) {
+    const rarity = rollRarity();
+    const weapon = getRandomWeapon(rarity);
+    addWeapon(weapon.id, rarity);
+    showDropNotice(weapon, rarity);
+  }
+
+  if (game.stage % 10 === 0) showFloorClear();
+  game.stage++;
+
+  if (game.stage >= 10) {
+    document.getElementById('btnPrestige').classList.add('visible');
+  }
+
+  setTimeout(spawnEnemy, game.stage % 10 === 1 ? 800 : 200);
+}
+
+function rollRarity() {
+  const rand = Math.random();
+  let cumulative = 0;
+  
+  for (const [rarity, data] of Object.entries(RARITIES)) {
+    cumulative += data.rate;
+    if (rand < cumulative) return rarity;
+  }
+  return 'common';
+}
+
+function getRandomWeapon(rarity) {
+  const pool = WEAPONS[rarity];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// ================================================================
+// 武器システム
+// ================================================================
+function addWeapon(weaponId, rarity) {
+  if (!game.weapons[weaponId]) {
+    game.weapons[weaponId] = { count: 0, rarity: rarity };
+  }
+  
+  game.weapons[weaponId].count++;
+  game.totalWeapons++;
+  
+  // 3個集まると進化
+  if (game.weapons[weaponId].count >= 3 && rarity !== 'legend') {
+    evolveWeapon(weaponId);
+  }
+  
+  renderWeapons();
+  updateDisplay();
+  saveGame();
+}
+
+function evolveWeapon(weaponId) {
+  const weaponData = game.weapons[weaponId];
+  const currentRarity = weaponData.rarity;
+  
+  // 進化先のレアリティを決定
+  const rarityKeys = ['common', 'rare', 'sr', 'legend'];
+  const currentIndex = rarityKeys.indexOf(currentRarity);
+  if (currentIndex >= rarityKeys.length - 1) return; // レジェンドは進化しない
+  
+  const nextRarity = rarityKeys[currentIndex + 1];
+  const nextWeapon = getRandomWeapon(nextRarity);
+  
+  // 現在の武器を3個消費
+  game.weapons[weaponId].count -= 3;
+  if (game.weapons[weaponId].count === 0) {
+    delete game.weapons[weaponId];
+  }
+  
+  // 進化後の武器を追加
+  if (!game.weapons[nextWeapon.id]) {
+    game.weapons[nextWeapon.id] = { count: 0, rarity: nextRarity };
+  }
+  game.weapons[nextWeapon.id].count++;
+  
+  // 進化通知
+  const currentWeapon = findWeaponById(weaponId);
+  setTimeout(() => {
+    alert(`✨ 進化成功！\n${currentWeapon.emoji}${currentWeapon.name} × 3\n→ ${nextWeapon.emoji}${nextWeapon.name}（${RARITIES[nextRarity].name}）`);
+  }, 100);
+}
+
+function findWeaponById(weaponId) {
+  for (const rarity of Object.keys(WEAPONS)) {
+    const weapon = WEAPONS[rarity].find(w => w.id === weaponId);
+    if (weapon) return weapon;
+  }
+  return null;
+}
+
+function renderWeapons() {
+  const container = document.getElementById('weaponGrid');
+  const entries = Object.entries(game.weapons);
+  
+  if (entries.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;opacity:0.4;font-size:13px;padding:30px;">
+        敵を倒すと5%の確率で武器ドロップ！<br>
+        ガチャでも武器を入手できます
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = '';
+  entries.forEach(([weaponId, weaponData]) => {
+    const weapon = findWeaponById(weaponId);
+    if (!weapon) return;
+    
+    const rarityData = RARITIES[weaponData.rarity];
+    const canEvolve = weaponData.count >= 3 && weaponData.rarity !== 'legend';
+    const progressPercent = weaponData.rarity === 'legend' ? 100 : (weaponData.count / 3) * 100;
+
+    const card = document.createElement('div');
+    card.className = `weapon-card ${rarityData.class}` + (canEvolve ? ' can-evolve' : '');
+    card.innerHTML = `
+      <div class="weapon-emoji">${weapon.emoji}</div>
+      <div class="weapon-name">${weapon.name}</div>
+      <div class="weapon-rarity">${rarityData.symbol} ${rarityData.name}</div>
+      <div class="weapon-effect">攻撃力 +${(rarityData.bonus * weaponData.count * 100).toFixed(0)}%</div>
+      <div class="weapon-progress">
+        <div class="weapon-progress-fill" style="width: ${progressPercent}%"></div>
+      </div>
+      <div class="weapon-count">
+        ${weaponData.rarity === 'legend' ? 'MAX' : `${weaponData.count}/3 で進化`}
+      </div>
+      ${canEvolve ? `<button class="evolve-btn" onclick="manualEvolve('${weaponId}')">進化する</button>` : ''}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function manualEvolve(weaponId) {
+  evolveWeapon(weaponId);
+  renderWeapons();
+  updateDisplay();
+  saveGame();
+}
+
+// ================================================================
+// ガチャシステム
+// ================================================================
+function doGacha(count) {
+  const costs = { 1: 10, 3: 28, 10: 90 };
+  const cost = costs[count];
+  
+  if (game.gems < cost) {
+    alert(`ジェムが足りません！\n必要: 💎${cost} / 所持: 💎${game.gems}`);
+    return;
+  }
+  
+  game.gems -= cost;
+  const results = [];
+  
+  for (let i = 0; i < count; i++) {
+    const rarity = rollRarity();
+    const weapon = getRandomWeapon(rarity);
+    addWeapon(weapon.id, rarity);
+    results.push({ weapon, rarity });
+  }
+  
+  displayGachaResults(results);
+  updateDisplay();
+  saveGame();
+}
+
+function displayGachaResults(results) {
+  const container = document.getElementById('gachaItems');
+  container.innerHTML = '';
+  
+  results.forEach((result, index) => {
+    const rarityData = RARITIES[result.rarity];
+    const div = document.createElement('div');
+    div.className = `result-item ${rarityData.class}`;
+    div.style.animationDelay = (index * 0.1) + 's';
+    div.innerHTML = `
+      <div style="font-size:20px;">${result.weapon.emoji}</div>
+      <div>${result.weapon.name}</div>
+      <div>${rarityData.symbol} ${rarityData.name}</div>
+    `;
+    container.appendChild(div);
+  });
+  
+  document.getElementById('gachaResult').classList.add('show');
+}
+
+// ================================================================
+// 仲間システム
+// ================================================================
+function hireMember() {
+  const cost = getHireCost();
+  if (game.gold < cost) return;
+  
+  game.gold -= cost;
+  const memberType = MEMBER_TYPES[Math.floor(Math.random() * MEMBER_TYPES.length)];
+  const member = {
+    id: Date.now(),
+    name: memberType.name,
+    emoji: memberType.emoji,
+    atkEmoji: memberType.atkEmoji,
+    color: memberType.color,
+    level: 1
+  };
+  
+  game.members.push(member);
+  renderParty();
+  updateDisplay();
+  saveGame();
+}
+
+function renderParty() {
+  const container = document.getElementById('partyMembers');
+  document.getElementById('partyCount').textContent = game.members.length;
+  
+  if (game.members.length === 0) {
+    container.innerHTML = '<div style="font-size:12px;opacity:0.5;">仲間を雇って自動攻撃力アップ！</div>';
+    return;
+  }
+  
+  container.innerHTML = '';
+  game.members.forEach(member => {
+    const div = document.createElement('div');
+    div.className = 'party-member';
+    div.id = 'member-' + member.id;
+    div.style.borderColor = member.color + '66';
+    div.innerHTML = `
+      <div class="member-emoji">${member.emoji}</div>
+      <div class="member-info">
+        <div class="member-name" style="color:${member.color}">${member.name}</div>
+        <div class="member-atk">⚔️ ${getMemberAttack(member)}/秒</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function memberAttackEffect(member) {
+  const memberEl = document.getElementById('member-' + member.id);
+  const enemyEl = document.getElementById('enemyEmoji');
+  if (!memberEl || !enemyEl) return;
+
+  // 仲間のアニメーション
+  memberEl.classList.remove('attacking');
+  void memberEl.offsetWidth;
+  memberEl.classList.add('attacking');
+
+  // 攻撃エフェクト
+  const mRect = memberEl.getBoundingClientRect();
+  const eRect = enemyEl.getBoundingClientRect();
+
+  const effect = document.createElement('div');
+  effect.className = 'attack-effect';
+  effect.textContent = member.atkEmoji;
+  effect.style.left = (mRect.right + 5) + 'px';
+  effect.style.top = (mRect.top + mRect.height / 2 - 12) + 'px';
+
+  const tx = (eRect.left + eRect.width / 2) - (mRect.right + 5);
+  const ty = (eRect.top + eRect.height / 2) - (mRect.top + mRect.height / 2 - 12);
+  effect.style.setProperty('--tx', tx + 'px');
+  effect.style.setProperty('--ty', ty + 'px');
+
+  document.body.appendChild(effect);
+  setTimeout(() => effect.remove(), 600);
+}
+
+// ================================================================
+// ミッションシステム
+// ================================================================
+function renderMissions() {
+  const container = document.getElementById('missionList');
+  container.innerHTML = '';
+  
+  MISSIONS.forEach(mission => {
+    if (game.completedMissions.includes(mission.id)) return;
+    
+    let progress = 0;
+    switch (mission.type) {
+      case 'kills': progress = game.totalKills; break;
+      case 'stage': progress = Math.max(1, game.stage - 1); break;
+      case 'members': progress = game.members.length; break;
+      case 'weapons': progress = game.totalWeapons; break;
+    }
+    
+    const progressPercent = Math.min(100, (progress / mission.target) * 100);
+    const isCompleted = progress >= mission.target;
+    
+    const card = document.createElement('div');
+    card.className = 'mission-card';
+    card.innerHTML = `
+      <div class="mission-header">
+        <div class="mission-name">${mission.name}</div>
+        <div class="mission-reward">💎 +${mission.gem}</div>
+      </div>
+      <div class="mission-progress-bg">
+        <div class="mission-progress-fill" style="width: ${progressPercent}%"></div>
+      </div>
+      <div class="mission-desc">
+        <span>${mission.desc}</span>
+        <span>${Math.min(progress, mission.target)} / ${mission.target}</span>
+      </div>
+      ${isCompleted ? `<button class="mission-claim" onclick="claimMission('${mission.id}')">💎 報酬を受け取る</button>` : ''}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function claimMission(missionId) {
+  const mission = MISSIONS.find(m => m.id === missionId);
+  if (!mission || game.completedMissions.includes(missionId)) return;
+  
+  game.gems += mission.gem;
+  game.completedMissions.push(missionId);
+  
+  renderMissions();
+  updateDisplay();
+  saveGame();
+}
+
+// ================================================================
+// アップグレード・広告・転生
+// ================================================================
+function upgradeAttack() {
+  const cost = getAttackCost();
+  if (game.gold < cost) return;
+  
+  game.gold -= cost;
+  game.attackLevel++;
+  updateDisplay();
+  saveGame();
+}
+
+function watchAd() {
+  if (game.boostTimer > 0) {
+    alert('まだブースト中です！');
+    return;
+  }
+  
+  if (confirm('【広告動画】\n広告を視聴して以下を獲得しますか？\n\n💎 5個\n30秒間 全攻撃力5倍')) {
+    game.gems += 5;
+    game.boostTimer = 30;
+    updateDisplay();
+    saveGame();
+  }
+}
+
+function prestige() {
+  const nextLevel = game.prestigeLevel + 1;
+  const bonus = nextLevel * 50;
+  
+  if (!confirm(`転生しますか？\n\n【リセットされるもの】\n・ゴールド、ステージ、強化レベル、仲間\n\n【引き継がれるもの】\n・武器、ジェム、ミッション進行\n\n【永続ボーナス】\n・攻撃力 +${bonus}%\n\n現在の転生レベル: ${game.prestigeLevel}`)) {
+    return;
+  }
+
+  game.prestigeLevel++;
+  game.gold = 0;
+  game.stage = 1;
+  game.attackLevel = 1;
+  game.members = [];
+  game.boostTimer = 0;
+
+  document.getElementById('btnPrestige').classList.remove('visible');
+  renderParty();
+  spawnEnemy();
+  updateDisplay();
+  saveGame();
+}
+
+// ================================================================
+// UI更新・エフェクト
+// ================================================================
+function updateDisplay() {
+  const wb = getWeaponBonus();
+  
+  document.getElementById('goldDisplay').textContent = Math.floor(game.gold).toLocaleString();
+  document.getElementById('gemDisplay').textContent = game.gems;
+  document.getElementById('gemGachaDisplay').textContent = game.gems;
+  document.getElementById('stageDisplay').textContent = game.stage + (game.stage % 10 === 0 ? ' 👑BOSS' : '');
+  
+  const hp = Math.max(0, Math.floor(game.enemyHp));
+  document.getElementById('currentHp').textContent = hp.toLocaleString();
+  document.getElementById('maxHp').textContent = game.enemyMaxHp.toLocaleString();
+  document.getElementById('hpBar').style.width = Math.max(0, (game.enemyHp / game.enemyMaxHp) * 100) + '%';
+  
+  document.getElementById('totalAtkDisplay').textContent = getTotalAttack().toLocaleString();
+  document.getElementById('weaponBonusDisplay').textContent = wb.toFixed(2);
+  document.getElementById('weaponBonusDetail').textContent = wb.toFixed(2);
+  document.getElementById('playerAtkDisplay').textContent = getPlayerAttack().toLocaleString();
+  document.getElementById('memberAtkDisplay').textContent = getTotalMemberAttack().toLocaleString();
+  
+  document.getElementById('attackCost').textContent = getAttackCost().toLocaleString();
+  document.getElementById('hireCost').textContent = getHireCost().toLocaleString();
+  
+  // ボタン状態
+  const attackBtn = document.getElementById('btnAttack');
+  const hireBtn = document.getElementById('btnHire');
+  
+  if (game.gold < getAttackCost()) {
+    attackBtn.classList.add('disabled');
+  } else {
+    attackBtn.classList.remove('disabled');
+  }
+  
+  if (game.gold < getHireCost()) {
+    hireBtn.classList.add('disabled');
+  } else {
+    hireBtn.classList.remove('disabled');
+  }
+}
+
+function createDamageEffect(x, y, damage) {
+  const effect = document.createElement('div');
+  effect.className = 'damage-effect';
+  effect.textContent = '-' + damage.toLocaleString();
+  effect.style.left = (x - 25) + 'px';
+  effect.style.top = (y - 30) + 'px';
+  document.body.appendChild(effect);
+  
+  setTimeout(() => {
+    effect.remove();
+  }, 1000);
+}
+
+function showDropNotice(weapon, rarity) {
+  const rarityData = RARITIES[rarity];
+  const notice = document.createElement('div');
+  notice.className = 'drop-notice';
+  notice.style.background = 'rgba(22,33,62,0.95)';
+  notice.style.border = `2px solid ${rarity === 'legend' ? '#FFD700' : rarity === 'sr' ? '#FFA500' : '#6495ED'}`;
+  notice.innerHTML = `🎁 武器ドロップ！<br>${weapon.emoji} ${weapon.name} (${rarityData.name})`;
+  document.body.appendChild(notice);
+  setTimeout(() => notice.remove(), 3000);
+}
+
+function showFloorClear() {
+  // 簡単なフロアクリア演出
+  const notice = document.createElement('div');
+  notice.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 32px; font-weight: 900; color: #FFD700; z-index: 1000;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.8); pointer-events: none;
+    animation: floor-clear 2s ease-out forwards;
+  `;
+  notice.textContent = `FLOOR ${game.stage} CLEAR! 🎉`;
+  document.body.appendChild(notice);
+  setTimeout(() => notice.remove(), 2000);
+}
+
+// ================================================================
+// タブ切り替え
+// ================================================================
+function switchTab(tabName) {
+  const tabs = ['battle', 'weapon', 'gacha', 'mission'];
+  document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+    btn.classList.toggle('active', tabs[index] === tabName);
+  });
+  document.querySelectorAll('.tab-content').forEach((content, index) => {
+    content.classList.toggle('active', tabs[index] === tabName);
+  });
+  
+  if (tabName === 'weapon') renderWeapons();
+  if (tabName === 'mission') renderMissions();
+}
+
+// ================================================================
+// セーブ・ロード
+// ================================================================
+function saveGame() {
+  localStorage.setItem('dungeonRPGComplete', JSON.stringify(game));
+}
+
+function loadGame() {
+  const saved = localStorage.getItem('dungeonRPGComplete');
+  if (saved) {
+    try {
+      const loadedData = JSON.parse(saved);
+      game = { ...game, ...loadedData };
+    } catch (e) {
+      console.error('セーブデータの読み込みに失敗しました:', e);
+    }
+  }
+}
+
+// ================================================================
+// メインループ
+// ================================================================
+
+// 仲間の自動攻撃（0.5秒ごと）
+let memberAttackIndex = 0;
+setInterval(() => {
+  if (game.members.length === 0 || game.enemyHp <= 0) return;
+
+  const member = game.members[memberAttackIndex % game.members.length];
+  memberAttackIndex++;
+
+  const damage = Math.floor(getMemberAttack(member) / 2);
+  if (damage > 0) {
+    memberAttackEffect(member);
+    setTimeout(() => {
+      if (game.enemyHp > 0) {
+        dealDamage(damage, null, null);
+      }
+    }, 350);
+  }
+}, 500);
+
+// ブーストタイマー（1秒ごと）
+setInterval(() => {
+  if (game.boostTimer > 0) {
+    game.boostTimer--;
+    updateDisplay();
+    saveGame();
+  }
+}, 1000);
+
+// 自動セーブ（5秒ごと）
+setInterval(saveGame, 5000);
+
+// ================================================================
+// 初期化
+// ================================================================
+loadGame();
+renderParty();
+renderWeapons();
+renderMissions();
+spawnEnemy();
+updateDisplay();
+</script>
+</body>
+</html>
