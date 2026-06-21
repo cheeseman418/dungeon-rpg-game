@@ -31,7 +31,7 @@
       min-height: 100vh;
       display: flex; flex-direction: column;
       align-items: center;
-      padding: 15px 10px 80px;
+      padding: 15px 10px 120px;
       position: relative; overflow-x: hidden;
     }
     @keyframes gradientFlow {
@@ -273,7 +273,6 @@
     .skill-item-desc { font-size: 11px; color: var(--text-secondary); }
     .modal-close-btn { width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--border-radius-sm); color: var(--text-primary); cursor: pointer; margin-top: 12px; }
 
-    /* ドロップ通知（新規追加） */
     .drop-notice {
       position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95));
@@ -290,7 +289,25 @@
       100% { opacity:0; transform:translateX(-50%) translateY(-15px); }
     }
 
-    .banner-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; font-size: 12px; z-index: 9999; }
+    /* 下部バナー広告（admax） */
+    .banner-ad {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      min-height: 50px;
+      background: rgba(0,0,0,0.9);
+      display: flex; justify-content: center; align-items: center;
+      padding: 4px 0;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .banner-ad .admax-wrap {
+      width: 100%; max-width: 440px;
+      display: flex; justify-content: center; align-items: center;
+      text-align: center;
+    }
+    /* admaxが描画する要素を中央寄せ・はみ出し防止 */
+    .banner-ad .admax-wrap ins,
+    .banner-ad .admax-wrap iframe,
+    .banner-ad .admax-wrap div { max-width: 100% !important; }
   </style>
 </head>
 <body>
@@ -460,7 +477,14 @@
   </div>
 </div>
 
-<div class="banner-ad">📢 Monetag バナー広告エリア</div>
+<!-- 下部バナー広告（admax / スマホ用） -->
+<div class="banner-ad">
+  <div class="admax-wrap">
+    <!-- admax -->
+    <script src="https://adm.shinobi.jp/s/7558c1229c1a168023b4ebb87b4329cb"></script>
+    <!-- admax -->
+  </div>
+</div>
 
 <div class="skill-modal-overlay" id="skillModalOverlay" style="display:none;" onclick="closeSkillModal(event)">
   <div class="skill-modal" id="skillModal">
@@ -483,7 +507,6 @@ const GACHA_HEROES = [
   {id:'h_princess',name:'姫',rarity:'common',img:'h_princess',atkBonus:0.08}, {id:'h_prince',name:'王子',rarity:'common',img:'h_prince',atkBonus:0.08}, {id:'h_mage',name:'魔法使い',rarity:'common',img:'h_mage',atkBonus:0.09}, {id:'h_warrior',name:'戦士',rarity:'common',img:'h_warrior',atkBonus:0.10}
 ];
 const HERO_RARITY_RATES = { common:0.50, rare:0.30, sr:0.15, legend:0.05 };
-// ガチャ仲間のレアリティ別の見た目（攻撃エフェクト用）
 const HERO_ATTACK_TYPES = { legend:'magic', sr:'magic', rare:'arrow', common:'slash' };
 
 const MEMBER_TYPES = [ {name:'剣士',emoji:'🗡️',atkEmoji:'⚔️',color:'#f43f5e',attackType:'slash'}, {name:'弓使い',emoji:'🏹',atkEmoji:'🏹',color:'#38bdf8',attackType:'arrow'}, {name:'魔法使い',emoji:'🔮',atkEmoji:'✨',color:'#d946ef',attackType:'magic'} ];
@@ -507,7 +530,6 @@ function getPetBonus() { return 1 + getPetEffect('atk') + getGuildEffect('atk') 
 function getPlayerAttack() { return Math.floor(game.attackLevel*2.0 * (1+game.prestigeLevel*0.5) * getWeaponBonus() * getPetBonus() * (game.boostTimer>0?5:1) * (game.tapBoostTimer>0?5:1)); }
 function getMemberAttack(m) { return Math.floor((m.level||1)*1.5 * (1+game.prestigeLevel*0.5) * getWeaponBonus() * getPetBonus() * (game.boostTimer>0?5:1)); }
 
-// ★ ガチャ仲間の自動攻撃力
 function getHeroAttack(id, data) {
   const def = GACHA_HEROES.find(h => h.id === id);
   if(!def) return 0;
@@ -655,7 +677,6 @@ function heroAttackEffect(id) { const el=document.getElementById('hero-'+id); if
 function upgradeAttack() { const c=getAttackCost(); if(game.gold<c)return; game.gold-=c; game.attackLevel++; updateDisplay(); saveGame(); }
 function watchAd() { if(game.boostTimer>0)return; game.gems+=5; game.boostTimer=30; updateDisplay(); saveGame(); }
 
-// ★ 転生時の武器ドロップ
 function rollPrestigeRarity() {
   const bonus = game.prestigeLevel * 0.02;
   const rates = {
@@ -683,8 +704,7 @@ function dropWeaponsOnPrestige() {
 function prestige() {
   if(!confirm('転生しますか？\n（ステージ・ゴールド・雇った仲間はリセット、ガチャ仲間と武器は維持。転生報酬で武器がドロップします）'))return;
   game.prestigeLevel++; game.gold=0; game.stage=1; game.attackLevel=1; game.members=[]; game.boostTimer=0; game.mp=game.maxMp; game.autoTapTimer=0; game.tapBoostTimer=0;
-  // ガチャ仲間(game.gachaHeroes)はリセットしない → 転生後も維持
-  dropWeaponsOnPrestige(); // ★ 転生時に武器ドロップ
+  dropWeaponsOnPrestige();
   document.getElementById('btnPrestige').classList.remove('visible'); renderParty(); spawnEnemy(); updateDisplay(); saveGame();
 }
 
@@ -699,7 +719,7 @@ function updateDisplay() {
   document.getElementById('currentHp').textContent=Math.max(0,Math.floor(game.enemyHp)); document.getElementById('maxHp').textContent=game.enemyMaxHp; document.getElementById('hpBar').style.width=Math.max(0,(game.enemyHp/game.enemyMaxHp)*100)+'%';
   document.getElementById('totalAtkDisplay').textContent=getTotalAttack(); document.getElementById('weaponBonusDisplay').textContent=getWeaponBonus().toFixed(2); document.getElementById('weaponBonusDetail').textContent=getWeaponBonus().toFixed(2);
   document.getElementById('petBonusDisplay').textContent=getPetBonus().toFixed(2); document.getElementById('playerAtkDisplay').textContent=getPlayerAttack();
-  document.getElementById('memberAtkDisplay').textContent=getTotalMemberAttack()+getTotalHeroAttack(); // ★ ヒーロー分を加算
+  document.getElementById('memberAtkDisplay').textContent=getTotalMemberAttack()+getTotalHeroAttack();
   document.getElementById('attackCost').textContent=getAttackCost(); document.getElementById('hireCost').textContent=getHireCost();
   updateMpDisplay();
 }
@@ -710,14 +730,12 @@ function switchTab(t) { document.querySelectorAll('.tab-btn').forEach((e,i)=>e.c
 function saveGame() { localStorage.setItem('dungeonRPGv5', JSON.stringify(game)); }
 function loadGame() { const s=localStorage.getItem('dungeonRPGv5'); if(s)try{game={...game,...JSON.parse(s)}; if(!game.gachaHeroes)game.gachaHeroes={};}catch(e){} }
 
-// 雇った仲間の自動攻撃
 let memberIdx=0;
 setInterval(()=>{
   if(game.members.length===0||game.enemyHp<=0)return; const m=game.members[memberIdx%game.members.length]; memberIdx++; const dmg=Math.floor(getMemberAttack(m)/2);
   if(dmg>0){ memberAttackEffect(m); const r=document.getElementById('enemyEmoji').getBoundingClientRect(); createAttackEffect(m.attackType||'slash', 0, 0, r.left+r.width/2, r.top+r.height/2); setTimeout(()=>{if(game.enemyHp>0)dealDamage(dmg,null,null);},200); }
 },500);
 
-// ★ ガチャ仲間の自動攻撃
 let heroIdx=0;
 setInterval(()=>{
   const heroIds=Object.keys(game.gachaHeroes);
