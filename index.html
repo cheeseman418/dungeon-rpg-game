@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="monetag" content="ea498005396531d171f9e1a39f62f5b9">
-  <title>ダンジョン討伐RPG - 完全版</title>
+  <title>ダンジョン討伐RPG - 完全版v4</title>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: 'M PLUS Rounded 1c', sans-serif;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      color: white; min-height: 100vh; display: flex; justify-content: center; padding: 10px;
+      color: white; min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 10px; padding-bottom: 70px;
     }
+
     .game-container {
-      background: rgba(22, 33, 62, 0.97); border-radius: 25px; width: 100%; max-width: 440px;
+      background: rgba(22,33,62,0.97); border-radius: 25px; width: 100%; max-width: 440px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 2px solid rgba(15,52,96,0.8);
       overflow: hidden; height: fit-content;
     }
@@ -24,16 +26,16 @@
       background: linear-gradient(135deg, #e94560, #f38ba8); padding: 12px 16px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .player-info { font-size: 16px; font-weight: 900; }
-    .resources { display: flex; gap: 12px; font-size: 14px; font-weight: 900; }
+    .player-info { font-size: 15px; font-weight: 900; }
+    .resources { display: flex; gap: 12px; font-size: 13px; font-weight: 900; }
     .gold { color: #FFD700; } .gem { color: #00f2fe; }
 
-    /* タブシステム */
+    /* タブ */
     .tabs { display: flex; background: rgba(0,0,0,0.4); }
     .tab-btn {
-      flex: 1; padding: 12px 4px; background: none; border: none;
+      flex: 1; padding: 11px 3px; background: none; border: none;
       color: rgba(255,255,255,0.6); font-family: inherit; font-weight: 900;
-      font-size: 12px; cursor: pointer; transition: all 0.2s;
+      font-size: 11px; cursor: pointer; transition: all 0.2s;
       border-bottom: 3px solid transparent;
     }
     .tab-btn.active { color: white; border-bottom-color: #e94560; background: rgba(233,69,96,0.1); }
@@ -43,29 +45,23 @@
     /* バトルエリア */
     .battle-area {
       background: linear-gradient(180deg, #0d1b2a 0%, #1a1a2e 100%);
-      padding: 20px 20px 15px; text-align: center; cursor: pointer;
-      position: relative; min-height: 220px;
+      padding: 18px 20px 12px; text-align: center; cursor: pointer;
+      position: relative; min-height: 200px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    .stage-info {
-      position: absolute; top: 10px; left: 15px; font-size: 13px; font-weight: 900;
-      color: #a8edea; opacity: 0.9;
-    }
-    .prestige-info {
-      position: absolute; top: 10px; right: 15px; font-size: 12px; font-weight: 900;
-      color: #FFD700; opacity: 0.9;
-    }
-    .enemy-container { position: relative; margin-bottom: 12px; }
+    .stage-info { position: absolute; top: 8px; left: 12px; font-size: 12px; font-weight: 900; color: #a8edea; }
+    .prestige-info { position: absolute; top: 8px; right: 12px; font-size: 11px; font-weight: 900; color: #FFD700; }
+    .enemy-container { position: relative; margin-bottom: 10px; }
     .boss-crown {
-      position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
-      font-size: 26px; animation: crown-glow 2s ease-in-out infinite;
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      font-size: 24px; animation: crown-glow 2s ease-in-out infinite;
     }
     @keyframes crown-glow {
       0%,100% { filter: drop-shadow(0 0 8px #FFD700); }
       50% { filter: drop-shadow(0 0 18px #FFD700); }
     }
     .enemy-emoji {
-      font-size: 78px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
+      font-size: 72px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
       animation: enemy-float 3s ease-in-out infinite; transition: all 0.15s;
     }
     @keyframes enemy-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -75,70 +71,49 @@
       50% { transform: scale(0.9) rotate(-5deg); }
       100% { transform: scale(1) rotate(0); filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8)); }
     }
-    .enemy-name { font-size: 15px; font-weight: 900; color: #ff6b6b; margin-bottom: 10px; }
-    .bars-container { width: 90%; }
-    .bar-row { margin-bottom: 8px; }
-    .bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
-    .bar-bg {
-      background: rgba(0,0,0,0.6); border-radius: 10px; height: 14px; overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .hp-bar { background: linear-gradient(90deg, #ff6b6b, #ff4757); height: 100%; transition: width 0.3s ease; }
-    .mp-bar { background: linear-gradient(90deg, #4facfe, #00f2fe); height: 100%; transition: width 0.3s ease; }
+    .enemy-name { font-size: 14px; font-weight: 900; color: #ff6b6b; margin-bottom: 8px; }
+    .bars-container { width: 88%; }
+    .bar-row { margin-bottom: 6px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 3px; }
+    .bar-bg { background: rgba(0,0,0,0.6); border-radius: 8px; height: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+    .hp-bar { background: linear-gradient(90deg, #ff6b6b, #ff4757); height: 100%; transition: width 0.3s; }
+    .mp-bar { background: linear-gradient(90deg, #4facfe, #00f2fe); height: 100%; transition: width 0.3s; }
 
     /* スキルエリア */
     .skill-area {
-      background: rgba(0,0,0,0.35); padding: 12px 15px;
+      background: rgba(0,0,0,0.35); padding: 8px 10px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex; gap: 8px;
     }
     .skill-btn {
-      flex: 1; padding: 12px 8px; border: 2px solid #4facfe; border-radius: 12px;
+      padding: 8px 4px; border: 2px solid #4facfe; border-radius: 8px;
       background: rgba(79,172,254,0.1); color: #4facfe; font-family: inherit;
-      font-weight: 900; font-size: 11px; cursor: pointer; transition: all 0.2s;
+      font-weight: 900; font-size: 10px; cursor: pointer; transition: all 0.2s; text-align: center;
     }
-    .skill-btn:active { transform: scale(0.96); }
     .skill-btn.ready { animation: skill-ready 2s ease-in-out infinite; }
-    @keyframes skill-ready {
-      0%,100% { box-shadow: 0 0 8px rgba(79,172,254,0.4); }
-      50% { box-shadow: 0 0 16px rgba(79,172,254,0.8); }
-    }
-    .skill-btn.disabled { opacity: 0.4; border-color: #666; color: #666; }
+    @keyframes skill-ready { 0%,100% { box-shadow: 0 0 8px rgba(79,172,254,0.4); } 50% { box-shadow: 0 0 16px rgba(79,172,254,0.8); } }
+    .skill-btn.active { border-color: #feca57; color: #feca57; background: rgba(254,202,87,0.15); }
+    .skill-btn.disabled { opacity: 0.4; border-color: #555; color: #555; }
 
-    /* 仲間＆ステータス */
-    .party-area {
-      background: rgba(0,0,0,0.35); padding: 10px 15px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .party-title { font-size: 11px; opacity: 0.7; margin-bottom: 8px; }
-    .party-members { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
-    .party-member {
+    /* 仲間・ペット・ステータス */
+    .info-area { background: rgba(0,0,0,0.35); padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .info-title { font-size: 10px; opacity: 0.7; margin-bottom: 6px; }
+    .info-content { display: flex; flex-wrap: wrap; gap: 5px; min-height: 24px; font-size: 10px; }
+    .member-chip, .pet-chip {
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px; padding: 5px 8px; font-size: 11px;
-      display: flex; align-items: center; gap: 5px; transition: all 0.2s;
+      border-radius: 8px; padding: 3px 6px; display: flex; align-items: center; gap: 4px;
     }
-    .party-member.attacking { animation: member-attack 0.4s ease-out; }
-    @keyframes member-attack {
-      0% { transform: scale(1); }
-      30% { transform: scale(1.15); background: rgba(255,200,0,0.3); }
-      100% { transform: scale(1); }
-    }
-    .member-emoji { font-size: 16px; }
-    .member-name { font-size: 11px; font-weight: 900; }
-    .member-atk { font-size: 10px; opacity: 0.7; }
+    .pet-chip { border-color: rgba(240,147,251,0.3); background: rgba(240,147,251,0.1); }
 
-    .stats-bar {
-      background: rgba(0,0,0,0.4); padding: 12px 16px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .total-atk { font-size: 18px; font-weight: 900; color: #FFD700; }
+    .stats-bar { background: rgba(0,0,0,0.4); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .total-atk { font-size: 16px; font-weight: 900; color: #FFD700; }
 
     /* アップグレード */
-    .upgrade-section { padding: 14px; }
+    .upgrade-section { padding: 12px; }
     .upgrade-btn {
-      width: 100%; padding: 14px 15px; margin-bottom: 10px;
+      width: 100%; padding: 11px 12px; margin-bottom: 8px;
       background: linear-gradient(135deg, #0f3460, #16213e);
-      border: 2px solid #4a69bb; border-radius: 14px;
+      border: 2px solid #4a69bb; border-radius: 12px;
       color: white; font-family: inherit; font-weight: 900;
       cursor: pointer; transition: all 0.2s;
       display: flex; justify-content: space-between; align-items: center;
@@ -146,162 +121,105 @@
     .upgrade-btn:active { transform: scale(0.98); }
     .upgrade-btn.disabled { opacity: 0.45; border-color: #333; cursor: not-allowed; }
     .btn-left { text-align: left; }
-    .btn-title { font-size: 14px; margin-bottom: 3px; }
-    .btn-desc { font-size: 11px; opacity: 0.75; }
-    .btn-cost { color: #FFD700; font-size: 14px; font-weight: 900; text-align: right; }
+    .btn-title { font-size: 13px; margin-bottom: 2px; }
+    .btn-desc { font-size: 10px; opacity: 0.75; }
+    .btn-cost { color: #FFD700; font-size: 12px; font-weight: 900; text-align: right; }
     .btn-ad { background: linear-gradient(135deg, #ff6b6b, #feca57); border-color: #ff4757; color: #1a1a1a; }
     .btn-prestige { background: linear-gradient(135deg, #a8edea, #fed6e3); border-color: #FFD700; color: #1a1a1a; display: none; }
     .btn-prestige.visible { display: flex; }
 
-    /* 武器タブ */
-    .weapon-section { padding: 16px; }
-    .section-title { text-align: center; font-size: 18px; font-weight: 900; margin-bottom: 15px; }
-    .equipment-info {
-      background: rgba(255,215,0,0.1); border: 2px solid rgba(255,215,0,0.3);
-      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px;
-    }
-    .weapon-bonus-display { font-size: 20px; font-weight: 900; color: #FFD700; }
-    .weapon-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .weapon-card {
-      background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px;
-      border: 2px solid rgba(255,255,255,0.1); position: relative; transition: all 0.2s;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .weapon-card.equipped { border-color: #FFD700; background: rgba(255,215,0,0.08); }
-    .weapon-emoji { font-size: 30px; }
-    .weapon-info { flex: 1; }
-    .weapon-name { font-size: 13px; font-weight: 900; margin-bottom: 3px; }
-    .weapon-rarity { font-size: 11px; margin-bottom: 4px; }
-    .weapon-level { font-size: 12px; color: #4facfe; font-weight: 900; margin-bottom: 4px; }
-    .weapon-effect { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-    .weapon-skills { font-size: 10px; color: #f093fb; }
-    .weapon-actions { display: flex; flex-direction: column; gap: 4px; }
-    .equip-btn {
-      background: #4facfe; color: #1a1a1a; border: none; border-radius: 8px;
-      padding: 6px 12px; font-family: inherit; font-weight: 900; font-size: 11px; cursor: pointer;
-    }
-    .equipped-badge {
-      background: #FFD700; color: #1a1a1a; border-radius: 8px;
-      padding: 6px 12px; font-weight: 900; font-size: 11px;
-    }
-    .bench-badge {
-      background: rgba(255,255,255,0.15); color: white; border-radius: 6px;
-      padding: 4px 8px; font-size: 10px; font-weight: 900;
+    /* セクション共通 */
+    .section-content { padding: 14px; }
+    .section-title { text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 12px; }
+    .info-box {
+      border-radius: 10px; padding: 10px; margin-bottom: 12px; text-align: center;
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* ガチャタブ */
-    .gacha-section { padding: 18px; }
-    .gem-display {
-      background: rgba(0,242,254,0.1); border: 2px solid rgba(0,242,254,0.3);
-      border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px;
+    /* 武器・ペット・ギルドカード */
+    .card-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .item-card {
+      background: rgba(0,0,0,0.3); border-radius: 10px; padding: 10px;
+      border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
     }
-    .gem-count { font-size: 26px; font-weight: 900; color: #00f2fe; }
-    .rates-box {
-      background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 15px;
-    }
-    .rate-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 4px 0; font-size: 13px;
-    }
-    .gacha-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-    .gacha-btn {
-      padding: 16px 12px; border: none; border-radius: 14px;
-      font-family: inherit; font-weight: 900; font-size: 14px;
-      cursor: pointer; transition: all 0.2s; text-align: center;
-    }
+    .item-card.equipped { border-color: #FFD700; background: rgba(255,215,0,0.06); }
+    .item-card.pet-active { border-color: #f093fb; background: rgba(240,147,251,0.06); }
+    .item-emoji { font-size: 24px; min-width: 30px; text-align: center; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 12px; font-weight: 900; }
+    .item-meta { font-size: 10px; opacity: 0.8; margin: 2px 0; }
+    .item-skills { font-size: 9px; color: #f093fb; margin-top: 3px; padding: 2px 4px; background: rgba(240,147,251,0.15); border-radius: 4px; display: inline-block; }
+    .no-skills { color: #888; background: rgba(136,136,136,0.1); }
+    .item-actions { display: flex; flex-direction: column; gap: 3px; min-width: 50px; }
+    .action-btn { background: #4facfe; color: #1a1a2e; border: none; border-radius: 6px; padding: 4px 8px; font-family: inherit; font-weight: 900; font-size: 9px; cursor: pointer; }
+    .active-badge { background: #FFD700; color: #1a1a2e; border-radius: 6px; padding: 4px 8px; font-weight: 900; font-size: 9px; text-align: center; }
+
+    /* ガチャ */
+    .gacha-section { padding: 14px; }
+    .gem-display { background: rgba(0,242,254,0.1); border: 2px solid rgba(0,242,254,0.3); border-radius: 10px; padding: 12px; text-align: center; margin-bottom: 12px; }
+    .gem-count { font-size: 22px; font-weight: 900; color: #00f2fe; }
+    .gacha-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .gacha-btn { padding: 12px 8px; border: none; border-radius: 10px; font-family: inherit; font-weight: 900; font-size: 11px; cursor: pointer; text-align: center; transition: all 0.2s; }
     .gacha-btn:active { transform: scale(0.97); }
     .gacha-single { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #1a1a2e; }
     .gacha-ten { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; grid-column: 1/-1; }
 
-    /* ランキングタブ */
-    .ranking-section { padding: 16px; }
-    .name-input-area {
-      background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 12px; padding: 12px; margin-bottom: 15px;
-    }
-    .name-input-row { display: flex; gap: 8px; }
-    .name-input {
-      flex: 1; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 10px; padding: 10px 12px; color: white; font-family: inherit;
-      font-size: 14px; font-weight: 900; outline: none;
-    }
+    /* ランキング */
+    .name-input-area { background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; margin-bottom: 12px; }
+    .name-input-row { display: flex; gap: 6px; }
+    .name-input { flex: 1; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px 10px; color: white; font-family: inherit; font-size: 12px; font-weight: 900; outline: none; }
     .name-input:focus { border-color: #4facfe; }
-    .name-save-btn {
-      background: #4facfe; color: #1a1a2e; border: none; border-radius: 10px;
-      padding: 10px 16px; font-family: inherit; font-weight: 900; font-size: 13px; cursor: pointer;
-    }
-    .my-stats {
-      background: rgba(255,215,0,0.1); border: 2px solid rgba(255,215,0,0.3);
-      border-radius: 12px; padding: 12px; margin-bottom: 15px; text-align: center;
-    }
-    .my-score { font-size: 22px; font-weight: 900; color: #FFD700; }
-    .ranking-list { background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; }
-    .ranking-header {
-      background: rgba(233,69,96,0.3); padding: 10px 15px; font-size: 12px; font-weight: 900;
-      display: flex; justify-content: space-between;
-    }
-    .ranking-item {
-      padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.07);
-      display: flex; align-items: center; gap: 10px;
-    }
+    .name-save-btn { background: #4facfe; color: #1a1a2e; border: none; border-radius: 8px; padding: 8px 12px; font-family: inherit; font-weight: 900; font-size: 11px; cursor: pointer; }
+    .my-stats { background: rgba(255,215,0,0.1); border: 2px solid rgba(255,215,0,0.3); border-radius: 10px; padding: 10px; margin-bottom: 12px; text-align: center; }
+    .ranking-list { background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; }
+    .ranking-header { background: rgba(233,69,96,0.3); padding: 8px 12px; font-size: 11px; font-weight: 900; display: flex; justify-content: space-between; }
+    .ranking-item { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 8px; }
     .ranking-item.my-rank { background: rgba(255,215,0,0.08); border-left: 3px solid #FFD700; }
-    .rank-num { font-size: 16px; font-weight: 900; width: 30px; text-align: center; }
+    .rank-num { font-size: 14px; font-weight: 900; width: 24px; text-align: center; }
     .rank-1 { color: #FFD700; } .rank-2 { color: #C0C0C0; } .rank-3 { color: #CD7F32; }
-    .rank-name { flex: 1; font-size: 13px; font-weight: 900; }
-    .rank-score { font-size: 12px; color: #a8edea; font-weight: 900; }
 
-    /* レアリティカラー */
-    .rarity-common { color: #ccc; }
-    .rarity-rare { color: #6495ED; }
-    .rarity-sr { color: #FFA500; }
-    .rarity-legend { color: #FFD700; animation: legend-glow 2s ease-in-out infinite; }
-    @keyframes legend-glow {
-      0%,100% { text-shadow: 0 0 8px rgba(255,215,0,0.4); }
-      50% { text-shadow: 0 0 18px rgba(255,215,0,0.8); }
-    }
+    /* レアリティ */
+    .rarity-common { color: #ccc; } .rarity-rare { color: #6495ED; }
+    .rarity-sr { color: #FFA500; } .rarity-legend { color: #FFD700; }
 
     /* エフェクト */
     .damage-effect {
+      position: fixed; pointer-events: none; font-size: 18px; font-weight: 900;
+      color: #ff6b6b; text-shadow: 0 0 5px #ff6b6b; z-index: 1000;
+      animation: damage-float 1s ease-out forwards;
+    }
+    .skill-effect {
       position: fixed; pointer-events: none; font-size: 22px; font-weight: 900;
-      color: #ff6b6b; text-shadow: 0 0 5px #ff6b6b, 0 2px 4px rgba(0,0,0,0.8);
-      animation: damage-float 1s ease-out forwards; z-index: 1000;
+      color: #4facfe; text-shadow: 0 0 10px #4facfe; z-index: 1001;
+      animation: damage-float 1.2s ease-out forwards;
     }
     @keyframes damage-float {
       0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-55px) scale(1.2); }
-    }
-    .skill-effect {
-      position: fixed; pointer-events: none; font-size: 32px; font-weight: 900;
-      color: #4facfe; text-shadow: 0 0 10px #4facfe;
-      animation: skill-effect-anim 1.5s ease-out forwards; z-index: 1001;
-    }
-    @keyframes skill-effect-anim {
-      0% { opacity: 1; transform: scale(0.5); }
-      50% { opacity: 1; transform: scale(1.3); }
-      100% { opacity: 0; transform: scale(1) translateY(-40px); }
-    }
-    .attack-effect {
-      position: fixed; pointer-events: none; font-size: 24px;
-      animation: attack-fly 0.6s ease-out forwards; z-index: 999;
-    }
-    @keyframes attack-fly {
-      0% { opacity: 1; transform: translate(0,0) scale(1.2); }
-      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.4); }
+      100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
     }
     .drop-notice {
-      position: fixed; top: 70px; right: 15px; border-radius: 12px; padding: 10px 15px;
-      font-size: 13px; font-weight: 900; pointer-events: none; z-index: 1001;
+      position: fixed; top: 60px; right: 10px; border-radius: 8px; padding: 8px 10px;
+      font-size: 11px; font-weight: 900; pointer-events: none; z-index: 1001;
       animation: drop-notice-anim 3s ease-out forwards;
     }
     @keyframes drop-notice-anim {
-      0% { opacity: 0; transform: translateX(30px); }
+      0% { opacity: 0; transform: translateX(25px); }
       15% { opacity: 1; transform: translateX(0); }
       75% { opacity: 1; }
-      100% { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 0; transform: translateX(25px); }
+    }
+
+    /* バナー広告枠 */
+    .banner-ad {
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+      background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
+      font-size: 11px; color: #666; z-index: 9999; border-top: 1px solid #333;
     }
   </style>
 </head>
 <body>
+
 <div class="game-container">
 
   <!-- ヘッダー -->
@@ -313,10 +231,12 @@
     </div>
   </div>
 
-  <!-- タブメニュー -->
+  <!-- タブ -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('battle')">⚔️ バトル</button>
     <button class="tab-btn" onclick="switchTab('weapon')">🗡️ 武器</button>
+    <button class="tab-btn" onclick="switchTab('pet')">🐾 ペット</button>
+    <button class="tab-btn" onclick="switchTab('guild')">🏰 ギルド</button>
     <button class="tab-btn" onclick="switchTab('gacha')">🎰 ガチャ</button>
     <button class="tab-btn" onclick="switchTab('ranking')">🏆 ランク</button>
   </div>
@@ -337,51 +257,51 @@
             <span>❤️ HP</span>
             <span><span id="currentHp">10</span> / <span id="maxHp">10</span></span>
           </div>
-          <div class="bar-bg">
-            <div class="hp-bar" id="hpBar" style="width:100%"></div>
-          </div>
+          <div class="bar-bg"><div class="hp-bar" id="hpBar" style="width:100%"></div></div>
         </div>
         <div class="bar-row">
           <div class="bar-label">
             <span>💧 MP</span>
             <span><span id="currentMp">100</span> / <span id="maxMp">100</span></span>
           </div>
-          <div class="bar-bg">
-            <div class="mp-bar" id="mpBar" style="width:100%"></div>
-          </div>
+          <div class="bar-bg"><div class="mp-bar" id="mpBar" style="width:100%"></div></div>
         </div>
       </div>
     </div>
 
     <!-- スキルエリア -->
     <div class="skill-area">
-      <button class="skill-btn" id="skillBtn1" onclick="useSkill('burst')">
-        <div>⚡ 魔力解放</div>
-        <div style="font-size:10px;margin-top:2px;">MP 50 | 1分分攻撃力</div>
+      <button class="skill-btn" id="skillBurst" onclick="useSkill('burst')">
+        ⚡ 魔力解放<br><span style="font-size:8px;">MP50 | 1分分攻撃</span>
       </button>
-      <button class="skill-btn" id="skillBtn2" onclick="useSkill('heal')">
-        <div>💧 MP回復</div>
-        <div style="font-size:10px;margin-top:2px;">💎 5 | MP全回復</div>
+      <button class="skill-btn" id="skillAutoTap" onclick="useSkill('autotap')">
+        👆 自動タップ<br><span style="font-size:8px;">MP30 | 30秒自動</span>
+      </button>
+      <button class="skill-btn" id="skillTapBoost" onclick="useSkill('tapboost')">
+        💥 タップ強化<br><span style="font-size:8px;">MP40 | 60秒×5倍</span>
+      </button>
+      <button class="skill-btn" id="skillHeal" onclick="useSkill('heal')">
+        💧 MP回復<br><span style="font-size:8px;">💎5 | 全回復</span>
       </button>
     </div>
 
     <!-- 仲間エリア -->
-    <div class="party-area">
-      <div class="party-title">👥 冒険者パーティー (<span id="partyCount">0</span>人)</div>
-      <div class="party-members" id="partyMembers">
-        <div style="font-size:11px;opacity:0.5;">仲間を雇って自動攻撃力アップ！</div>
+    <div class="info-area">
+      <div class="info-title">👥 パーティー (<span id="partyCount">0</span>人) | 🐾 ペット: <span id="activePetDisplay">なし</span></div>
+      <div class="info-content" id="partyDisplay">
+        <span style="opacity:0.5;">仲間を雇って自動攻撃！</span>
       </div>
     </div>
 
-    <!-- ステータスバー -->
+    <!-- ステータス -->
     <div class="stats-bar">
       <div>
         <div class="total-atk">総攻撃力: <span id="totalAtkDisplay">1</span></div>
-        <div style="font-size:11px;opacity:0.7;color:#a8edea;">武器ボーナス: ×<span id="weaponBonusDisplay">1.00</span></div>
+        <div style="font-size:10px;opacity:0.7;color:#a8edea;">武器×<span id="weaponBonusDisplay">1.00</span> | ペット×<span id="petBonusDisplay">1.00</span></div>
       </div>
-      <div style="text-align:right;font-size:11px;opacity:0.8;">
+      <div style="text-align:right;font-size:10px;opacity:0.8;">
         <div>プレイヤー: <span id="playerAtkDisplay">1</span></div>
-        <div>仲間合計: <span id="memberAtkDisplay">0</span>/秒</div>
+        <div>仲間: <span id="memberAtkDisplay">0</span>/秒</div>
       </div>
     </div>
 
@@ -390,7 +310,7 @@
       <button class="upgrade-btn" id="btnAttack" onclick="upgradeAttack()">
         <div class="btn-left">
           <div class="btn-title">⚔️ 剣術訓練</div>
-          <div class="btn-desc">プレイヤーの攻撃力を強化</div>
+          <div class="btn-desc">プレイヤー攻撃力を強化</div>
         </div>
         <div class="btn-cost">💰 <span id="attackCost">10</span></div>
       </button>
@@ -406,7 +326,7 @@
       <button class="upgrade-btn btn-ad" onclick="watchAd()">
         <div class="btn-left">
           <div class="btn-title">📺 広告でジェム獲得</div>
-          <div class="btn-desc">💎5 + 攻撃力30秒5倍</div>
+          <div class="btn-desc">💎5 + 30秒間攻撃力5倍</div>
         </div>
         <div class="btn-cost">FREE</div>
       </button>
@@ -414,7 +334,7 @@
       <button class="upgrade-btn btn-prestige" id="btnPrestige" onclick="prestige()">
         <div class="btn-left">
           <div class="btn-title">✨ 転生</div>
-          <div class="btn-desc">全リセット + 永続攻撃力ボーナス</div>
+          <div class="btn-desc">階層ボーナス武器ドロップ + 永続強化</div>
         </div>
         <div class="btn-cost">RESET</div>
       </button>
@@ -423,23 +343,42 @@
 
   <!-- 武器タブ -->
   <div class="tab-content" id="tab-weapon">
-    <div class="weapon-section">
+    <div class="section-content">
       <div class="section-title">🗡️ 武器管理</div>
-      
-      <div class="equipment-info">
-        <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">現在の武器効果</div>
-        <div class="weapon-bonus-display">攻撃力 ×<span id="weaponBonusDetail">1.00</span></div>
-        <div style="font-size:11px;opacity:0.7;margin-top:4px;">
-          装備中: 100%効果 | 控え: 5%効果
+      <div class="info-box">
+        <div style="font-size:11px;opacity:0.8;margin-bottom:3px;">現在の武器ボーナス</div>
+        <div style="font-size:18px;font-weight:900;color:#FFD700;">攻撃力 ×<span id="weaponBonusDetail">1.00</span></div>
+        <div style="font-size:9px;opacity:0.6;margin-top:3px;">装備中:100%効果 / 控え:5%効果</div>
+      </div>
+      <div class="card-grid" id="weaponGrid">
+        <div style="text-align:center;opacity:0.4;font-size:12px;padding:20px;">
+          敵を倒すと武器ドロップ！<br>ガチャでも入手可能
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="weapon-grid" id="weaponGrid">
-        <div style="text-align:center;opacity:0.4;font-size:13px;padding:30px;">
-          敵を倒すと5%の確率で武器ドロップ！<br>
-          ガチャでも武器を入手できます
-        </div>
+  <!-- ペットタブ -->
+  <div class="tab-content" id="tab-pet">
+    <div class="section-content">
+      <div class="section-title">🐾 ペットシステム</div>
+      <div class="info-box" style="border-color:rgba(240,147,251,0.3);">
+        <div style="font-size:11px;opacity:0.8;margin-bottom:3px;">アクティブペット効果</div>
+        <div style="font-size:16px;font-weight:900;color:#f093fb;" id="activePetEffect">ペットなし</div>
       </div>
+      <div class="card-grid" id="petGrid"></div>
+    </div>
+  </div>
+
+  <!-- ギルドタブ -->
+  <div class="tab-content" id="tab-guild">
+    <div class="section-content">
+      <div class="section-title">🏰 ギルドシステム</div>
+      <div class="info-box" style="border-color:rgba(255,215,0,0.3);">
+        <div style="font-size:11px;opacity:0.8;margin-bottom:3px;">ギルド効果</div>
+        <div style="font-size:16px;font-weight:900;color:#FFD700;">Lv.<span id="guildLevelDisplay">1</span> - 全攻撃力 +<span id="guildBonusDisplay">0</span>%</div>
+      </div>
+      <div class="card-grid" id="guildGrid"></div>
     </div>
   </div>
 
@@ -447,79 +386,57 @@
   <div class="tab-content" id="tab-gacha">
     <div class="gacha-section">
       <div class="section-title">🎰 武器ガチャ</div>
-
       <div class="gem-display">
-        <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">所持ジェム</div>
+        <div style="font-size:11px;opacity:0.8;margin-bottom:3px;">所持ジェム</div>
         <div class="gem-count">💎 <span id="gemGachaDisplay">0</span></div>
-        <div style="font-size:11px;opacity:0.7;margin-top:4px;">広告視聴で獲得</div>
       </div>
-
-      <div class="rates-box">
-        <div class="rate-row">
-          <span>⚪ コモン</span>
-          <span style="color:#ccc">60%</span>
-        </div>
-        <div class="rate-row">
-          <span>🔵 レア</span>
-          <span style="color:#6495ED">25%</span>
-        </div>
-        <div class="rate-row">
-          <span>🟠 スーパーレア</span>
-          <span style="color:#FFA500">12% ★スキル1個</span>
-        </div>
-        <div class="rate-row">
-          <span>🌟 レジェンド</span>
-          <span style="color:#FFD700">3% ★スキル3個</span>
-        </div>
+      <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px;margin-bottom:12px;font-size:11px;">
+        <div style="display:flex;justify-content:space-between;padding:2px 0;"><span>⚪ コモン</span><span style="color:#ccc">60%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:2px 0;"><span>🔵 レア</span><span style="color:#6495ED">25%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:2px 0;"><span>🟠 スーパーレア ★スキル1個</span><span style="color:#FFA500">12%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:2px 0;"><span>🌟 レジェンド ★スキル3個</span><span style="color:#FFD700">3%</span></div>
       </div>
-
       <div class="gacha-buttons">
-        <button class="gacha-btn gacha-single" onclick="doGacha(1)">
-          🎲 1回ガチャ<br>
-          <span style="font-size:12px;">💎 10</span>
-        </button>
-        <button class="gacha-btn gacha-single" onclick="doGacha(3)">
-          🎲 3回ガチャ<br>
-          <span style="font-size:12px;">💎 28</span>
-        </button>
-        <button class="gacha-btn gacha-ten" onclick="doGacha(10)">
-          🎰 10連ガチャ（💎 90）※お得！
-        </button>
+        <button class="gacha-btn gacha-single" onclick="doGacha(1)">🎲 1回<br><span style="font-size:10px;">💎10</span></button>
+        <button class="gacha-btn gacha-single" onclick="doGacha(3)">🎲 3回<br><span style="font-size:10px;">💎28</span></button>
+        <button class="gacha-btn gacha-ten" onclick="doGacha(10)">🎰 10連ガチャ（💎90）※お得！</button>
       </div>
     </div>
   </div>
 
   <!-- ランキングタブ -->
   <div class="tab-content" id="tab-ranking">
-    <div class="ranking-section">
+    <div class="section-content">
       <div class="section-title">🏆 ランキング</div>
-      
       <div class="name-input-area">
-        <div style="font-size:12px;margin-bottom:8px;">👤 プレイヤー名を設定</div>
+        <div style="font-size:11px;margin-bottom:6px;">👤 プレイヤー名</div>
         <div class="name-input-row">
           <input type="text" class="name-input" id="playerNameInput" placeholder="名前を入力..." maxlength="10">
           <button class="name-save-btn" onclick="savePlayerName()">保存</button>
         </div>
       </div>
-
       <div class="my-stats">
-        <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">あなたのスコア</div>
-        <div class="my-score"><span id="myScoreDisplay">0</span> pt</div>
-        <div style="font-size:11px;opacity:0.7;margin-top:4px;">
+        <div style="font-size:11px;opacity:0.8;margin-bottom:3px;">あなたのスコア</div>
+        <div style="font-size:20px;font-weight:900;color:#FFD700;"><span id="myScoreDisplay">0</span> pt</div>
+        <div style="font-size:10px;opacity:0.7;margin-top:3px;">
           最高階: <span id="myBestStage">1</span>階 | 転生: <span id="myPrestige">0</span>回
         </div>
       </div>
-
       <div class="ranking-list">
-        <div class="ranking-header">
-          <span>順位 / 名前</span>
-          <span>スコア</span>
-        </div>
+        <div class="ranking-header"><span>順位 / 名前</span><span>スコア</span></div>
         <div id="rankingItems"></div>
+      </div>
+      <div style="text-align:center;font-size:10px;opacity:0.5;margin-top:8px;">
+        ※現在はローカルランキング<br>オンライン化は今後実装予定
       </div>
     </div>
   </div>
 
+</div>
+
+<!-- バナー広告枠 -->
+<div class="banner-ad">
+  📢 Monetag バナー広告エリア（認証完了後に表示）
 </div>
 
 <script>
@@ -527,10 +444,10 @@
 // データ定義
 // ================================================================
 const RARITIES = {
-  common: { name: 'コモン', symbol: '⚪', class: 'rarity-common', rate: 0.60, baseBonus: 0.15 },
-  rare: { name: 'レア', symbol: '🔵', class: 'rarity-rare', rate: 0.25, baseBonus: 0.50 },
-  sr: { name: 'スーパーレア', symbol: '🟠', class: 'rarity-sr', rate: 0.12, baseBonus: 2.00 },
-  legend: { name: 'レジェンド', symbol: '🌟', class: 'rarity-legend', rate: 0.03, baseBonus: 8.00 }
+  common: { name: 'コモン', symbol: '⚪', cls: 'rarity-common', rate: 0.60, baseBonus: 0.15 },
+  rare: { name: 'レア', symbol: '🔵', cls: 'rarity-rare', rate: 0.25, baseBonus: 0.50 },
+  sr: { name: 'スーパーレア', symbol: '🟠', cls: 'rarity-sr', rate: 0.12, baseBonus: 2.00 },
+  legend: { name: 'レジェンド', symbol: '🌟', cls: 'rarity-legend', rate: 0.03, baseBonus: 8.00 }
 };
 
 const WEAPONS = {
@@ -556,11 +473,10 @@ const WEAPONS = {
   ]
 };
 
-// 武器スキル定義（SR以上に付与）
 const WEAPON_SKILLS = [
-  { id: 'gold_boost', name: '💰 黄金の加護', desc: 'ゴールド獲得+50%', multiplier: 1.5 },
-  { id: 'drop_boost', name: '🎁 幸運の加護', desc: '武器ドロップ率2倍', multiplier: 2.0 },
-  { id: 'mp_regen', name: '💧 魔力の泉', desc: 'MP自動回復+100%', multiplier: 2.0 }
+  { id: 'gold_boost', name: '💰 黄金の加護', desc: 'ゴールド獲得+50%' },
+  { id: 'drop_boost', name: '🎁 幸運の加護', desc: '武器ドロップ率2倍' },
+  { id: 'mp_regen', name: '💧 魔力の泉', desc: 'MP自動回復+100%' }
 ];
 
 const MEMBER_TYPES = [
@@ -584,7 +500,21 @@ const ENEMIES = {
   ]
 };
 
-// ダミーランキング用CPUプレイヤー
+const PET_DEFS = [
+  { id: 'p1', name: 'スライムくん', emoji: '🟢', cost: 50, effect: 'atk', value: 0.20, desc: '攻撃力+20%' },
+  { id: 'p2', name: 'コウモリ', emoji: '🦇', cost: 80, effect: 'gold', value: 0.30, desc: 'ゴールド+30%' },
+  { id: 'p3', name: 'フェニックス', emoji: '🦅', cost: 150, effect: 'mp_regen', value: 0.50, desc: 'MP回復+50%' },
+  { id: 'p4', name: 'ドラゴン子', emoji: '🐲', cost: 300, effect: 'drop', value: 0.50, desc: 'ドロップ率+50%' },
+  { id: 'p5', name: '天使', emoji: '👼', cost: 500, effect: 'all', value: 0.25, desc: '全能力+25%' }
+];
+
+const GUILD_UPGRADES = [
+  { id: 'g1', name: '訓練場', emoji: '⚔️', cost: 100, effect: 'atk', value: 0.10, desc: '全攻撃力+10%' },
+  { id: 'g2', name: '金庫', emoji: '💰', cost: 200, effect: 'gold', value: 0.15, desc: 'ゴールド+15%' },
+  { id: 'g3', name: '魔法陣', emoji: '🔮', cost: 400, effect: 'mp', value: 0.20, desc: 'MP回復+20%' },
+  { id: 'g4', name: '神殿', emoji: '⛩️', cost: 800, effect: 'all', value: 0.05, desc: '全能力+5%' }
+];
+
 const CPU_PLAYERS = [
   { name: '勇者タロウ', score: 85000, stage: 85, prestige: 2 },
   { name: '魔法少女サクラ', score: 72000, stage: 72, prestige: 1 },
@@ -598,115 +528,123 @@ const CPU_PLAYERS = [
 // ================================================================
 let game = {
   playerName: '冒険者',
-  gold: 0,
-  gems: 0,
-  stage: 1,
-  maxStage: 1,
-  attackLevel: 1,
-  prestigeLevel: 0,
-  enemyHp: 10,
-  enemyMaxHp: 10,
-  mp: 100,
-  maxMp: 100,
+  gold: 0, gems: 0,
+  stage: 1, maxStage: 1,
+  attackLevel: 1, prestigeLevel: 0,
+  enemyHp: 10, enemyMaxHp: 10,
+  mp: 100, maxMp: 100,
   boostTimer: 0,
-  totalKills: 0,
-  totalWeapons: 0,
-  members: [], // { id, name, emoji, atkEmoji, color, level }
-  weapons: {}, // { weaponId: { rarity, level, equipped, skills } }
-  equippedWeapon: null
+  totalKills: 0, totalWeapons: 0,
+  members: [],
+  weapons: {},
+  equippedWeapon: null,
+  pets: {},
+  activePet: null,
+  guild: { upgrades: {} },
+  // スキル状態
+  autoTapTimer: 0,
+  tapBoostTimer: 0
 };
 
 // ================================================================
-// 武器スキル効果の計算
+// 効果計算
 // ================================================================
 function getActiveWeaponSkills() {
-  const skills = [];
-  
-  // 装備中の武器のスキル
-  if (game.equippedWeapon && game.weapons[game.equippedWeapon]) {
-    const equippedWeapon = game.weapons[game.equippedWeapon];
-    if (equippedWeapon.skills) {
-      equippedWeapon.skills.forEach(skillId => {
-        const skill = WEAPON_SKILLS.find(s => s.id === skillId);
-        if (skill) skills.push(skill);
-      });
-    }
-  }
-  
-  return skills;
+  if (!game.equippedWeapon || !game.weapons[game.equippedWeapon]) return [];
+  const w = game.weapons[game.equippedWeapon];
+  return (w.skills || []).map(sid => WEAPON_SKILLS.find(s => s.id === sid)).filter(Boolean);
 }
 
-function hasSkill(skillId) {
-  return getActiveWeaponSkills().some(skill => skill.id === skillId);
+function hasWeaponSkill(skillId) {
+  return getActiveWeaponSkills().some(s => s.id === skillId);
+}
+
+function getPetEffect(effectType) {
+  if (!game.activePet || !game.pets[game.activePet]) return 0;
+  const petDef = PET_DEFS.find(p => p.id === game.activePet);
+  if (!petDef) return 0;
+  const level = game.pets[game.activePet].level || 1;
+  const levelMultiplier = 1 + (level - 1) * 0.2;
+  if (petDef.effect === effectType || petDef.effect === 'all') {
+    return petDef.value * levelMultiplier;
+  }
+  return 0;
+}
+
+function getGuildEffect(effectType) {
+  let total = 0;
+  Object.entries(game.guild.upgrades).forEach(([upgradeId, level]) => {
+    const upgrade = GUILD_UPGRADES.find(u => u.id === upgradeId);
+    if (upgrade && (upgrade.effect === effectType || upgrade.effect === 'all')) {
+      total += upgrade.value * level;
+    }
+  });
+  return total;
 }
 
 function getGoldMultiplier() {
-  return hasSkill('gold_boost') ? 1.5 : 1.0;
+  let m = 1.0;
+  if (hasWeaponSkill('gold_boost')) m += 0.5;
+  m += getPetEffect('gold');
+  m += getGuildEffect('gold');
+  return m;
 }
 
 function getDropMultiplier() {
-  return hasSkill('drop_boost') ? 2.0 : 1.0;
+  let m = 1.0;
+  if (hasWeaponSkill('drop_boost')) m *= 2.0;
+  m += getPetEffect('drop');
+  return m;
 }
 
-function getMpRegenMultiplier() {
-  return hasSkill('mp_regen') ? 2.0 : 1.0;
+function getMpRegenBase() {
+  let base = 2;
+  if (hasWeaponSkill('mp_regen')) base *= 2;
+  base *= (1 + getPetEffect('mp_regen') + getGuildEffect('mp'));
+  return base;
 }
 
-// ================================================================
-// 武器ボーナス計算（装備：100%、控え：5%）
-// ================================================================
 function getWeaponBonus() {
   let bonus = 1.0;
-  
-  Object.entries(game.weapons).forEach(([weaponId, weaponData]) => {
-    const rarity = weaponData.rarity;
-    const rarityData = RARITIES[rarity];
-    const level = weaponData.level || 1;
-    
-    // レベルによるボーナス増加（レベル1で基礎値、レベル2で130%、レベル3で160%...）
-    const levelMultiplier = 1 + (level - 1) * 0.3;
-    const baseBonus = rarityData.baseBonus * levelMultiplier;
-    
-    if (weaponData.equipped || weaponId === game.equippedWeapon) {
-      bonus += baseBonus; // 装備中：100%反映
-    } else {
-      bonus += baseBonus * 0.05; // 控え：5%反映
-    }
+  Object.entries(game.weapons).forEach(([wid, wd]) => {
+    const rd = RARITIES[wd.rarity];
+    const lv = wd.level || 1;
+    const lvMul = 1 + (lv - 1) * 0.3;
+    const base = rd.baseBonus * lvMul;
+    bonus += (wid === game.equippedWeapon) ? base : base * 0.05;
   });
-  
   return parseFloat(bonus.toFixed(3));
 }
 
-// ================================================================
-// 攻撃力計算
-// ================================================================
+function getPetBonus() {
+  return 1 + getPetEffect('atk') + getGuildEffect('atk');
+}
+
 function getPlayerAttack() {
   const base = game.attackLevel * 2.0;
-  const prestigeBonus = 1 + game.prestigeLevel * 0.5;
-  const weaponBonus = getWeaponBonus();
-  const boostMultiplier = game.boostTimer > 0 ? 5 : 1;
-  return Math.floor(base * prestigeBonus * weaponBonus * boostMultiplier);
+  const prestige = 1 + game.prestigeLevel * 0.5;
+  const weapon = getWeaponBonus();
+  const pet = getPetBonus();
+  const boost = game.boostTimer > 0 ? 5 : 1;
+  const tapBoost = game.tapBoostTimer > 0 ? 5 : 1;
+  return Math.floor(base * prestige * weapon * pet * boost * tapBoost);
 }
 
 function getMemberAttack(member) {
   const base = (member.level || 1) * 1.5;
-  const prestigeBonus = 1 + game.prestigeLevel * 0.5;
-  const weaponBonus = getWeaponBonus();
-  const boostMultiplier = game.boostTimer > 0 ? 5 : 1;
-  return Math.floor(base * prestigeBonus * weaponBonus * boostMultiplier);
+  const prestige = 1 + game.prestigeLevel * 0.5;
+  const weapon = getWeaponBonus();
+  const pet = getPetBonus();
+  const boost = game.boostTimer > 0 ? 5 : 1;
+  return Math.floor(base * prestige * weapon * pet * boost);
 }
 
 function getTotalMemberAttack() {
-  return game.members.reduce((sum, member) => sum + getMemberAttack(member), 0);
+  return game.members.reduce((s, m) => s + getMemberAttack(m), 0);
 }
 
-function getTotalAttack() {
-  return getPlayerAttack() + getTotalMemberAttack();
-}
+function getTotalAttack() { return getPlayerAttack() + getTotalMemberAttack(); }
 
-// ================================================================
-// コスト計算
-// ================================================================
 function getAttackCost() { return Math.floor(10 * Math.pow(1.3, game.attackLevel - 1)); }
 function getHireCost() { return Math.floor(50 * Math.pow(1.5, game.members.length)); }
 
@@ -717,65 +655,55 @@ function getEnemyMaxHp() {
 
 function getGoldReward() {
   const base = Math.floor(5 * Math.pow(1.15, game.stage - 1));
-  const prestigeBonus = 1 + game.prestigeLevel * 0.3;
-  const goldMultiplier = getGoldMultiplier();
-  return Math.floor(base * prestigeBonus * goldMultiplier);
+  const prestige = 1 + game.prestigeLevel * 0.3;
+  return Math.floor(base * prestige * getGoldMultiplier());
 }
 
 function getDropChance() {
-  const baseChance = 0.05; // 5%
-  return Math.min(0.5, baseChance * getDropMultiplier()); // 最大50%
+  return Math.min(0.5, 0.05 * getDropMultiplier());
 }
 
 // ================================================================
-// 敵・バトルシステム
+// 敵・バトル
 // ================================================================
 function spawnEnemy() {
   game.enemyMaxHp = getEnemyMaxHp();
   game.enemyHp = game.enemyMaxHp;
 
   const isBoss = game.stage % 10 === 0;
-  const enemyData = isBoss
+  const data = isBoss
     ? ENEMIES.boss[Math.floor((game.stage / 10 - 1) % ENEMIES.boss.length)]
     : ENEMIES.normal[(game.stage - 1) % ENEMIES.normal.length];
 
-  document.getElementById('enemyEmoji').textContent = enemyData.emoji;
-  document.getElementById('enemyName').textContent = enemyData.name;
+  document.getElementById('enemyEmoji').textContent = data.emoji;
+  document.getElementById('enemyName').textContent = data.name;
   document.getElementById('bossCrown').style.display = isBoss ? 'block' : 'none';
-  document.getElementById('enemyEmoji').style.fontSize = isBoss ? '88px' : '78px';
-
+  document.getElementById('enemyEmoji').style.fontSize = isBoss ? '82px' : '72px';
   updateDisplay();
 }
 
 function attackEnemy(event) {
-  const damage = getPlayerAttack();
-  dealDamage(damage, event.clientX, event.clientY);
+  dealDamage(getPlayerAttack(), event.clientX, event.clientY);
 }
 
 function dealDamage(damage, x, y) {
   game.enemyHp -= damage;
-  if (x !== null && y !== null) createDamageEffect(x, y, damage);
+  if (x !== null && y !== null) createDamageEffect(x, y, damage, false);
 
-  const enemyEl = document.getElementById('enemyEmoji');
-  enemyEl.classList.remove('hit');
-  void enemyEl.offsetWidth;
-  enemyEl.classList.add('hit');
+  const el = document.getElementById('enemyEmoji');
+  el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
 
   if (game.enemyHp <= 0) killEnemy();
   updateDisplay();
 }
 
 function killEnemy() {
-  const gold = getGoldReward();
-  game.gold += gold;
+  game.gold += getGoldReward();
   game.totalKills++;
 
-  // 最高階層更新
-  if (game.stage > game.maxStage) {
-    game.maxStage = game.stage;
-  }
+  if (game.stage > game.maxStage) game.maxStage = game.stage;
 
-  // 武器ドロップ判定
+  // 武器ドロップ
   if (Math.random() < getDropChance()) {
     const rarity = rollRarity();
     const weapon = getRandomWeapon(rarity);
@@ -786,23 +714,17 @@ function killEnemy() {
   if (game.stage % 10 === 0) showFloorClear();
   game.stage++;
 
-  if (game.stage >= 10) {
-    document.getElementById('btnPrestige').classList.add('visible');
-  }
+  if (game.stage >= 10) document.getElementById('btnPrestige').classList.add('visible');
 
-  // ランキング更新
   updateLocalRanking();
-
   setTimeout(spawnEnemy, game.stage % 10 === 1 ? 800 : 200);
 }
 
 function rollRarity() {
-  const rand = Math.random();
-  let cumulative = 0;
-  
-  for (const [rarity, data] of Object.entries(RARITIES)) {
-    cumulative += data.rate;
-    if (rand < cumulative) return rarity;
+  let rand = Math.random(), cum = 0;
+  for (const [r, d] of Object.entries(RARITIES)) {
+    cum += d.rate;
+    if (rand < cum) return r;
   }
   return 'common';
 }
@@ -813,41 +735,30 @@ function getRandomWeapon(rarity) {
 }
 
 // ================================================================
-// 武器システム（レベル制・特殊能力）
+// 武器システム
 // ================================================================
 function generateWeaponSkills(rarity) {
   if (rarity === 'sr') {
-    // SR：1個のスキル
-    const skill = WEAPON_SKILLS[Math.floor(Math.random() * WEAPON_SKILLS.length)];
-    return [skill.id];
+    return [WEAPON_SKILLS[Math.floor(Math.random() * WEAPON_SKILLS.length)].id];
   } else if (rarity === 'legend') {
-    // レジェンド：3個のスキル（重複なし）
-    const shuffled = [...WEAPON_SKILLS].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3).map(skill => skill.id);
+    return [...WEAPON_SKILLS].sort(() => Math.random() - 0.5).slice(0, 3).map(s => s.id);
   }
   return [];
 }
 
 function addWeapon(weaponId, rarity) {
   if (!game.weapons[weaponId]) {
-    // 新規取得
     game.weapons[weaponId] = {
-      rarity: rarity,
-      level: 1,
-      equipped: false,
+      rarity, level: 1, equipped: false,
       skills: generateWeaponSkills(rarity)
     };
-    
-    // 最初の武器は自動装備
     if (!game.equippedWeapon) {
       game.equippedWeapon = weaponId;
       game.weapons[weaponId].equipped = true;
     }
   } else {
-    // 既存武器のレベルアップ（無限）
     game.weapons[weaponId].level++;
   }
-  
   game.totalWeapons++;
   renderWeapons();
   updateDisplay();
@@ -855,26 +766,20 @@ function addWeapon(weaponId, rarity) {
 }
 
 function equipWeapon(weaponId) {
-  // 現在装備中の武器を外す
   if (game.equippedWeapon && game.weapons[game.equippedWeapon]) {
     game.weapons[game.equippedWeapon].equipped = false;
   }
-  
-  // 新しい武器を装備
   game.equippedWeapon = weaponId;
-  if (game.weapons[weaponId]) {
-    game.weapons[weaponId].equipped = true;
-  }
-  
+  if (game.weapons[weaponId]) game.weapons[weaponId].equipped = true;
   renderWeapons();
   updateDisplay();
   saveGame();
 }
 
-function findWeaponById(weaponId) {
-  for (const rarity of Object.keys(WEAPONS)) {
-    const weapon = WEAPONS[rarity].find(w => w.id === weaponId);
-    if (weapon) return weapon;
+function findWeaponById(wid) {
+  for (const r of Object.keys(WEAPONS)) {
+    const w = WEAPONS[r].find(x => x.id === wid);
+    if (w) return w;
   }
   return null;
 }
@@ -882,56 +787,48 @@ function findWeaponById(weaponId) {
 function renderWeapons() {
   const container = document.getElementById('weaponGrid');
   const entries = Object.entries(game.weapons);
-  
   if (entries.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;opacity:0.4;font-size:13px;padding:30px;">
-        敵を倒すと5%の確率で武器ドロップ！<br>
-        ガチャでも武器を入手できます
-      </div>
-    `;
+    container.innerHTML = '<div style="text-align:center;opacity:0.4;font-size:12px;padding:20px;">敵を倒すと武器ドロップ！<br>ガチャでも入手可能</div>';
     return;
   }
 
   container.innerHTML = '';
-  entries.forEach(([weaponId, weaponData]) => {
-    const weapon = findWeaponById(weaponId);
-    if (!weapon) return;
-    
-    const rarityData = RARITIES[weaponData.rarity];
-    const level = weaponData.level || 1;
-    const levelMultiplier = 1 + (level - 1) * 0.3;
-    const bonus = (rarityData.baseBonus * levelMultiplier * 100).toFixed(0);
-    const isEquipped = weaponData.equipped || weaponId === game.equippedWeapon;
-    
-    // スキル表示
-    let skillsHtml = '';
-    if (weaponData.skills && weaponData.skills.length > 0) {
-      const skillNames = weaponData.skills.map(skillId => {
-        const skill = WEAPON_SKILLS.find(s => s.id === skillId);
-        return skill ? skill.name : '';
-      }).filter(name => name).join(' ');
-      skillsHtml = `<div class="weapon-skills">${skillNames}</div>`;
+  entries.forEach(([wid, wd]) => {
+    const wdef = findWeaponById(wid);
+    if (!wdef) return;
+    const rd = RARITIES[wd.rarity];
+    const lv = wd.level || 1;
+    const lvMul = 1 + (lv - 1) * 0.3;
+    const bonusPct = (rd.baseBonus * lvMul * 100).toFixed(0);
+    const isEquipped = wid === game.equippedWeapon;
+
+    // スキル表示（修正版）
+    let skillHtml = '';
+    if (wd.skills && wd.skills.length > 0) {
+      const skillNames = wd.skills.map(sid => {
+        const sk = WEAPON_SKILLS.find(s => s.id === sid);
+        return sk ? `${sk.name}` : '';
+      }).filter(Boolean).join(' / ');
+      skillHtml = `<div class="item-skills">${skillNames}</div>`;
+    } else {
+      skillHtml = `<div class="item-skills no-skills">スキルなし</div>`;
     }
 
     const card = document.createElement('div');
-    card.className = `weapon-card ${rarityData.class}` + (isEquipped ? ' equipped' : '');
-    
+    card.className = `item-card${isEquipped ? ' equipped' : ''}`;
     card.innerHTML = `
-      <div class="weapon-emoji">${weapon.emoji}</div>
-      <div class="weapon-info">
-        <div class="weapon-name ${rarityData.class}">${weapon.name}</div>
-        <div class="weapon-rarity">${rarityData.symbol} ${rarityData.name}</div>
-        <div class="weapon-level">Lv.${level}</div>
-        <div class="weapon-effect">攻撃力ボーナス +${bonus}%</div>
-        ${skillsHtml}
+      <div class="item-emoji">${wdef.emoji}</div>
+      <div class="item-info">
+        <div class="item-name ${rd.cls}">${wdef.name}</div>
+        <div class="item-meta">${rd.symbol} ${rd.name} | Lv.${lv}</div>
+        <div class="item-meta">攻撃力ボーナス +${bonusPct}%</div>
+        ${skillHtml}
       </div>
-      <div class="weapon-actions">
-        ${isEquipped 
-          ? '<div class="equipped-badge">装備中</div>' 
-          : `<button class="equip-btn" onclick="equipWeapon('${weaponId}')">装備する</button>`
-        }
-        ${!isEquipped ? '<div class="bench-badge">控え (5%効果)</div>' : ''}
+      <div class="item-actions">
+        ${isEquipped
+          ? '<div class="active-badge">装備中</div>'
+          : `<button class="action-btn" onclick="equipWeapon('${wid}')">装備</button>`}
+        ${!isEquipped ? '<div style="font-size:8px;color:#888;text-align:center;">控え(5%)</div>' : ''}
       </div>
     `;
     container.appendChild(card);
@@ -939,116 +836,268 @@ function renderWeapons() {
 }
 
 // ================================================================
-// MPシステムとスキル
+// ペットシステム
 // ================================================================
-function regenMp() {
-  const baseRegen = 2; // 基本回復量（毎秒）
-  const multiplier = getMpRegenMultiplier();
-  const regenAmount = baseRegen * multiplier;
-  
-  if (game.mp < game.maxMp) {
-    game.mp = Math.min(game.maxMp, game.mp + regenAmount);
-    updateMpDisplay();
-  }
-}
+function buyPet(petId) {
+  const petDef = PET_DEFS.find(p => p.id === petId);
+  if (!petDef) return;
 
-function useSkill(skillType) {
-  if (skillType === 'burst') {
-    const cost = 50;
-    if (game.mp < cost) return;
-    
-    game.mp -= cost;
-    
-    // 1分間の総攻撃力を一撃で
-    const totalDamage = getTotalAttack() * 60;
-    const enemyEl = document.getElementById('enemyEmoji');
-    const rect = enemyEl.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    
-    dealDamage(totalDamage, cx, cy);
-    showSkillEffect(cx, cy, '⚡');
-    
-    updateMpDisplay();
-    saveGame();
-  } else if (skillType === 'heal') {
-    const cost = 5;
-    if (game.gems < cost || game.mp >= game.maxMp) return;
-    
+  if (game.pets[petId]) {
+    // レベルアップ
+    const level = game.pets[petId].level || 1;
+    const cost = Math.floor(petDef.cost * Math.pow(1.5, level));
+    if (game.gems < cost) {
+      alert(`ジェムが足りません！必要: 💎${cost}`);
+      return;
+    }
     game.gems -= cost;
-    game.mp = game.maxMp;
-    
-    updateDisplay();
-    saveGame();
+    game.pets[petId].level++;
+    alert(`${petDef.emoji}${petDef.name} がLv.${game.pets[petId].level}になりました！`);
+  } else {
+    // 新規購入
+    if (game.gems < petDef.cost) {
+      alert(`ジェムが足りません！必要: 💎${petDef.cost}`);
+      return;
+    }
+    game.gems -= petDef.cost;
+    game.pets[petId] = { level: 1 };
+    if (!game.activePet) game.activePet = petId;
+    alert(`${petDef.emoji}${petDef.name} を仲間にしました！`);
+  }
+
+  renderPets();
+  updateDisplay();
+  saveGame();
+}
+
+function setActivePet(petId) {
+  game.activePet = petId;
+  renderPets();
+  updateDisplay();
+  saveGame();
+}
+
+function renderPets() {
+  const container = document.getElementById('petGrid');
+  container.innerHTML = '';
+
+  // 所持ペット
+  const ownedEntries = Object.entries(game.pets);
+  if (ownedEntries.length > 0) {
+    ownedEntries.forEach(([petId, petData]) => {
+      const def = PET_DEFS.find(p => p.id === petId);
+      if (!def) return;
+      const isActive = petId === game.activePet;
+      const lv = petData.level || 1;
+      const lvMul = 1 + (lv - 1) * 0.2;
+      const effectVal = (def.value * lvMul * 100).toFixed(0);
+
+      const card = document.createElement('div');
+      card.className = `item-card${isActive ? ' pet-active' : ''}`;
+      card.innerHTML = `
+        <div class="item-emoji">${def.emoji}</div>
+        <div class="item-info">
+          <div class="item-name">${def.name}</div>
+          <div class="item-meta">Lv.${lv}</div>
+          <div class="item-meta">${def.desc.replace(/\d+/, effectVal)}</div>
+        </div>
+        <div class="item-actions">
+          ${isActive
+            ? '<div class="active-badge">出撃中</div>'
+            : `<button class="action-btn" onclick="setActivePet('${petId}')">出撃</button>`}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // ペットショップ
+  PET_DEFS.forEach(def => {
+    const owned = game.pets[def.id];
+    const lv = owned ? owned.level : 0;
+    const cost = owned ? Math.floor(def.cost * Math.pow(1.5, lv)) : def.cost;
+    const btnLabel = owned ? `Lv.${lv+1} (💎${cost})` : `購入 💎${cost}`;
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div class="item-emoji">${def.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${def.name}${owned ? ` (Lv.${lv})` : ''}</div>
+        <div class="item-meta">${def.desc}</div>
+      </div>
+      <div class="item-actions">
+        <button class="action-btn" onclick="buyPet('${def.id}')">${btnLabel}</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // アクティブペット表示更新
+  const activePetEl = document.getElementById('activePetEffect');
+  const activePetDisplay = document.getElementById('activePetDisplay');
+  if (game.activePet && game.pets[game.activePet]) {
+    const def = PET_DEFS.find(p => p.id === game.activePet);
+    if (def) {
+      const lv = game.pets[game.activePet].level || 1;
+      const lvMul = 1 + (lv - 1) * 0.2;
+      const effectVal = (def.value * lvMul * 100).toFixed(0);
+      activePetEl.textContent = `${def.emoji} ${def.name} (Lv.${lv}) - ${def.desc.replace(/\d+/, effectVal)}`;
+      activePetDisplay.textContent = `${def.emoji} ${def.name}`;
+    }
+  } else {
+    activePetEl.textContent = 'ペットなし';
+    activePetDisplay.textContent = 'なし';
   }
 }
 
-function showSkillEffect(x, y, emoji) {
-  const effect = document.createElement('div');
-  effect.className = 'skill-effect';
-  effect.textContent = emoji;
-  effect.style.left = (x - 20) + 'px';
-  effect.style.top = (y - 20) + 'px';
-  document.body.appendChild(effect);
-  setTimeout(() => effect.remove(), 1500);
+// ================================================================
+// ギルドシステム
+// ================================================================
+function upgradeGuild(upgradeId) {
+  const upgrade = GUILD_UPGRADES.find(u => u.id === upgradeId);
+  if (!upgrade) return;
+
+  const currentLevel = game.guild.upgrades[upgradeId] || 0;
+  const cost = Math.floor(upgrade.cost * Math.pow(1.8, currentLevel));
+
+  if (game.gold < cost) {
+    alert(`ゴールドが足りません！必要: 💰${cost.toLocaleString()}`);
+    return;
+  }
+
+  game.gold -= cost;
+  game.guild.upgrades[upgradeId] = currentLevel + 1;
+
+  renderGuild();
+  updateDisplay();
+  saveGame();
+}
+
+function renderGuild() {
+  const container = document.getElementById('guildGrid');
+  container.innerHTML = '';
+
+  GUILD_UPGRADES.forEach(upgrade => {
+    const currentLevel = game.guild.upgrades[upgrade.id] || 0;
+    const cost = Math.floor(upgrade.cost * Math.pow(1.8, currentLevel));
+    const effectVal = (upgrade.value * (currentLevel + 1) * 100).toFixed(0);
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div class="item-emoji">${upgrade.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${upgrade.name}${currentLevel > 0 ? ` (Lv.${currentLevel})` : ''}</div>
+        <div class="item-meta">${upgrade.desc.replace(/\d+/, effectVal)}</div>
+        ${currentLevel > 0 ? `<div class="item-meta">現在効果: +${(upgrade.value * currentLevel * 100).toFixed(0)}%</div>` : ''}
+      </div>
+      <div class="item-actions">
+        <button class="action-btn" onclick="upgradeGuild('${upgrade.id}')">
+          ${currentLevel > 0 ? `Lv.${currentLevel + 1}` : '建設'}<br>💰${cost.toLocaleString()}
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // ギルド効果表示更新
+  const totalBonus = getGuildEffect('atk') * 100;
+  document.getElementById('guildLevelDisplay').textContent = Object.values(game.guild.upgrades).reduce((sum, level) => sum + level, 0) || 1;
+  document.getElementById('guildBonusDisplay').textContent = totalBonus.toFixed(0);
+}
+
+// ================================================================
+// MPスキルシステム
+// ================================================================
+function useSkill(type) {
+  switch (type) {
+    case 'burst': {
+      if (game.mp < 50) return;
+      game.mp -= 50;
+      const totalDmg = getTotalAttack() * 60;
+      const el = document.getElementById('enemyEmoji');
+      const rect = el.getBoundingClientRect();
+      createDamageEffect(rect.left + rect.width/2, rect.top + rect.height/2, totalDmg, true);
+      dealDamage(totalDmg, null, null);
+      updateMpDisplay(); saveGame();
+      break;
+    }
+    case 'autotap': {
+      if (game.mp < 30) return;
+      game.mp -= 30;
+      game.autoTapTimer = 30;
+      updateMpDisplay(); saveGame();
+      break;
+    }
+    case 'tapboost': {
+      if (game.mp < 40) return;
+      game.mp -= 40;
+      game.tapBoostTimer = 60;
+      updateMpDisplay(); saveGame();
+      break;
+    }
+    case 'heal': {
+      if (game.gems < 5 || game.mp >= game.maxMp) return;
+      game.gems -= 5;
+      game.mp = game.maxMp;
+      updateDisplay(); saveGame();
+      break;
+    }
+  }
 }
 
 function updateMpDisplay() {
   document.getElementById('currentMp').textContent = Math.floor(game.mp);
   document.getElementById('maxMp').textContent = game.maxMp;
   document.getElementById('mpBar').style.width = (game.mp / game.maxMp * 100) + '%';
-  updateSkillButtons();
+
+  // スキルボタン状態
+  const s1 = document.getElementById('skillBurst');
+  const s2 = document.getElementById('skillAutoTap');
+  const s3 = document.getElementById('skillTapBoost');
+  const s4 = document.getElementById('skillHeal');
+
+  setSkillState(s1, game.mp >= 50, false);
+  setSkillState(s2, game.mp >= 30, game.autoTapTimer > 0);
+  setSkillState(s3, game.mp >= 40, game.tapBoostTimer > 0);
+  setSkillState(s4, game.gems >= 5 && game.mp < game.maxMp, false);
 }
 
-function updateSkillButtons() {
-  const skillBtn1 = document.getElementById('skillBtn1');
-  const skillBtn2 = document.getElementById('skillBtn2');
-  
-  // 魔力解放ボタン
-  if (game.mp >= 50) {
-    skillBtn1.classList.remove('disabled');
-    skillBtn1.classList.add('ready');
+function setSkillState(btn, canUse, isActive) {
+  btn.classList.remove('ready', 'disabled', 'active');
+  if (isActive) {
+    btn.classList.add('active');
+  } else if (canUse) {
+    btn.classList.add('ready');
   } else {
-    skillBtn1.classList.add('disabled');
-    skillBtn1.classList.remove('ready');
-  }
-  
-  // MP回復ボタン
-  if (game.gems >= 5 && game.mp < game.maxMp) {
-    skillBtn2.classList.remove('disabled');
-  } else {
-    skillBtn2.classList.add('disabled');
+    btn.classList.add('disabled');
   }
 }
 
 // ================================================================
-// ガチャシステム
+// ガチャ
 // ================================================================
 function doGacha(count) {
   const costs = { 1: 10, 3: 28, 10: 90 };
   const cost = costs[count];
-  
   if (game.gems < cost) {
     alert(`ジェムが足りません！\n必要: 💎${cost} / 所持: 💎${game.gems}`);
     return;
   }
-  
+
   game.gems -= cost;
   const results = [];
-  
   for (let i = 0; i < count; i++) {
     const rarity = rollRarity();
     const weapon = getRandomWeapon(rarity);
     addWeapon(weapon.id, rarity);
     results.push({ weapon, rarity });
   }
-  
-  // 結果表示
-  const resultTexts = results.map(r => `${r.weapon.emoji}${r.weapon.name}`).join(' ');
-  alert(`ガチャ結果！\n${resultTexts}\n\n※重複分はレベルアップしました`);
-  
-  updateDisplay();
-  saveGame();
+
+  const resultText = results.map(r => `${r.weapon.emoji}${r.weapon.name}（${RARITIES[r.rarity].name}）`).join('\n');
+  alert(`🎰 ガチャ結果！\n\n${resultText}\n\n※重複分はレベルアップしました`);
+  updateDisplay(); saveGame();
 }
 
 // ================================================================
@@ -1057,92 +1106,128 @@ function doGacha(count) {
 function hireMember() {
   const cost = getHireCost();
   if (game.gold < cost) return;
-  
   game.gold -= cost;
-  const memberType = MEMBER_TYPES[Math.floor(Math.random() * MEMBER_TYPES.length)];
-  const member = {
+  const type = MEMBER_TYPES[Math.floor(Math.random() * MEMBER_TYPES.length)];
+  game.members.push({
     id: Date.now() + Math.random(),
-    name: memberType.name,
-    emoji: memberType.emoji,
-    atkEmoji: memberType.atkEmoji,
-    color: memberType.color,
-    level: 1
-  };
-  
-  game.members.push(member);
-  renderParty();
-  updateDisplay();
-  saveGame();
+    name: type.name, emoji: type.emoji,
+    atkEmoji: type.atkEmoji, color: type.color, level: 1
+  });
+  renderParty(); updateDisplay(); saveGame();
 }
 
 function renderParty() {
-  const container = document.getElementById('partyMembers');
+  const container = document.getElementById('partyDisplay');
   document.getElementById('partyCount').textContent = game.members.length;
-  
   if (game.members.length === 0) {
-    container.innerHTML = '<div style="font-size:11px;opacity:0.5;">仲間を雇って自動攻撃力アップ！</div>';
+    container.innerHTML = '<span style="opacity:0.5;">仲間を雇って自動攻撃！</span>';
     return;
   }
-  
   container.innerHTML = '';
   game.members.forEach(member => {
-    const div = document.createElement('div');
-    div.className = 'party-member';
-    div.id = 'member-' + member.id;
-    div.style.borderColor = member.color + '66';
-    div.innerHTML = `
-      <div class="member-emoji">${member.emoji}</div>
-      <div>
-        <div class="member-name" style="color:${member.color}">${member.name}</div>
-        <div class="member-atk">⚔️ ${getMemberAttack(member)}/秒</div>
-      </div>
-    `;
-    container.appendChild(div);
+    const chip = document.createElement('div');
+    chip.className = 'member-chip';
+    chip.id = 'member-' + member.id;
+    chip.style.borderColor = member.color + '66';
+    chip.innerHTML = `${member.emoji} ${member.name}`;
+    container.appendChild(chip);
   });
 }
 
 function memberAttackEffect(member) {
   const memberEl = document.getElementById('member-' + member.id);
-  const enemyEl = document.getElementById('enemyEmoji');
-  if (!memberEl || !enemyEl) return;
-
-  memberEl.classList.remove('attacking');
-  void memberEl.offsetWidth;
-  memberEl.classList.add('attacking');
-
-  const mRect = memberEl.getBoundingClientRect();
-  const eRect = enemyEl.getBoundingClientRect();
-
-  const effect = document.createElement('div');
-  effect.className = 'attack-effect';
-  effect.textContent = member.atkEmoji;
-  effect.style.left = (mRect.right + 5) + 'px';
-  effect.style.top = (mRect.top + mRect.height / 2 - 12) + 'px';
-
-  const tx = (eRect.left + eRect.width / 2) - (mRect.right + 5);
-  const ty = (eRect.top + eRect.height / 2) - (mRect.top + mRect.height / 2 - 12);
-  effect.style.setProperty('--tx', tx + 'px');
-  effect.style.setProperty('--ty', ty + 'px');
-
-  document.body.appendChild(effect);
-  setTimeout(() => effect.remove(), 600);
+  if (memberEl) {
+    memberEl.style.background = member.color + '44';
+    setTimeout(() => {
+      memberEl.style.background = 'rgba(255,255,255,0.08)';
+    }, 200);
+  }
 }
 
 // ================================================================
-// ランキングシステム（ローカル）
+// アップグレード・広告・転生
+// ================================================================
+function upgradeAttack() {
+  const cost = getAttackCost();
+  if (game.gold < cost) return;
+  game.gold -= cost;
+  game.attackLevel++;
+  updateDisplay(); saveGame();
+}
+
+function watchAd() {
+  if (game.boostTimer > 0) {
+    alert('まだブースト中です！');
+    return;
+  }
+  if (confirm('【広告動画】\n広告を視聴して以下を獲得しますか？\n\n💎 5個\n30秒間 全攻撃力5倍')) {
+    game.gems += 5;
+    game.boostTimer = 30;
+    updateDisplay(); saveGame();
+  }
+}
+
+function prestige() {
+  const nextLevel = game.prestigeLevel + 1;
+  const stageBonus = Math.floor(game.maxStage / 10) * 10;
+  const totalBonus = nextLevel * 50 + stageBonus;
+
+  if (!confirm(
+    `転生しますか？\n\n` +
+    `【リセットされるもの】\n・ゴールド、ステージ、攻撃レベル、仲間\n\n` +
+    `【引き継がれるもの】\n・武器・ペット・ジェム・ギルド\n\n` +
+    `【転生ボーナス】\n・攻撃力永続 +${totalBonus}%\n` +
+    `　（基本${nextLevel * 50}% + 到達階ボーナス${stageBonus}%）\n\n` +
+    `【転生武器ドロップ】\n・到達階層5階ごとに1個武器獲得！\n\n` +
+    `現在の転生レベル: ${game.prestigeLevel}`
+  )) return;
+
+  // 転生ボーナス武器ドロップ
+  const dropCount = Math.max(1, Math.floor(game.maxStage / 5));
+  const drops = [];
+  for (let i = 0; i < dropCount; i++) {
+    let rarity = 'common';
+    // 到達階層に応じてレアリティ向上
+    if (game.maxStage >= 100) rarity = 'legend';
+    else if (game.maxStage >= 50) rarity = 'sr';
+    else if (game.maxStage >= 25) rarity = 'rare';
+    
+    const weapon = getRandomWeapon(rarity);
+    addWeapon(weapon.id, rarity);
+    drops.push(`${weapon.emoji}${weapon.name}`);
+  }
+
+  game.prestigeLevel++;
+  game.gold = 0;
+  game.stage = 1;
+  game.attackLevel = 1;
+  game.members = [];
+  game.boostTimer = 0;
+  game.mp = game.maxMp;
+  game.autoTapTimer = 0;
+  game.tapBoostTimer = 0;
+
+  document.getElementById('btnPrestige').classList.remove('visible');
+  renderParty();
+  spawnEnemy();
+  updateDisplay(); saveGame();
+
+  alert(`✨ 転生完了！\n転生レベル: ${game.prestigeLevel}\n永続攻撃力ボーナス: +${totalBonus}%\n\n転生ボーナス武器 ${dropCount}個獲得：\n${drops.join('\n')}`);
+}
+
+// ================================================================
+// ランキング
 // ================================================================
 function calcScore() {
   return Math.floor(game.maxStage * 100 + game.totalKills * 2 + game.prestigeLevel * 10000);
 }
 
 function savePlayerName() {
-  const input = document.getElementById('playerNameInput');
-  const name = input.value.trim();
+  const name = document.getElementById('playerNameInput').value.trim();
   if (!name) {
     alert('名前を入力してください');
     return;
   }
-  
   game.playerName = name;
   document.getElementById('playerNameDisplay').textContent = name;
   updateLocalRanking();
@@ -1154,58 +1239,37 @@ function savePlayerName() {
 function updateLocalRanking() {
   const myScore = calcScore();
   let rankings = JSON.parse(localStorage.getItem('dungeonRPGRankings') || '[]');
-  
-  // 自分のエントリを更新
-  const myIndex = rankings.findIndex(r => r.isMe);
-  const myEntry = {
-    name: game.playerName,
-    score: myScore,
-    stage: game.maxStage,
-    prestige: game.prestigeLevel,
-    isMe: true
-  };
-  
-  if (myIndex >= 0) {
-    rankings[myIndex] = myEntry;
-  } else {
-    rankings.push(myEntry);
-  }
-  
-  // CPUプレイヤー追加（初回のみ）
+  const myIdx = rankings.findIndex(r => r.isMe);
+  const myEntry = { name: game.playerName, score: myScore, stage: game.maxStage, prestige: game.prestigeLevel, isMe: true };
+  if (myIdx >= 0) rankings[myIdx] = myEntry;
+  else rankings.push(myEntry);
   if (rankings.filter(r => !r.isMe).length === 0) {
     rankings = [...rankings, ...CPU_PLAYERS.map(p => ({ ...p, isMe: false }))];
   }
-  
-  // スコア順にソート
   rankings.sort((a, b) => b.score - a.score);
   localStorage.setItem('dungeonRPGRankings', JSON.stringify(rankings));
 }
 
 function renderRanking() {
   document.getElementById('playerNameInput').value = game.playerName;
-  
-  const myScore = calcScore();
-  document.getElementById('myScoreDisplay').textContent = myScore.toLocaleString();
+  document.getElementById('myScoreDisplay').textContent = calcScore().toLocaleString();
   document.getElementById('myBestStage').textContent = game.maxStage;
   document.getElementById('myPrestige').textContent = game.prestigeLevel;
-  
+
   const rankings = JSON.parse(localStorage.getItem('dungeonRPGRankings') || '[]');
   const container = document.getElementById('rankingItems');
   container.innerHTML = '';
-  
-  rankings.slice(0, 10).forEach((entry, index) => {
-    const rank = index + 1;
-    const rankClass = rank <= 3 ? `rank-${rank}` : '';
-    const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank + '.';
-    
+  rankings.slice(0, 10).forEach((entry, idx) => {
+    const rank = idx + 1;
+    const emoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank + '.';
     const item = document.createElement('div');
     item.className = 'ranking-item' + (entry.isMe ? ' my-rank' : '');
     item.innerHTML = `
-      <div class="rank-num ${rankClass}">${rankEmoji}</div>
-      <div class="rank-name">${entry.isMe ? '👤 ' : ''}${entry.name}</div>
+      <div class="rank-num rank-${rank}">${emoji}</div>
+      <div style="flex:1;font-size:12px;font-weight:900;">${entry.isMe ? '👤 ' : ''}${entry.name}</div>
       <div style="text-align:right;">
-        <div class="rank-score">${entry.score.toLocaleString()} pt</div>
-        <div style="font-size:10px;opacity:0.7;">${entry.stage}階 / 転生${entry.prestige}</div>
+        <div style="font-size:11px;color:#a8edea;font-weight:900;">${entry.score.toLocaleString()} pt</div>
+        <div style="font-size:9px;opacity:0.7;">${entry.stage}階 / 転生${entry.prestige}</div>
       </div>
     `;
     container.appendChild(item);
@@ -1213,203 +1277,142 @@ function renderRanking() {
 }
 
 // ================================================================
-// アップグレード・広告・転生
-// ================================================================
-function upgradeAttack() {
-  const cost = getAttackCost();
-  if (game.gold < cost) return;
-  
-  game.gold -= cost;
-  game.attackLevel++;
-  updateDisplay();
-  saveGame();
-}
-
-function watchAd() {
-  if (game.boostTimer > 0) {
-    alert('まだブースト中です！');
-    return;
-  }
-  
-  if (confirm('【広告動画】\n広告を視聴して以下を獲得しますか？\n\n💎 5個\n30秒間 全攻撃力5倍')) {
-    game.gems += 5;
-    game.boostTimer = 30;
-    updateDisplay();
-    saveGame();
-  }
-}
-
-function prestige() {
-  const nextLevel = game.prestigeLevel + 1;
-  const bonus = nextLevel * 50;
-  
-  if (!confirm(`転生しますか？\n\n【リセットされるもの】\n・ゴールド、ステージ、攻撃レベル、仲間\n・MP\n\n【引き継がれるもの】\n・武器とレベル、ジェム\n・最高到達階層記録\n\n【永続ボーナス】\n・攻撃力 +${bonus}%\n\n現在の転生レベル: ${game.prestigeLevel}`)) {
-    return;
-  }
-
-  game.prestigeLevel++;
-  game.gold = 0;
-  game.stage = 1;
-  game.attackLevel = 1;
-  game.members = [];
-  game.boostTimer = 0;
-  game.mp = game.maxMp;
-
-  document.getElementById('btnPrestige').classList.remove('visible');
-  renderParty();
-  spawnEnemy();
-  updateDisplay();
-  saveGame();
-}
-
-// ================================================================
-// UI更新・エフェクト
+// UI更新
 // ================================================================
 function updateDisplay() {
   const wb = getWeaponBonus();
+  const pb = getPetBonus();
   
   document.getElementById('goldDisplay').textContent = Math.floor(game.gold).toLocaleString();
   document.getElementById('gemDisplay').textContent = game.gems;
   document.getElementById('gemGachaDisplay').textContent = game.gems;
   document.getElementById('stageDisplay').textContent = game.stage + (game.stage % 10 === 0 ? ' 👑' : '');
   document.getElementById('prestigeDisplay').textContent = game.prestigeLevel;
-  
+
   const hp = Math.max(0, Math.floor(game.enemyHp));
   document.getElementById('currentHp').textContent = hp.toLocaleString();
   document.getElementById('maxHp').textContent = game.enemyMaxHp.toLocaleString();
-  document.getElementById('hpBar').style.width = Math.max(0, (game.enemyHp / game.enemyMaxHp) * 100) + '%';
-  
+  document.getElementById('hpBar').style.width = Math.max(0, game.enemyHp / game.enemyMaxHp * 100) + '%';
+
   updateMpDisplay();
-  
+
   document.getElementById('totalAtkDisplay').textContent = getTotalAttack().toLocaleString();
   document.getElementById('weaponBonusDisplay').textContent = wb.toFixed(2);
   document.getElementById('weaponBonusDetail').textContent = wb.toFixed(2);
+  document.getElementById('petBonusDisplay').textContent = pb.toFixed(2);
   document.getElementById('playerAtkDisplay').textContent = getPlayerAttack().toLocaleString();
   document.getElementById('memberAtkDisplay').textContent = getTotalMemberAttack().toLocaleString();
-  
+
   document.getElementById('attackCost').textContent = getAttackCost().toLocaleString();
   document.getElementById('hireCost').textContent = getHireCost().toLocaleString();
-  
-  // ボタン状態
-  const attackBtn = document.getElementById('btnAttack');
-  const hireBtn = document.getElementById('btnHire');
-  
-  if (game.gold < getAttackCost()) {
-    attackBtn.classList.add('disabled');
-  } else {
-    attackBtn.classList.remove('disabled');
-  }
-  
-  if (game.gold < getHireCost()) {
-    hireBtn.classList.add('disabled');
-  } else {
-    hireBtn.classList.remove('disabled');
-  }
+
+  const btnAtk = document.getElementById('btnAttack');
+  const btnHire = document.getElementById('btnHire');
+  btnAtk.classList.toggle('disabled', game.gold < getAttackCost());
+  btnHire.classList.toggle('disabled', game.gold < getHireCost());
 }
 
-function createDamageEffect(x, y, damage) {
-  const effect = document.createElement('div');
-  effect.className = 'damage-effect';
-  effect.textContent = '-' + Math.floor(damage).toLocaleString();
-  effect.style.left = (x - 25) + 'px';
-  effect.style.top = (y - 30) + 'px';
-  document.body.appendChild(effect);
-  setTimeout(() => effect.remove(), 1000);
+function createDamageEffect(x, y, damage, isSkill) {
+  const el = document.createElement('div');
+  el.className = isSkill ? 'skill-effect' : 'damage-effect';
+  el.textContent = (isSkill ? '⚡' : '-') + Math.floor(damage).toLocaleString();
+  el.style.left = (x - 30) + 'px';
+  el.style.top = (y - 30) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), isSkill ? 1200 : 1000);
 }
 
 function showDropNotice(weapon, rarity) {
-  const rarityData = RARITIES[rarity];
-  const notice = document.createElement('div');
-  notice.className = 'drop-notice';
-  notice.style.background = 'rgba(22,33,62,0.95)';
-  notice.style.border = `2px solid ${rarity === 'legend' ? '#FFD700' : rarity === 'sr' ? '#FFA500' : '#6495ED'}`;
-  notice.innerHTML = `🎁 武器ドロップ！<br>${weapon.emoji} ${weapon.name}（${rarityData.name}）`;
-  document.body.appendChild(notice);
-  setTimeout(() => notice.remove(), 3000);
+  const rd = RARITIES[rarity];
+  const n = document.createElement('div');
+  n.className = 'drop-notice';
+  n.style.background = 'rgba(22,33,62,0.95)';
+  n.style.border = `2px solid ${rarity==='legend'?'#FFD700':rarity==='sr'?'#FFA500':'#6495ED'}`;
+  n.innerHTML = `🎁 武器ドロップ！<br>${weapon.emoji} ${weapon.name}（${rd.name}）`;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 3000);
 }
 
 function showFloorClear() {
-  const notice = document.createElement('div');
-  notice.style.cssText = `
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    font-size: 32px; font-weight: 900; color: #FFD700; z-index: 1000;
+  const n = document.createElement('div');
+  n.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 28px; font-weight: 900; color: #FFD700; z-index: 1002;
     text-shadow: 0 4px 8px rgba(0,0,0,0.8); pointer-events: none;
     animation: damage-float 2s ease-out forwards;
   `;
-  notice.textContent = `FLOOR ${game.stage} CLEAR! 🎉`;
-  document.body.appendChild(notice);
-  setTimeout(() => notice.remove(), 2000);
+  n.textContent = `FLOOR ${game.stage} CLEAR! 🎉`;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 2000);
 }
 
 // ================================================================
 // タブ切り替え
 // ================================================================
-function switchTab(tabName) {
-  const tabs = ['battle', 'weapon', 'gacha', 'ranking'];
-  document.querySelectorAll('.tab-btn').forEach((btn, index) => {
-    btn.classList.toggle('active', tabs[index] === tabName);
-  });
-  document.querySelectorAll('.tab-content').forEach((content, index) => {
-    content.classList.toggle('active', tabs[index] === tabName);
-  });
-  
-  if (tabName === 'weapon') renderWeapons();
-  if (tabName === 'ranking') renderRanking();
+function switchTab(name) {
+  const tabs = ['battle','weapon','pet','guild','gacha','ranking'];
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', tabs[i] === name));
+  document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', tabs[i] === name));
+  if (name === 'weapon') renderWeapons();
+  if (name === 'pet') renderPets();
+  if (name === 'guild') renderGuild();
+  if (name === 'ranking') renderRanking();
 }
 
 // ================================================================
 // セーブ・ロード
 // ================================================================
 function saveGame() {
-  localStorage.setItem('dungeonRPGComplete', JSON.stringify(game));
+  localStorage.setItem('dungeonRPGv4', JSON.stringify(game));
 }
 
 function loadGame() {
-  const saved = localStorage.getItem('dungeonRPGComplete');
+  const saved = localStorage.getItem('dungeonRPGv4');
   if (saved) {
-    try {
-      const loadedData = JSON.parse(saved);
-      game = { ...game, ...loadedData };
-    } catch (e) {
-      console.error('セーブデータの読み込みに失敗しました:', e);
-    }
+    try { game = { ...game, ...JSON.parse(saved) }; }
+    catch(e) { console.error('Load error:', e); }
   }
 }
 
 // ================================================================
 // メインループ
 // ================================================================
+let memberIdx = 0;
 
-// 仲間の自動攻撃（0.5秒ごと）
-let memberAttackIndex = 0;
+// 仲間自動攻撃（0.5秒）
 setInterval(() => {
   if (game.members.length === 0 || game.enemyHp <= 0) return;
-
-  const member = game.members[memberAttackIndex % game.members.length];
-  memberAttackIndex++;
-
-  const damage = Math.floor(getMemberAttack(member) / 2);
-  if (damage > 0) {
+  const member = game.members[memberIdx % game.members.length];
+  memberIdx++;
+  const dmg = Math.floor(getMemberAttack(member) / 2);
+  if (dmg > 0) {
     memberAttackEffect(member);
-    setTimeout(() => {
-      if (game.enemyHp > 0) {
-        dealDamage(damage, null, null);
-      }
-    }, 350);
+    setTimeout(() => { if (game.enemyHp > 0) dealDamage(dmg, null, null); }, 200);
   }
 }, 500);
 
-// ブースト・MP回復（1秒ごと）
+// 自動タップ（1秒）
 setInterval(() => {
-  if (game.boostTimer > 0) {
-    game.boostTimer--;
-    updateDisplay();
+  if (game.autoTapTimer > 0 && game.enemyHp > 0) {
+    const el = document.getElementById('enemyEmoji');
+    const rect = el.getBoundingClientRect();
+    dealDamage(getPlayerAttack(), rect.left + rect.width/2, rect.top + rect.height/2);
   }
-  regenMp();
+}, 1000);
+
+// タイマー・MP回復（1秒）
+setInterval(() => {
+  if (game.boostTimer > 0) game.boostTimer--;
+  if (game.autoTapTimer > 0) game.autoTapTimer--;
+  if (game.tapBoostTimer > 0) game.tapBoostTimer--;
+  if (game.mp < game.maxMp) {
+    game.mp = Math.min(game.maxMp, game.mp + getMpRegenBase());
+  }
+  updateMpDisplay();
   saveGame();
 }, 1000);
 
-// 自動セーブ（5秒ごと）
+// 自動セーブ（5秒）
 setInterval(saveGame, 5000);
 
 // ================================================================
@@ -1419,6 +1422,8 @@ loadGame();
 document.getElementById('playerNameDisplay').textContent = game.playerName;
 renderParty();
 renderWeapons();
+renderPets();
+renderGuild();
 updateLocalRanking();
 spawnEnemy();
 updateDisplay();
