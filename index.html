@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ダンジョン討伐RPG - 完全版</title>
   <meta name="monetag" content="ea498005396531d171f9e1a39f62f5b9">
+  <title>ダンジョン討伐RPG - 完全版</title>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -387,12 +386,10 @@
   <div class="tab-content" id="tab-weapon">
     <div class="weapon-section">
       <div class="section-title">🗡️ 武器コレクション</div>
-      
       <div class="weapon-stats">
         <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">装備中の武器効果</div>
         <div class="weapon-bonus-display">攻撃力 ×<span id="weaponBonusDetail">1.00</span></div>
       </div>
-
       <div class="weapon-grid" id="weaponGrid">
         <div style="grid-column:1/-1;text-align:center;opacity:0.4;font-size:13px;padding:30px;">
           敵を倒すと5%の確率で武器ドロップ！<br>
@@ -406,46 +403,28 @@
   <div class="tab-content" id="tab-gacha">
     <div class="gacha-section">
       <div class="section-title">🎰 武器ガチャ</div>
-
       <div class="gem-display">
         <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">所持ジェム</div>
         <div class="gem-count">💎 <span id="gemGachaDisplay">0</span></div>
         <div style="font-size:11px;opacity:0.7;margin-top:4px;">広告視聴・ミッションで獲得</div>
       </div>
-
       <div class="rates-box">
-        <div class="rate-row">
-          <span>⚪ コモン</span>
-          <span style="color:#ccc">60%</span>
-        </div>
-        <div class="rate-row">
-          <span>🔵 レア</span>
-          <span style="color:#6495ED">25%</span>
-        </div>
-        <div class="rate-row">
-          <span>🟠 スーパーレア</span>
-          <span style="color:#FFA500">12%</span>
-        </div>
-        <div class="rate-row">
-          <span>🌟 レジェンド</span>
-          <span style="color:#FFD700">3%</span>
-        </div>
+        <div class="rate-row"><span>⚪ コモン</span><span style="color:#ccc">60%</span></div>
+        <div class="rate-row"><span>🔵 レア</span><span style="color:#6495ED">25%</span></div>
+        <div class="rate-row"><span>🟠 スーパーレア</span><span style="color:#FFA500">12%</span></div>
+        <div class="rate-row"><span>🌟 レジェンド</span><span style="color:#FFD700">3%</span></div>
       </div>
-
       <div class="gacha-buttons">
         <button class="gacha-btn gacha-single" onclick="doGacha(1)">
-          🎲 1回ガチャ<br>
-          <span style="font-size:12px;">💎 10</span>
+          🎲 1回ガチャ<br><span style="font-size:12px;">💎 10</span>
         </button>
         <button class="gacha-btn gacha-single" onclick="doGacha(3)">
-          🎲 3回ガチャ<br>
-          <span style="font-size:12px;">💎 28</span>
+          🎲 3回ガチャ<br><span style="font-size:12px;">💎 28</span>
         </button>
         <button class="gacha-btn gacha-ten" onclick="doGacha(10)">
           🎰 10連ガチャ（💎 90）※お得！
         </button>
       </div>
-
       <div class="gacha-result" id="gachaResult">
         <div class="result-title">✨ ガチャ結果</div>
         <div class="result-items" id="gachaItems"></div>
@@ -464,9 +443,6 @@
 </div>
 
 <script>
-// ================================================================
-// データ定義
-// ================================================================
 const RARITIES = {
   common: { name: 'コモン', symbol: '⚪', class: 'rarity-common', rate: 0.60, bonus: 0.15 },
   rare: { name: 'レア', symbol: '🔵', class: 'rarity-rare', rate: 0.25, bonus: 0.50 },
@@ -528,27 +504,19 @@ const MISSIONS = [
   { id: 'm7', name: '武器コレクター', desc: '武器を10個集める', target: 10, gem: 35, type: 'weapons' }
 ];
 
-// ================================================================
-// ゲーム状態
-// ================================================================
 let game = {
   gold: 0, gems: 0, stage: 1, attackLevel: 1, prestigeLevel: 0,
   enemyHp: 10, enemyMaxHp: 10, boostTimer: 0,
   totalKills: 0, totalWeapons: 0,
-  members: [], // { id, name, emoji, atkEmoji, color, level }
-  weapons: {}, // { weaponId: { count, rarity } }
+  members: [],
+  weapons: {},
   completedMissions: []
 };
 
-// ================================================================
-// 計算関数
-// ================================================================
 function getWeaponBonus() {
   let bonus = 1.0;
   Object.entries(game.weapons).forEach(([weaponId, weaponData]) => {
-    const rarity = weaponData.rarity;
-    const rarityData = RARITIES[rarity];
-    bonus += rarityData.bonus * weaponData.count;
+    bonus += RARITIES[weaponData.rarity].bonus * weaponData.count;
   });
   return parseFloat(bonus.toFixed(2));
 }
@@ -570,92 +538,68 @@ function getMemberAttack(member) {
 }
 
 function getTotalMemberAttack() {
-  return game.members.reduce((sum, member) => sum + getMemberAttack(member), 0);
+  return game.members.reduce((sum, m) => sum + getMemberAttack(m), 0);
 }
 
-function getTotalAttack() {
-  return getPlayerAttack() + getTotalMemberAttack();
-}
-
+function getTotalAttack() { return getPlayerAttack() + getTotalMemberAttack(); }
 function getAttackCost() { return Math.floor(10 * Math.pow(1.3, game.attackLevel - 1)); }
 function getHireCost() { return Math.floor(50 * Math.pow(1.5, game.members.length)); }
-
 function getEnemyMaxHp() {
   const base = Math.floor(10 * Math.pow(1.25, game.stage - 1));
   return game.stage % 10 === 0 ? base * 3 : base;
 }
-
 function getGoldReward() {
   const base = Math.floor(5 * Math.pow(1.15, game.stage - 1));
-  const prestigeBonus = 1 + game.prestigeLevel * 0.3;
-  return Math.floor(base * prestigeBonus);
+  return Math.floor(base * (1 + game.prestigeLevel * 0.3));
 }
 
-// ================================================================
-// 敵・バトルシステム
-// ================================================================
 function spawnEnemy() {
   game.enemyMaxHp = getEnemyMaxHp();
   game.enemyHp = game.enemyMaxHp;
-
   const isBoss = game.stage % 10 === 0;
   const enemyData = isBoss
     ? ENEMIES.boss[Math.floor((game.stage / 10 - 1) % ENEMIES.boss.length)]
     : ENEMIES.normal[(game.stage - 1) % ENEMIES.normal.length];
-
   document.getElementById('enemyEmoji').textContent = enemyData.emoji;
   document.getElementById('enemyName').textContent = enemyData.name;
   document.getElementById('bossCrown').style.display = isBoss ? 'block' : 'none';
   document.getElementById('enemyEmoji').style.fontSize = isBoss ? '88px' : '78px';
-
   updateDisplay();
 }
 
 function attackEnemy(event) {
-  const damage = getPlayerAttack();
-  dealDamage(damage, event.clientX, event.clientY);
+  dealDamage(getPlayerAttack(), event.clientX, event.clientY);
 }
 
 function dealDamage(damage, x, y) {
   game.enemyHp -= damage;
   if (x !== null) createDamageEffect(x, y, damage);
-
   const enemyEl = document.getElementById('enemyEmoji');
   enemyEl.classList.remove('hit');
   void enemyEl.offsetWidth;
   enemyEl.classList.add('hit');
-
   if (game.enemyHp <= 0) killEnemy();
   updateDisplay();
 }
 
 function killEnemy() {
-  const gold = getGoldReward();
-  game.gold += gold;
+  game.gold += getGoldReward();
   game.totalKills++;
-
-  // 5%で武器ドロップ
   if (Math.random() < 0.05) {
     const rarity = rollRarity();
     const weapon = getRandomWeapon(rarity);
     addWeapon(weapon.id, rarity);
     showDropNotice(weapon, rarity);
   }
-
   if (game.stage % 10 === 0) showFloorClear();
   game.stage++;
-
-  if (game.stage >= 10) {
-    document.getElementById('btnPrestige').classList.add('visible');
-  }
-
+  if (game.stage >= 10) document.getElementById('btnPrestige').classList.add('visible');
   setTimeout(spawnEnemy, game.stage % 10 === 1 ? 800 : 200);
 }
 
 function rollRarity() {
   const rand = Math.random();
   let cumulative = 0;
-  
   for (const [rarity, data] of Object.entries(RARITIES)) {
     cumulative += data.rate;
     if (rand < cumulative) return rarity;
@@ -668,53 +612,28 @@ function getRandomWeapon(rarity) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-// ================================================================
-// 武器システム
-// ================================================================
 function addWeapon(weaponId, rarity) {
-  if (!game.weapons[weaponId]) {
-    game.weapons[weaponId] = { count: 0, rarity: rarity };
-  }
-  
+  if (!game.weapons[weaponId]) game.weapons[weaponId] = { count: 0, rarity };
   game.weapons[weaponId].count++;
   game.totalWeapons++;
-  
-  // 3個集まると進化
-  if (game.weapons[weaponId].count >= 3 && rarity !== 'legend') {
-    evolveWeapon(weaponId);
-  }
-  
+  if (game.weapons[weaponId].count >= 3 && rarity !== 'legend') evolveWeapon(weaponId);
   renderWeapons();
   updateDisplay();
   saveGame();
 }
 
 function evolveWeapon(weaponId) {
-  const weaponData = game.weapons[weaponId];
-  const currentRarity = weaponData.rarity;
-  
-  // 進化先のレアリティを決定
   const rarityKeys = ['common', 'rare', 'sr', 'legend'];
+  const currentRarity = game.weapons[weaponId].rarity;
   const currentIndex = rarityKeys.indexOf(currentRarity);
-  if (currentIndex >= rarityKeys.length - 1) return; // レジェンドは進化しない
-  
+  if (currentIndex >= rarityKeys.length - 1) return;
   const nextRarity = rarityKeys[currentIndex + 1];
   const nextWeapon = getRandomWeapon(nextRarity);
-  
-  // 現在の武器を3個消費
-  game.weapons[weaponId].count -= 3;
-  if (game.weapons[weaponId].count === 0) {
-    delete game.weapons[weaponId];
-  }
-  
-  // 進化後の武器を追加
-  if (!game.weapons[nextWeapon.id]) {
-    game.weapons[nextWeapon.id] = { count: 0, rarity: nextRarity };
-  }
-  game.weapons[nextWeapon.id].count++;
-  
-  // 進化通知
   const currentWeapon = findWeaponById(weaponId);
+  game.weapons[weaponId].count -= 3;
+  if (game.weapons[weaponId].count === 0) delete game.weapons[weaponId];
+  if (!game.weapons[nextWeapon.id]) game.weapons[nextWeapon.id] = { count: 0, rarity: nextRarity };
+  game.weapons[nextWeapon.id].count++;
   setTimeout(() => {
     alert(`✨ 進化成功！\n${currentWeapon.emoji}${currentWeapon.name} × 3\n→ ${nextWeapon.emoji}${nextWeapon.name}（${RARITIES[nextRarity].name}）`);
   }, 100);
@@ -731,26 +650,17 @@ function findWeaponById(weaponId) {
 function renderWeapons() {
   const container = document.getElementById('weaponGrid');
   const entries = Object.entries(game.weapons);
-  
   if (entries.length === 0) {
-    container.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;opacity:0.4;font-size:13px;padding:30px;">
-        敵を倒すと5%の確率で武器ドロップ！<br>
-        ガチャでも武器を入手できます
-      </div>
-    `;
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;opacity:0.4;font-size:13px;padding:30px;">敵を倒すと5%の確率で武器ドロップ！<br>ガチャでも武器を入手できます</div>`;
     return;
   }
-
   container.innerHTML = '';
   entries.forEach(([weaponId, weaponData]) => {
     const weapon = findWeaponById(weaponId);
     if (!weapon) return;
-    
     const rarityData = RARITIES[weaponData.rarity];
     const canEvolve = weaponData.count >= 3 && weaponData.rarity !== 'legend';
     const progressPercent = weaponData.rarity === 'legend' ? 100 : (weaponData.count / 3) * 100;
-
     const card = document.createElement('div');
     card.className = `weapon-card ${rarityData.class}` + (canEvolve ? ' can-evolve' : '');
     card.innerHTML = `
@@ -758,12 +668,8 @@ function renderWeapons() {
       <div class="weapon-name">${weapon.name}</div>
       <div class="weapon-rarity">${rarityData.symbol} ${rarityData.name}</div>
       <div class="weapon-effect">攻撃力 +${(rarityData.bonus * weaponData.count * 100).toFixed(0)}%</div>
-      <div class="weapon-progress">
-        <div class="weapon-progress-fill" style="width: ${progressPercent}%"></div>
-      </div>
-      <div class="weapon-count">
-        ${weaponData.rarity === 'legend' ? 'MAX' : `${weaponData.count}/3 で進化`}
-      </div>
+      <div class="weapon-progress"><div class="weapon-progress-fill" style="width:${progressPercent}%"></div></div>
+      <div class="weapon-count">${weaponData.rarity === 'legend' ? 'MAX' : `${weaponData.count}/3 で進化`}</div>
       ${canEvolve ? `<button class="evolve-btn" onclick="manualEvolve('${weaponId}')">進化する</button>` : ''}
     `;
     container.appendChild(card);
@@ -777,28 +683,21 @@ function manualEvolve(weaponId) {
   saveGame();
 }
 
-// ================================================================
-// ガチャシステム
-// ================================================================
 function doGacha(count) {
   const costs = { 1: 10, 3: 28, 10: 90 };
   const cost = costs[count];
-  
   if (game.gems < cost) {
     alert(`ジェムが足りません！\n必要: 💎${cost} / 所持: 💎${game.gems}`);
     return;
   }
-  
   game.gems -= cost;
   const results = [];
-  
   for (let i = 0; i < count; i++) {
     const rarity = rollRarity();
     const weapon = getRandomWeapon(rarity);
     addWeapon(weapon.id, rarity);
     results.push({ weapon, rarity });
   }
-  
   displayGachaResults(results);
   updateDisplay();
   saveGame();
@@ -807,42 +706,26 @@ function doGacha(count) {
 function displayGachaResults(results) {
   const container = document.getElementById('gachaItems');
   container.innerHTML = '';
-  
   results.forEach((result, index) => {
     const rarityData = RARITIES[result.rarity];
     const div = document.createElement('div');
     div.className = `result-item ${rarityData.class}`;
     div.style.animationDelay = (index * 0.1) + 's';
-    div.innerHTML = `
-      <div style="font-size:20px;">${result.weapon.emoji}</div>
-      <div>${result.weapon.name}</div>
-      <div>${rarityData.symbol} ${rarityData.name}</div>
-    `;
+    div.innerHTML = `<div style="font-size:20px;">${result.weapon.emoji}</div><div>${result.weapon.name}</div><div>${rarityData.symbol} ${rarityData.name}</div>`;
     container.appendChild(div);
   });
-  
   document.getElementById('gachaResult').classList.add('show');
 }
 
-// ================================================================
-// 仲間システム
-// ================================================================
 function hireMember() {
   const cost = getHireCost();
   if (game.gold < cost) return;
-  
   game.gold -= cost;
   const memberType = MEMBER_TYPES[Math.floor(Math.random() * MEMBER_TYPES.length)];
-  const member = {
-    id: Date.now(),
-    name: memberType.name,
-    emoji: memberType.emoji,
-    atkEmoji: memberType.atkEmoji,
-    color: memberType.color,
-    level: 1
-  };
-  
-  game.members.push(member);
+  game.members.push({
+    id: Date.now(), name: memberType.name, emoji: memberType.emoji,
+    atkEmoji: memberType.atkEmoji, color: memberType.color, level: 1
+  });
   renderParty();
   updateDisplay();
   saveGame();
@@ -851,12 +734,10 @@ function hireMember() {
 function renderParty() {
   const container = document.getElementById('partyMembers');
   document.getElementById('partyCount').textContent = game.members.length;
-  
   if (game.members.length === 0) {
     container.innerHTML = '<div style="font-size:12px;opacity:0.5;">仲間を雇って自動攻撃力アップ！</div>';
     return;
   }
-  
   container.innerHTML = '';
   game.members.forEach(member => {
     const div = document.createElement('div');
@@ -878,41 +759,29 @@ function memberAttackEffect(member) {
   const memberEl = document.getElementById('member-' + member.id);
   const enemyEl = document.getElementById('enemyEmoji');
   if (!memberEl || !enemyEl) return;
-
-  // 仲間のアニメーション
   memberEl.classList.remove('attacking');
   void memberEl.offsetWidth;
   memberEl.classList.add('attacking');
-
-  // 攻撃エフェクト
   const mRect = memberEl.getBoundingClientRect();
   const eRect = enemyEl.getBoundingClientRect();
-
   const effect = document.createElement('div');
   effect.className = 'attack-effect';
   effect.textContent = member.atkEmoji;
   effect.style.left = (mRect.right + 5) + 'px';
   effect.style.top = (mRect.top + mRect.height / 2 - 12) + 'px';
-
   const tx = (eRect.left + eRect.width / 2) - (mRect.right + 5);
   const ty = (eRect.top + eRect.height / 2) - (mRect.top + mRect.height / 2 - 12);
   effect.style.setProperty('--tx', tx + 'px');
   effect.style.setProperty('--ty', ty + 'px');
-
   document.body.appendChild(effect);
   setTimeout(() => effect.remove(), 600);
 }
 
-// ================================================================
-// ミッションシステム
-// ================================================================
 function renderMissions() {
   const container = document.getElementById('missionList');
   container.innerHTML = '';
-  
   MISSIONS.forEach(mission => {
     if (game.completedMissions.includes(mission.id)) return;
-    
     let progress = 0;
     switch (mission.type) {
       case 'kills': progress = game.totalKills; break;
@@ -920,10 +789,8 @@ function renderMissions() {
       case 'members': progress = game.members.length; break;
       case 'weapons': progress = game.totalWeapons; break;
     }
-    
     const progressPercent = Math.min(100, (progress / mission.target) * 100);
     const isCompleted = progress >= mission.target;
-    
     const card = document.createElement('div');
     card.className = 'mission-card';
     card.innerHTML = `
@@ -932,7 +799,7 @@ function renderMissions() {
         <div class="mission-reward">💎 +${mission.gem}</div>
       </div>
       <div class="mission-progress-bg">
-        <div class="mission-progress-fill" style="width: ${progressPercent}%"></div>
+        <div class="mission-progress-fill" style="width:${progressPercent}%"></div>
       </div>
       <div class="mission-desc">
         <span>${mission.desc}</span>
@@ -947,22 +814,16 @@ function renderMissions() {
 function claimMission(missionId) {
   const mission = MISSIONS.find(m => m.id === missionId);
   if (!mission || game.completedMissions.includes(missionId)) return;
-  
   game.gems += mission.gem;
   game.completedMissions.push(missionId);
-  
   renderMissions();
   updateDisplay();
   saveGame();
 }
 
-// ================================================================
-// アップグレード・広告・転生
-// ================================================================
 function upgradeAttack() {
   const cost = getAttackCost();
   if (game.gold < cost) return;
-  
   game.gold -= cost;
   game.attackLevel++;
   updateDisplay();
@@ -970,11 +831,7 @@ function upgradeAttack() {
 }
 
 function watchAd() {
-  if (game.boostTimer > 0) {
-    alert('まだブースト中です！');
-    return;
-  }
-  
+  if (game.boostTimer > 0) { alert('まだブースト中です！'); return; }
   if (confirm('【広告動画】\n広告を視聴して以下を獲得しますか？\n\n💎 5個\n30秒間 全攻撃力5倍')) {
     game.gems += 5;
     game.boostTimer = 30;
@@ -985,19 +842,10 @@ function watchAd() {
 
 function prestige() {
   const nextLevel = game.prestigeLevel + 1;
-  const bonus = nextLevel * 50;
-  
-  if (!confirm(`転生しますか？\n\n【リセットされるもの】\n・ゴールド、ステージ、強化レベル、仲間\n\n【引き継がれるもの】\n・武器、ジェム、ミッション進行\n\n【永続ボーナス】\n・攻撃力 +${bonus}%\n\n現在の転生レベル: ${game.prestigeLevel}`)) {
-    return;
-  }
-
+  if (!confirm(`転生しますか？\n\n【リセットされるもの】\nゴールド、ステージ、強化レベル、仲間\n\n【引き継がれるもの】\n武器、ジェム、ミッション進行\n\n【永続ボーナス】\n攻撃力 +${nextLevel * 50}%\n\n現在の転生レベル: ${game.prestigeLevel}`)) return;
   game.prestigeLevel++;
-  game.gold = 0;
-  game.stage = 1;
-  game.attackLevel = 1;
-  game.members = [];
-  game.boostTimer = 0;
-
+  game.gold = 0; game.stage = 1; game.attackLevel = 1;
+  game.members = []; game.boostTimer = 0;
   document.getElementById('btnPrestige').classList.remove('visible');
   renderParty();
   spawnEnemy();
@@ -1005,46 +853,25 @@ function prestige() {
   saveGame();
 }
 
-// ================================================================
-// UI更新・エフェクト
-// ================================================================
 function updateDisplay() {
   const wb = getWeaponBonus();
-  
   document.getElementById('goldDisplay').textContent = Math.floor(game.gold).toLocaleString();
   document.getElementById('gemDisplay').textContent = game.gems;
   document.getElementById('gemGachaDisplay').textContent = game.gems;
   document.getElementById('stageDisplay').textContent = game.stage + (game.stage % 10 === 0 ? ' 👑BOSS' : '');
-  
   const hp = Math.max(0, Math.floor(game.enemyHp));
   document.getElementById('currentHp').textContent = hp.toLocaleString();
   document.getElementById('maxHp').textContent = game.enemyMaxHp.toLocaleString();
   document.getElementById('hpBar').style.width = Math.max(0, (game.enemyHp / game.enemyMaxHp) * 100) + '%';
-  
   document.getElementById('totalAtkDisplay').textContent = getTotalAttack().toLocaleString();
   document.getElementById('weaponBonusDisplay').textContent = wb.toFixed(2);
   document.getElementById('weaponBonusDetail').textContent = wb.toFixed(2);
   document.getElementById('playerAtkDisplay').textContent = getPlayerAttack().toLocaleString();
   document.getElementById('memberAtkDisplay').textContent = getTotalMemberAttack().toLocaleString();
-  
   document.getElementById('attackCost').textContent = getAttackCost().toLocaleString();
   document.getElementById('hireCost').textContent = getHireCost().toLocaleString();
-  
-  // ボタン状態
-  const attackBtn = document.getElementById('btnAttack');
-  const hireBtn = document.getElementById('btnHire');
-  
-  if (game.gold < getAttackCost()) {
-    attackBtn.classList.add('disabled');
-  } else {
-    attackBtn.classList.remove('disabled');
-  }
-  
-  if (game.gold < getHireCost()) {
-    hireBtn.classList.add('disabled');
-  } else {
-    hireBtn.classList.remove('disabled');
-  }
+  document.getElementById('btnAttack').classList.toggle('disabled', game.gold < getAttackCost());
+  document.getElementById('btnHire').classList.toggle('disabled', game.gold < getHireCost());
 }
 
 function createDamageEffect(x, y, damage) {
@@ -1054,10 +881,7 @@ function createDamageEffect(x, y, damage) {
   effect.style.left = (x - 25) + 'px';
   effect.style.top = (y - 30) + 'px';
   document.body.appendChild(effect);
-  
-  setTimeout(() => {
-    effect.remove();
-  }, 1000);
+  setTimeout(() => effect.remove(), 1000);
 }
 
 function showDropNotice(weapon, rarity) {
@@ -1072,22 +896,19 @@ function showDropNotice(weapon, rarity) {
 }
 
 function showFloorClear() {
-  // 簡単なフロアクリア演出
   const notice = document.createElement('div');
   notice.style.cssText = `
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    font-size: 32px; font-weight: 900; color: #FFD700; z-index: 1000;
-    text-shadow: 0 4px 8px rgba(0,0,0,0.8); pointer-events: none;
-    animation: floor-clear 2s ease-out forwards;
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-size:32px;font-weight:900;color:#FFD700;z-index:1000;
+    text-shadow:0 4px 8px rgba(0,0,0,0.8);pointer-events:none;
+    font-family:'M PLUS Rounded 1c',sans-serif;
+    animation:floor-clear 2s ease-out forwards;
   `;
   notice.textContent = `FLOOR ${game.stage} CLEAR! 🎉`;
   document.body.appendChild(notice);
   setTimeout(() => notice.remove(), 2000);
 }
 
-// ================================================================
-// タブ切り替え
-// ================================================================
 function switchTab(tabName) {
   const tabs = ['battle', 'weapon', 'gacha', 'mission'];
   document.querySelectorAll('.tab-btn').forEach((btn, index) => {
@@ -1096,14 +917,10 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach((content, index) => {
     content.classList.toggle('active', tabs[index] === tabName);
   });
-  
   if (tabName === 'weapon') renderWeapons();
   if (tabName === 'mission') renderMissions();
 }
 
-// ================================================================
-// セーブ・ロード
-// ================================================================
 function saveGame() {
   localStorage.setItem('dungeonRPGComplete', JSON.stringify(game));
 }
@@ -1111,53 +928,29 @@ function saveGame() {
 function loadGame() {
   const saved = localStorage.getItem('dungeonRPGComplete');
   if (saved) {
-    try {
-      const loadedData = JSON.parse(saved);
-      game = { ...game, ...loadedData };
-    } catch (e) {
-      console.error('セーブデータの読み込みに失敗しました:', e);
-    }
+    try { game = { ...game, ...JSON.parse(saved) }; }
+    catch (e) { console.error('セーブデータ読み込み失敗:', e); }
   }
 }
 
-// ================================================================
-// メインループ
-// ================================================================
-
-// 仲間の自動攻撃（0.5秒ごと）
 let memberAttackIndex = 0;
 setInterval(() => {
   if (game.members.length === 0 || game.enemyHp <= 0) return;
-
   const member = game.members[memberAttackIndex % game.members.length];
   memberAttackIndex++;
-
   const damage = Math.floor(getMemberAttack(member) / 2);
   if (damage > 0) {
     memberAttackEffect(member);
-    setTimeout(() => {
-      if (game.enemyHp > 0) {
-        dealDamage(damage, null, null);
-      }
-    }, 350);
+    setTimeout(() => { if (game.enemyHp > 0) dealDamage(damage, null, null); }, 350);
   }
 }, 500);
 
-// ブーストタイマー（1秒ごと）
 setInterval(() => {
-  if (game.boostTimer > 0) {
-    game.boostTimer--;
-    updateDisplay();
-    saveGame();
-  }
+  if (game.boostTimer > 0) { game.boostTimer--; updateDisplay(); saveGame(); }
 }, 1000);
 
-// 自動セーブ（5秒ごと）
 setInterval(saveGame, 5000);
 
-// ================================================================
-// 初期化
-// ================================================================
 loadGame();
 renderParty();
 renderWeapons();
