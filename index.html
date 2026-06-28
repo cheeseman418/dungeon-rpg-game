@@ -151,6 +151,12 @@
       animation: enemyFloat 4s ease-in-out infinite;
       transition: transform 0.15s; z-index: 2; position: relative;
     }
+    .enemy-emoji img {
+      width: 60px;
+      height: 60px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
     @keyframes enemyFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
     .enemy-emoji.hit { animation: enemyHit 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) both; }
     @keyframes enemyHit {
@@ -191,6 +197,13 @@
       display: flex; align-items: center; gap: 2px;
       font-size: 8px; font-weight: 700;
     }
+    .member-chip img {
+      width: 16px;
+      height: 16px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border-radius: 2px;
+    }
     .pixel-chip {
       display: flex; align-items: center; gap: 2px;
       background: linear-gradient(135deg, rgba(217,70,239,0.18), rgba(217,70,239,0.06));
@@ -198,6 +211,13 @@
       border-radius: var(--border-radius-md);
       padding: 2px 4px;
       font-size: 8px; font-weight: 700; color:#f0abfc;
+    }
+    .pixel-chip img {
+      width: 16px;
+      height: 16px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border-radius: 2px;
     }
 
     .stats-bar { background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9)); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); font-size: 11px; }
@@ -232,6 +252,12 @@
     .item-card.equipped { border-color:var(--gold-color); background:rgba(251,191,36,0.05); }
     .item-card.pet-active { border-color:#d946ef; background:rgba(217,70,239,0.05); }
     .item-emoji { font-size: 20px; min-width: 28px; text-align: center; }
+    .item-emoji img {
+      width: 28px;
+      height: 28px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
     .item-info { flex: 1; min-width: 0; }
     .item-name { font-size: 11px; font-weight: 900; margin-bottom: 1px; }
     .item-meta { font-size: 8px; color: var(--text-secondary); margin: 1px 0; }
@@ -383,6 +409,11 @@
 
       .enemy-emoji {
         font-size: 50px;
+      }
+
+      .enemy-emoji img {
+        width: 50px;
+        height: 50px;
       }
 
       .section-content {
@@ -612,6 +643,24 @@
 </div>
 
 <script>
+const HERO_IMAGES = {
+  'h_maoh': 'images/character_monster_mao_02.png',
+  'h_gold': 'images/character_hero_gold.png',
+  'h_silver': 'images/character_hero_silver.png',
+  'h_shinigami': 'images/character_monster_shinigami_02.png',
+  'h_white': 'images/character_hero_white.png',
+  'h_black': 'images/character_hero_black.png',
+  'h_pink': 'images/character_hero_pink.png',
+  'h_yellow': 'images/character_hero_yellow_man.png',
+  'h_green': 'images/character_hero_green.png',
+  'h_blue': 'images/character_hero_blue_man.png',
+  'h_red': 'images/character_hero_red.png',
+  'h_princess': 'images/character_hime_01_white_silver.png',
+  'h_prince': 'images/character_oji_03_green_gold.png',
+  'h_mage': 'images/character_mahotsukai_01_purple.png',
+  'h_warrior': 'images/character_senshi_red.png'
+};
+
 const RARITIES = { common:{name:'コモン',symbol:'⚪',cls:'rarity-common',rate:0.60,baseBonus:0.15}, rare:{name:'レア',symbol:'🔵',cls:'rarity-rare',rate:0.25,baseBonus:0.50}, sr:{name:'スーパーレア',symbol:'🟠',cls:'rarity-sr',rate:0.12,baseBonus:2.00}, legend:{name:'レジェンド',symbol:'🌟',cls:'rarity-legend',rate:0.03,baseBonus:8.00} };
 function getWeaponNeededForNextLevel(lv) { return Math.pow(2, lv); }
 const WEAPONS = { common:[{id:'w1',name:'木の剣',emoji:'🗡️'},{id:'w2',name:'革の弓',emoji:'🏹'},{id:'w3',name:'見習いの杖',emoji:'🪄'}], rare:[{id:'w4',name:'鋼の剣',emoji:'⚔️'},{id:'w5',name:'狩人の弓',emoji:'🎯'},{id:'w6',name:'魔法の杖',emoji:'🔮'}], sr:[{id:'w7',name:'炎の剣',emoji:'🔥'},{id:'w8',name:'エルフの弓',emoji:'✨'},{id:'w9',name:'賢者の杖',emoji:'🔯'}], legend:[{id:'w10',name:'エクスカリバー',emoji:'🌟'},{id:'w11',name:'神弓オリオン',emoji:'💫'},{id:'w12',name:'創世の杖',emoji:'🌠'}] };
@@ -785,7 +834,13 @@ function hireMember() { const c=getHireCost(); if(game.gold<c)return; game.gold-
 function renderParty() {
   const c=document.getElementById('partyDisplay'); c.innerHTML='';
   game.members.forEach(m=>{ c.innerHTML+=`<div class="member-chip" id="member-${m.id}" style="border-color:${m.color}88">${m.emoji} ${m.name}</div>`; });
-  Object.entries(game.gachaHeroes).forEach(([id,d])=>{ const def=GACHA_HEROES.find(h=>h.id===id); if(def) c.innerHTML+=`<div class="pixel-chip" id="hero-${id}">${RARITIES[def.rarity].symbol} ${def.name} Lv.${d.level}</div>`; });
+  Object.entries(game.gachaHeroes).forEach(([id,d])=>{ 
+    const def=GACHA_HEROES.find(h=>h.id===id); 
+    if(def) { 
+      const imgPath = HERO_IMAGES[id] || 'images/default.png';
+      c.innerHTML+=`<div class="pixel-chip" id="hero-${id}"><img src="${imgPath}" alt="${def.name}" onerror="this.style.display='none'"> ${RARITIES[def.rarity].symbol} ${def.name} Lv.${d.level}</div>`; 
+    }
+  });
   document.getElementById('partyCount').textContent=game.members.length+Object.keys(game.gachaHeroes).length;
 }
 function memberAttackEffect(m) { const el=document.getElementById('member-'+m.id); if(el){ el.style.background=`linear-gradient(135deg, ${m.color}44, ${m.color}22)`; setTimeout(()=>{el.style.background='linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))';},200); } }
