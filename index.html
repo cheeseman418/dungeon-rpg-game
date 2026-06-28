@@ -190,7 +190,6 @@
     .menu-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .menu-item-name { font-size: 11px; font-weight: 900; }
     .menu-item-stat { font-size: 9px; color: var(--text-secondary); }
-    .menu-item-actions { display: flex; gap: 4px; }
     .menu-btn { padding: 5px 8px; background: linear-gradient(135deg, var(--primary-color), #1e40af); border: none; border-radius: var(--border-radius-sm); color: var(--text-primary); font-weight: 700; font-size: 8px; cursor: pointer; }
     .menu-btn.equip { background: linear-gradient(135deg, var(--gold-color), #f59e0b); color: #0f172a; }
     .menu-btn.active { background: linear-gradient(135deg, #10b981, #34d399); }
@@ -219,130 +218,164 @@
       display: none;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at center, #1a0d33 0%, #0a0515 70%, #000000 100%);
+      overflow: hidden;
     }
     #gachaEffectContainer.active {
       display: flex;
     }
 
-    .gacha-stage {
+    .gacha-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .gacha-content {
       position: relative;
-      width: 500px;
-      height: 700px;
-      max-width: 95vw;
-      max-height: 95vh;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* ドラゴンの基本アニメーション */
-    .dragon-container {
+    /* ========== 武器ガチャ演出 ========== */
+    .weapon-gacha-bg {
+      background: linear-gradient(135deg, #1a0d33 0%, #0a0515 50%, #000000 100%);
+      animation: weaponBgPulse 3s ease-in-out infinite;
+    }
+    @keyframes weaponBgPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+    }
+
+    .weapon-sword {
+      font-size: 120px;
+      animation: swordSpin 2s ease-in-out;
+    }
+    @keyframes swordSpin {
+      0% { opacity: 0; transform: scale(0) rotate(0deg); }
+      30% { opacity: 1; transform: scale(1.1) rotate(180deg); }
+      70% { opacity: 1; transform: scale(1) rotate(360deg); }
+      100% { opacity: 1; transform: scale(1) rotate(360deg); }
+    }
+
+    .weapon-light {
       position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      animation: dragonFloat 3s ease-in-out infinite;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(251,191,36,0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: weaponLightBurst 2s ease-out;
     }
-    @keyframes dragonFloat {
-      0%, 100% { transform: translateX(-50%) translateY(0px); }
-      50% { transform: translateX(-50%) translateY(-8px); }
-    }
-
-    .belly-glow { animation: bellyPulse 2s ease-in-out infinite; }
-    @keyframes bellyPulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.05); }
+    @keyframes weaponLightBurst {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
     }
 
-    .belly-crack {
-      opacity: 0;
-      animation: crackAnimation 5s ease-in-out infinite;
-    }
-    @keyframes crackAnimation {
-      0%, 20% { opacity: 0; transform: scaleX(0.1); }
-      30%, 60% { opacity: 1; transform: scaleX(1); }
-      70%, 100% { opacity: 0; transform: scaleX(0.1); }
-    }
-
-    .egg-container {
+    .weapon-particle {
       position: absolute;
-      bottom: 150px;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      animation: eggEmerge 5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+      animation: weaponParticleFly 2s ease-out forwards;
     }
-    @keyframes eggEmerge {
-      0%, 25% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(80px) scale(0.3);
-      }
-      35% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0px) scale(1.1);
-      }
-      45%, 70% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0px) scale(1);
-      }
-      80%, 100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(100px) scale(0.8);
-      }
+    @keyframes weaponParticleFly {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
     }
 
-    .egg-wobble {
-      animation: wobble 5s ease-in-out infinite;
-      transform-origin: bottom center;
+    /* ========== キャラガチャ演出 ========== */
+    .hero-gacha-bg {
+      background: linear-gradient(135deg, #0a0515 0%, #1a0d4d 50%, #0a0515 100%);
+      animation: heroBgFlash 3s ease-in-out infinite;
     }
-    @keyframes wobble {
-      0%, 30% { transform: rotate(0deg); }
-      40% { transform: rotate(-4deg); }
-      50% { transform: rotate(4deg); }
-      60% { transform: rotate(-2deg); }
-      70% { transform: rotate(0deg); }
-      100% { transform: rotate(0deg); }
+    @keyframes heroBgFlash {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3) hue-rotate(30deg); }
     }
 
-    .light-burst {
+    .hero-gate {
+      font-size: 150px;
+      animation: gateOpen 2.5s ease-out;
+    }
+    @keyframes gateOpen {
+      0% { opacity: 0; transform: scale(0) rotateY(90deg); }
+      40% { opacity: 1; transform: scale(1.1) rotateY(0deg); }
+      100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+    }
+
+    .hero-aura {
       position: absolute;
-      top: 280px;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      animation: lightBurst 5s ease-out infinite;
+      width: 250px;
+      height: 250px;
+      border: 3px solid;
+      border-radius: 50%;
+      animation: heroAuraRotate 2.5s linear;
     }
-    @keyframes lightBurst {
-      0%, 25% { opacity: 0; transform: translateX(-50%) scale(0); }
-      35% { opacity: 1; transform: translateX(-50%) scale(2); }
-      45% { opacity: 0; transform: translateX(-50%) scale(0); }
-      100% { opacity: 0; }
-    }
-
-    .particle {
-      position: absolute;
-      opacity: 0;
-      animation: particleFloat 5s ease-out infinite;
-    }
-    .particle:nth-child(1) { animation-delay: 1.5s; }
-    .particle:nth-child(2) { animation-delay: 1.7s; }
-    .particle:nth-child(3) { animation-delay: 1.9s; }
-    .particle:nth-child(4) { animation-delay: 2.1s; }
-    @keyframes particleFloat {
-      0%, 30% { opacity: 0; transform: translateY(0) scale(0); }
-      40% { opacity: 1; transform: translateY(-50px) scale(1); }
-      70% { opacity: 0.5; transform: translateY(-120px) scale(0.5); }
-      100% { opacity: 0; transform: translateY(-200px) scale(0); }
+    .hero-aura-1 { border-color: #a78bfa; animation-delay: 0s; }
+    .hero-aura-2 { border-color: #06b6d4; animation-delay: 0.3s; }
+    .hero-aura-3 { border-color: #fbbf24; animation-delay: 0.6s; }
+    @keyframes heroAuraRotate {
+      0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: scale(2) rotate(360deg); opacity: 0; }
     }
 
-    .title {
+    .hero-star {
       position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      animation: titleGlow 2s ease-in-out infinite;
+      font-size: 40px;
+      animation: heroStarPop 2.5s ease-out forwards;
     }
-    @keyframes titleGlow {
-      0%, 100% { filter: drop-shadow(0 0 10px #ffcc00); }
-      50% { filter: drop-shadow(0 0 20px #ff8800); }
+    @keyframes heroStarPop {
+      0% { opacity: 0; transform: translate(0, 0) scale(0); }
+      50% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+    }
+
+    /* ========== 転生演出 ========== */
+    .prestige-gacha-bg {
+      background: linear-gradient(135deg, #0f1a05 0%, #1a3009 50%, #0f1a05 100%);
+      animation: prestigeBgShine 3s ease-in-out infinite;
+    }
+    @keyframes prestigeBgShine {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 0px #fbbf24); }
+      50% { filter: brightness(1.2) drop-shadow(0 0 30px #fbbf24); }
+    }
+
+    .prestige-phoenix {
+      font-size: 140px;
+      animation: phoenixRise 3s ease-out;
+    }
+    @keyframes phoenixRise {
+      0% { opacity: 0; transform: translateY(100px) scale(0.5); }
+      30% { opacity: 1; transform: translateY(0) scale(1.2); }
+      100% { opacity: 0.8; transform: translateY(-50px) scale(1); }
+    }
+
+    .prestige-ring {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border: 2px solid #fbbf24;
+      border-radius: 50%;
+      animation: prestigeRingExpand 3s ease-out;
+    }
+    .prestige-ring-1 { animation-delay: 0.2s; }
+    .prestige-ring-2 { animation-delay: 0.5s; }
+    .prestige-ring-3 { animation-delay: 0.8s; }
+    @keyframes prestigeRingExpand {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    .prestige-sparkle {
+      position: absolute;
+      animation: prestigeSparkle 3s ease-out forwards;
+    }
+    @keyframes prestigeSparkle {
+      0% { opacity: 0; transform: translate(0, 0) scale(0); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1); }
     }
 
     /* 広告 */
@@ -368,7 +401,6 @@
       .banner-ad { height: 60px; }
       .game-container { width: 98%; }
       .modal-content { width: 95%; max-height: 60vh; }
-      .gacha-stage { width: 100vw; height: 100vh; }
     }
 
     @media screen and (min-width: 601px) {
@@ -512,159 +544,8 @@
 
 <!-- ガチャ演出 -->
 <div id="gachaEffectContainer">
-  <div class="gacha-stage">
-    <!-- タイトル -->
-    <div class="title">
-      <svg width="400" height="50" viewBox="0 0 400 50">
-        <defs>
-          <linearGradient id="titleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="50%" stop-color="#ffee88"/>
-            <stop offset="100%" stop-color="#ff8800"/>
-          </linearGradient>
-        </defs>
-        <text x="200" y="35" text-anchor="middle" font-size="24" font-weight="bold"
-              font-family="Arial, sans-serif" letter-spacing="3"
-              fill="url(#titleGrad)" stroke="#aa4400" stroke-width="1">
-          ✦ GACHA ✦
-        </text>
-      </svg>
-    </div>
-
-    <!-- ドラゴン本体 -->
-    <div class="dragon-container">
-      <svg width="350" height="400" viewBox="0 0 350 400">
-        <defs>
-          <radialGradient id="dragonBody" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stop-color="#2d5016"/>
-            <stop offset="50%" stop-color="#1a3009"/>
-            <stop offset="100%" stop-color="#0f1a05"/>
-          </radialGradient>
-          
-          <radialGradient id="bellyGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#e6d4a3"/>
-            <stop offset="60%" stop-color="#c4a570"/>
-            <stop offset="100%" stop-color="#8b7355"/>
-          </radialGradient>
-          
-          <radialGradient id="bellyLight" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-            <stop offset="40%" stop-color="#ffe066" stop-opacity="0.7"/>
-            <stop offset="100%" stop-color="#ff8800" stop-opacity="0"/>
-          </radialGradient>
-
-          <radialGradient id="burstLight" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="30%" stop-color="#ffee00"/>
-            <stop offset="70%" stop-color="#ff6600"/>
-            <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-
-        <!-- ドラゴンの翼（左） -->
-        <path d="M 80,180 Q 20,120 30,80 Q 50,60 75,90 Q 50,140 90,170 Z"
-              fill="#1a4009" stroke="#0f1a05" stroke-width="2"/>
-        
-        <!-- ドラゴンの翼（右） -->
-        <path d="M 270,180 Q 330,120 320,80 Q 300,60 275,90 Q 300,140 260,170 Z"
-              fill="#1a4009" stroke="#0f1a05" stroke-width="2"/>
-
-        <!-- ドラゴンの胴体 -->
-        <ellipse cx="175" cy="220" rx="80" ry="110"
-                 fill="url(#dragonBody)" stroke="#0f1a05" stroke-width="3"/>
-
-        <!-- お腹の基本部分 -->
-        <ellipse cx="175" cy="230" rx="50" ry="70" fill="url(#bellyGrad)"/>
-
-        <!-- お腹の光る部分 -->
-        <ellipse cx="175" cy="230" rx="40" ry="55" fill="url(#bellyLight)" class="belly-glow"/>
-
-        <!-- お腹の割れ目 -->
-        <ellipse cx="175" cy="230" rx="35" ry="45" 
-                 fill="none" stroke="#fff8e0" stroke-width="4" 
-                 stroke-dasharray="10 5" class="belly-crack"/>
-
-        <!-- ドラゴンの頭 -->
-        <ellipse cx="175" cy="120" rx="45" ry="40" fill="url(#dragonBody)"/>
-
-        <!-- 角 -->
-        <path d="M 150,90 Q 140,60 145,45 Q 150,40 155,50 Q 150,70 160,90 Z" fill="#8b6914"/>
-        <path d="M 200,90 Q 210,60 205,45 Q 200,40 195,50 Q 200,70 190,90 Z" fill="#8b6914"/>
-
-        <!-- 目 -->
-        <ellipse cx="160" cy="110" rx="8" ry="6" fill="#ff4500"/>
-        <ellipse cx="190" cy="110" rx="8" ry="6" fill="#ff4500"/>
-        <ellipse cx="160" cy="110" rx="3" ry="3" fill="#000"/>
-        <ellipse cx="190" cy="110" rx="3" ry="3" fill="#000"/>
-
-        <!-- 鼻 -->
-        <ellipse cx="175" cy="130" rx="6" ry="4" fill="#0f1a05"/>
-
-        <!-- 腕 -->
-        <ellipse cx="120" cy="200" rx="25" ry="40" fill="url(#dragonBody)" transform="rotate(-20 120 200)"/>
-        <ellipse cx="230" cy="200" rx="25" ry="40" fill="url(#dragonBody)" transform="rotate(20 230 200)"/>
-      </svg>
-    </div>
-
-    <!-- 光の爆発 -->
-    <div class="light-burst">
-      <svg width="200" height="200" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="80" fill="url(#burstLight)"/>
-      </svg>
-    </div>
-
-    <!-- 卵 -->
-    <div class="egg-container">
-      <div class="egg-wobble">
-        <svg width="80" height="100" viewBox="0 0 80 100">
-          <defs>
-            <radialGradient id="eggGrad" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="30%" stop-color="#ffe8b0"/>
-              <stop offset="70%" stop-color="#ffd700"/>
-              <stop offset="100%" stop-color="#b8860b"/>
-            </radialGradient>
-          </defs>
-          
-          <!-- 卵本体 -->
-          <ellipse cx="40" cy="55" rx="30" ry="40" fill="url(#eggGrad)" stroke="#b8860b" stroke-width="2"/>
-          
-          <!-- 卵の模様 -->
-          <path d="M 25,45 Q 40,35 55,45" fill="none" stroke="#b8860b" stroke-width="1.5" opacity="0.7"/>
-          <path d="M 20,65 Q 40,55 60,65" fill="none" stroke="#b8860b" stroke-width="1.5" opacity="0.6"/>
-          
-          <!-- ハイライト -->
-          <ellipse cx="32" cy="40" rx="8" ry="12" fill="white" opacity="0.6"/>
-          
-          <!-- 星マーク -->
-          <polygon points="40,25 42,32 49,32 44,37 46,44 40,40 34,44 36,37 31,32 38,32" 
-                   fill="#ffffff" opacity="0.8"/>
-        </svg>
-      </div>
-    </div>
-
-    <!-- パーティクル -->
-    <div class="particle" style="top: 300px; left: 180px;">
-      <svg width="20" height="20" viewBox="0 0 20 20">
-        <polygon points="10,2 12,8 18,8 13,12 15,18 10,14 5,18 7,12 2,8 8,8" fill="#ffee00"/>
-      </svg>
-    </div>
-    <div class="particle" style="top: 320px; left: 280px;">
-      <svg width="15" height="15" viewBox="0 0 15 15">
-        <circle cx="7.5" cy="7.5" r="6" fill="#ff8800"/>
-      </svg>
-    </div>
-    <div class="particle" style="top: 310px; left: 120px;">
-      <svg width="18" height="18" viewBox="0 0 18 18">
-        <polygon points="9,1 11,7 17,7 12,11 14,17 9,13 4,17 6,11 1,7 7,7" fill="#ffffff"/>
-      </svg>
-    </div>
-    <div class="particle" style="top: 290px; left: 320px;">
-      <svg width="12" height="12" viewBox="0 0 12 12">
-        <circle cx="6" cy="6" r="5" fill="#ffcc00"/>
-      </svg>
-    </div>
-  </div>
+  <div class="gacha-bg" id="gachaBg"></div>
+  <div class="gacha-content" id="gachaContent"></div>
 </div>
 
 <!-- 広告 -->
@@ -779,7 +660,6 @@ function tryWeaponLevelUp(id) { const w=game.weapons[id]; if(!w)return; const n=
 function equipWeapon(id) { game.equippedWeapon=id; updateDisplay(); saveGame(); renderMenuContent(currentMenuType); }
 function findWeaponById(id) { for(const r of Object.keys(WEAPONS)){const w=WEAPONS[r].find(x=>x.id===id);if(w)return w;} return null; }
 
-/* メニューシステム */
 let currentMenuType = null;
 
 function openMenu(type) {
@@ -881,14 +761,144 @@ function switchGachaTab(t) {
   document.getElementById('gacha-hero-panel').classList.toggle('active',t==='hero'); 
 }
 
-function playGachaEffect() {
+/* ========== ガチャ演出システム ========== */
+function createWeaponGachaEffect() {
+  const content = document.getElementById('gachaContent');
+  content.innerHTML = '';
+  
+  // タイトル
+  const title = document.createElement('div');
+  title.style.cssText = 'position:absolute; top:50px; font-size:32px; font-weight:900; color:#fbbf24; text-shadow:0 0 20px #ff8800; animation:weaponBgPulse 2s infinite;';
+  title.textContent = '🗡️ WEAPON GACHA';
+  content.appendChild(title);
+  
+  // 剣
+  const sword = document.createElement('div');
+  sword.className = 'weapon-sword';
+  sword.textContent = '⚔️';
+  content.appendChild(sword);
+  
+  // 光
+  const light = document.createElement('div');
+  light.className = 'weapon-light';
+  content.appendChild(light);
+  
+  // パーティクル
+  for(let i = 0; i < 12; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'weapon-particle';
+    const angle = (360 / 12) * i;
+    const distance = 150;
+    const tx = Math.cos(angle * Math.PI / 180) * distance;
+    const ty = Math.sin(angle * Math.PI / 180) * distance;
+    particle.style.cssText = `--tx:${tx}px; --ty:${ty}px; left:50%; top:50%; transform:translateX(-50%) translateY(-50%);`;
+    particle.textContent = '✨';
+    particle.style.fontSize = '20px';
+    particle.style.animationDelay = (0.1 * i) + 's';
+    content.appendChild(particle);
+  }
+}
+
+function createHeroGachaEffect() {
+  const content = document.getElementById('gachaContent');
+  content.innerHTML = '';
+  
+  // タイトル
+  const title = document.createElement('div');
+  title.style.cssText = 'position:absolute; top:50px; font-size:32px; font-weight:900; background:linear-gradient(135deg, #a78bfa 0%, #06b6d4 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-shadow:0 0 20px rgba(167,139,250,0.5);';
+  title.textContent = '🦸 HERO GACHA';
+  content.appendChild(title);
+  
+  // 魔法陣
+  const gate = document.createElement('div');
+  gate.className = 'hero-gate';
+  gate.textContent = '✨';
+  content.appendChild(gate);
+  
+  // オーラ
+  for(let i = 1; i <= 3; i++) {
+    const aura = document.createElement('div');
+    aura.className = `hero-aura hero-aura-${i}`;
+    content.appendChild(aura);
+  }
+  
+  // 星パーティクル
+  const starEmojis = ['⭐', '✨', '💫'];
+  for(let i = 0; i < 16; i++) {
+    const star = document.createElement('div');
+    star.className = 'hero-star';
+    const angle = (360 / 16) * i;
+    const distance = 180;
+    const tx = Math.cos(angle * Math.PI / 180) * distance;
+    const ty = Math.sin(angle * Math.PI / 180) * distance;
+    star.style.cssText = `--tx:${tx}px; --ty:${ty}px; left:50%; top:50%; transform:translateX(-50%) translateY(-50%);`;
+    star.textContent = starEmojis[i % 3];
+    star.style.animationDelay = (0.08 * i) + 's';
+    content.appendChild(star);
+  }
+}
+
+function createPrestigeGachaEffect() {
+  const content = document.getElementById('gachaContent');
+  content.innerHTML = '';
+  
+  // タイトル
+  const title = document.createElement('div');
+  title.style.cssText = 'position:absolute; top:50px; font-size:32px; font-weight:900; color:#fbbf24; text-shadow:0 0 30px #fbbf24, 0 0 60px #ff8800;';
+  title.textContent = '🔥 PRESTIGE 🔥';
+  content.appendChild(title);
+  
+  // フェニックス
+  const phoenix = document.createElement('div');
+  phoenix.className = 'prestige-phoenix';
+  phoenix.textContent = '🔥';
+  content.appendChild(phoenix);
+  
+  // リング
+  for(let i = 1; i <= 3; i++) {
+    const ring = document.createElement('div');
+    ring.className = `prestige-ring prestige-ring-${i}`;
+    content.appendChild(ring);
+  }
+  
+  // キラキラパーティクル
+  for(let i = 0; i < 20; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'prestige-sparkle';
+    const angle = (360 / 20) * i;
+    const distance = 200;
+    const tx = Math.cos(angle * Math.PI / 180) * distance;
+    const ty = Math.sin(angle * Math.PI / 180) * distance;
+    sparkle.style.cssText = `--tx:${tx}px; --ty:${ty}px; left:50%; top:50%; transform:translateX(-50%) translateY(-50%);`;
+    sparkle.textContent = '✨';
+    sparkle.style.fontSize = '24px';
+    sparkle.style.animationDelay = (0.06 * i) + 's';
+    content.appendChild(sparkle);
+  }
+}
+
+function playGachaEffect(type) {
   return new Promise(resolve => {
     const container = document.getElementById('gachaEffectContainer');
+    const bg = document.getElementById('gachaBg');
+    
+    // 背景を設定
+    if(type === 'weapon') {
+      bg.className = 'gacha-bg weapon-gacha-bg';
+      createWeaponGachaEffect();
+    } else if(type === 'hero') {
+      bg.className = 'gacha-bg hero-gacha-bg';
+      createHeroGachaEffect();
+    } else if(type === 'prestige') {
+      bg.className = 'gacha-bg prestige-gacha-bg';
+      createPrestigeGachaEffect();
+    }
+    
     container.classList.add('active');
     setTimeout(() => {
       container.classList.remove('active');
       resolve();
-    }, 5000);
+    }, 3000);
   });
 }
 
@@ -897,7 +907,7 @@ async function doGacha(c) {
   if(game.gems<costs[c])return; 
   game.gems-=costs[c]; 
   
-  await playGachaEffect();
+  await playGachaEffect('weapon');
   
   for(let i=0;i<c;i++){
     addWeapon(getRandomWeapon(rollRarity()).id, rollRarity());
@@ -912,7 +922,7 @@ async function doHeroGacha(c) {
   if(game.gems<costs[c])return; 
   game.gems-=costs[c]; 
   
-  await playGachaEffect();
+  await playGachaEffect('hero');
   
   for(let i=0;i<c;i++){ 
     const h=getRandomHero(rollHeroRarity()); 
@@ -954,7 +964,7 @@ async function prestige() {
     const pool = WEAPONS[rarity];
     const w = pool[Math.floor(Math.random() * pool.length)];
     addWeapon(w.id, rarity);
-    await playGachaEffect();
+    await playGachaEffect('prestige');
   }
   
   document.getElementById('btnPrestige').style.display='none'; renderParty(); spawnEnemy(); updateDisplay(); saveGame();
@@ -990,8 +1000,8 @@ function switchTab(t) {
   document.querySelectorAll('.tab-content').forEach((e,i)=>e.classList.toggle('active',i===['battle','enhance','gacha'].indexOf(t))); 
 }
 
-function saveGame() { localStorage.setItem('dungeonRPGv8', JSON.stringify(game)); }
-function loadGame() { const s=localStorage.getItem('dungeonRPGv8'); if(s)try{game={...game,...JSON.parse(s)}; if(!game.gachaHeroes)game.gachaHeroes={};}catch(e){} }
+function saveGame() { localStorage.setItem('dungeonRPGv9', JSON.stringify(game)); }
+function loadGame() { const s=localStorage.getItem('dungeonRPGv9'); if(s)try{game={...game,...JSON.parse(s)}; if(!game.gachaHeroes)game.gachaHeroes={};}catch(e){} }
 
 let memberIdx=0;
 setInterval(()=>{
