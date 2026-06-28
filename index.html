@@ -153,6 +153,10 @@
       cursor: pointer;
       transition: all 0.2s;
       user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .enemy-card:active {
@@ -166,11 +170,23 @@
       font-weight: 600;
     }
 
-    .emoji {
-      font-size: 64px;
-      text-align: center;
+    .enemy-image-container {
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 15px;
-      line-height: 1;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .enemy-image {
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+      object-fit: contain;
     }
 
     .health-bar {
@@ -678,6 +694,10 @@
       .gacha-items {
         grid-template-columns: repeat(2, 1fr);
       }
+      .enemy-image-container {
+        width: 150px;
+        height: 150px;
+      }
     }
 
     @media (min-width: 769px) {
@@ -712,7 +732,9 @@
       <div class="battle-section">
         <div class="battle-card enemy-card" onclick="attackEnemy()">
           <div class="card-title">敵</div>
-          <div class="emoji" id="enemyEmoji">👹</div>
+          <div class="enemy-image-container">
+            <img id="enemyImage" class="enemy-image" src="images/m1.png" alt="敵">
+          </div>
           <div class="card-title" id="enemyName">敵 Lv1</div>
           <div class="health-bar">
             <div class="health-fill" id="enemyHealthBar" style="width: 100%;">
@@ -725,7 +747,7 @@
         <div class="battle-card">
           <div class="card-title">戦闘情報</div>
           <div style="font-size: 18px; font-weight: 700; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;">
-            <span id="battleInfoDisplay">準備中...</span>
+            <span id="battleInfoDisplay">準備完了</span>
           </div>
           <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">最新ダメージ</div>
@@ -950,6 +972,21 @@
   </div>
 
   <script>
+    // 敵画像リスト
+    const ENEMY_IMAGES = [
+      'images/m1.png', 'images/m2.png', 'images/m3.png', 'images/m6.png', 'images/m7.png', 'images/m8.png', 'images/m9.png',
+      'images/m10.png', 'images/m11.png', 'images/m12.png', 'images/m13.png', 'images/m14.png', 'images/m15.png', 'images/m16.png',
+      'images/m17.png', 'images/m18_.png', 'images/m19.png', 'images/m20.png', 'images/m22.png', 'images/m23.png', 'images/m24.png',
+      'images/m25.png', 'images/m26.png', 'images/m28.png', 'images/m29_2.png', 'images/m30.png', 'images/m31.png', 'images/m32.png',
+      'images/m33.png', 'images/m34_.png', 'images/m35.png', 'images/m36.png', 'images/m37.png', 'images/m38_2.png', 'images/m39.png',
+      'images/m40.png', 'images/m49.png', 'images/m50.png', 'images/m51.png', 'images/m52.png', 'images/m53.png', 'images/m54.png',
+      'images/m55.png', 'images/m56.png', 'images/m57.png', 'images/m58.png', 'images/m59.png', 'images/m60.png', 'images/m61.png',
+      'images/m62.png', 'images/m63.png', 'images/m64.png', 'images/m65.png', 'images/m66.png', 'images/m68.png', 'images/m69b.png',
+      'images/m70.png', 'images/m71.png', 'images/m72.png', 'images/m74.png', 'images/m75.png', 'images/m78.png', 'images/m79.png',
+      'images/m80_8.png', 'images/m81_5.png', 'images/m82.png', 'images/m83.png', 'images/m84.png', 'images/m85.png', 'images/m86.png',
+      'images/m87.png', 'images/m91.png'
+    ];
+
     // ゲーム状態
     const game = {
       gold: 100,
@@ -1032,14 +1069,15 @@
 
     // 敵生成
     function spawnEnemy() {
-      const emojis = ['👹', '🧛', '👻', '🐉', '🗿', '🦇', '🕷️', '👿'];
+      const randomImage = ENEMY_IMAGES[Math.floor(Math.random() * ENEMY_IMAGES.length)];
       const baseHp = 50 + game.stage * 20;
       currentEnemy = {
-        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        image: randomImage,
         name: `敵 Lv${game.stage}`,
         maxHp: baseHp,
         hp: baseHp
       };
+      document.getElementById('enemyImage').src = randomImage;
       document.getElementById('battleInfoDisplay').textContent = '準備完了';
       updateDisplay();
     }
@@ -1092,7 +1130,6 @@
       document.getElementById('drainCostDisplay').textContent = Math.floor(200 * Math.pow(1.1, game.drainLevel));
 
       if (currentEnemy) {
-        document.getElementById('enemyEmoji').textContent = currentEnemy.emoji;
         document.getElementById('enemyName').textContent = currentEnemy.name;
         const enemyHpPercent = (currentEnemy.hp / currentEnemy.maxHp) * 100;
         document.getElementById('enemyHealthBar').style.width = enemyHpPercent + '%';
