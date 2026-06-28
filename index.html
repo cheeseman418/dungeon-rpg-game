@@ -89,11 +89,12 @@
       padding: 10px;
       border-radius: 15px;
       overflow-x: auto;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
       flex: 1;
-      min-width: 100px;
+      min-width: 90px;
       padding: 12px;
       border: none;
       border-radius: 10px;
@@ -134,21 +135,23 @@
     }
 
     /* バトル画面 */
-    .battle-container {
+    .battle-section {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-bottom: 20px;
     }
 
-    .enemy-card {
+    .battle-card {
       background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
+      padding: 25px;
       border-radius: 15px;
       border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .enemy-card {
       cursor: pointer;
       transition: all 0.3s;
-      text-align: center;
     }
 
     .enemy-card:hover {
@@ -158,25 +161,30 @@
       transform: scale(1.02);
     }
 
-    .enemy-name {
+    .card-title {
       font-size: 14px;
       color: var(--text-secondary);
       margin-bottom: 10px;
+      font-weight: 600;
     }
 
-    .enemy-emoji {
-      font-size: 60px;
+    .emoji {
+      font-size: 64px;
+      text-align: center;
       margin-bottom: 15px;
     }
 
     .health-bar {
       width: 100%;
-      height: 25px;
+      height: 30px;
       background: rgba(0, 0, 0, 0.3);
       border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .health-fill {
@@ -186,24 +194,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
+      color: white;
+      width: 100%;
     }
 
     .hp-text {
       font-size: 12px;
       color: var(--text-secondary);
+      text-align: center;
     }
 
-    .skill-buttons {
+    .battle-buttons {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 20px;
     }
 
-    .skill-btn {
-      padding: 12px;
+    .battle-btn {
+      padding: 15px;
       border: none;
       border-radius: 10px;
       background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
@@ -214,14 +225,14 @@
       transition: all 0.3s;
     }
 
-    .skill-btn:hover {
+    .battle-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -256,7 +267,7 @@
       margin-bottom: 20px;
     }
 
-    .party-title {
+    .section-title {
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 15px;
@@ -293,20 +304,20 @@
     }
 
     .member-name {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
 
     .member-level {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
 
-    .member-atk {
-      font-size: 10px;
-      color: var(--gold-color);
+    .member-effect {
+      font-size: 9px;
+      color: var(--gem-color);
     }
 
     /* 強化画面 */
@@ -328,15 +339,15 @@
     .enhance-label {
       font-size: 12px;
       color: var(--text-secondary);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: 600;
     }
 
     .enhance-value {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--gold-color);
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     .enhance-cost {
@@ -403,7 +414,7 @@
     }
 
     .gacha-cost {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
       margin-top: 3px;
     }
@@ -427,7 +438,7 @@
       background: var(--glass-bg);
       border-radius: 15px;
       padding: 30px;
-      max-width: 550px;
+      max-width: 600px;
       width: 90%;
       max-height: 85vh;
       overflow-y: auto;
@@ -471,6 +482,11 @@
       font-size: 13px;
     }
 
+    .rarity-common { color: #a0aec0; }
+    .rarity-rare { color: #3b82f6; }
+    .rarity-sr { color: #f59e0b; }
+    .rarity-legend { color: #ec4899; }
+
     /* 動画演出 */
     #videoContainer {
       display: none;
@@ -513,13 +529,13 @@
 
     @media (max-width: 768px) {
       .ad-mobile { display: block; }
-      .battle-container { grid-template-columns: 1fr; }
+      .battle-section { grid-template-columns: 1fr; }
       .enhance-grid { grid-template-columns: repeat(2, 1fr); }
       .info-grid { grid-template-columns: repeat(2, 1fr); }
       .gacha-buttons { grid-template-columns: 1fr; }
       body { padding-bottom: 80px; }
       h1 { font-size: 28px; }
-      .tab-btn { min-width: 80px; font-size: 12px; }
+      .tab-btn { min-width: 75px; font-size: 12px; }
     }
 
     @media (min-width: 769px) {
@@ -535,7 +551,7 @@
       <div class="stats-header">
         <div class="stat-box">💰 Gold: <strong id="goldDisplay">0</strong></div>
         <div class="stat-box">💎 Gems: <strong id="gemsDisplay">0</strong></div>
-        <div class="stat-box">🏆 Stage: <strong id="stageDisplay">1</strong></div>
+        <div class="stat-box">🏆 Stage: <strong id="stageDisplay">1</strong>F</div>
         <div class="stat-box">📈 Level: <strong id="levelDisplay">1</strong></div>
         <div class="stat-box">✨ Prestige: <strong id="prestigeDisplay">0</strong></div>
       </div>
@@ -545,120 +561,109 @@
       <button class="tab-btn active" onclick="switchTab(0)">⚔️ バトル</button>
       <button class="tab-btn" onclick="switchTab(1)">⚙️ 強化</button>
       <button class="tab-btn" onclick="switchTab(2)">🎰 ガチャ</button>
-      <button class="tab-btn" onclick="switchTab(3)">🐾 ペット</button>
-      <button class="tab-btn" onclick="switchTab(4)">🏢 ギルド</button>
+      <button class="tab-btn" onclick="switchTab(3)">🏭 施設</button>
+      <button class="tab-btn" onclick="switchTab(4)">📊 統計</button>
     </div>
 
     <!-- バトルタブ -->
     <div class="tab-content active">
-      <div class="battle-container">
-        <div class="enemy-card" onclick="attackEnemy()">
-          <div class="enemy-name" id="enemyNameDisplay">敵 Lv1</div>
-          <div class="enemy-emoji" id="enemyEmoji">👹</div>
+      <div class="battle-section">
+        <div class="battle-card enemy-card" onclick="attackEnemy()">
+          <div class="card-title">敵</div>
+          <div class="emoji" id="enemyEmoji">👹</div>
+          <div class="card-title" id="enemyName">敵 Lv1</div>
           <div class="health-bar">
-            <div class="health-fill" id="enemyHealthFill" style="width: 100%;">
+            <div class="health-fill" id="enemyHealthBar" style="width: 100%;">
               <span id="enemyHpText">100/100</span>
             </div>
           </div>
+          <div class="hp-text">タップで攻撃</div>
         </div>
 
-        <div class="panel">
-          <div style="text-align: center; margin-bottom: 15px;">
-            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">プレイヤー</div>
-            <div style="font-size: 12px; color: var(--text-secondary);">相手をタップで攻撃</div>
+        <div class="battle-card">
+          <div class="card-title">相手の最新行動</div>
+          <div style="font-size: 18px; font-weight: 700; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;">
+            <span id="enemyActionDisplay">準備中...</span>
           </div>
-          <div class="health-bar">
-            <div class="health-fill" id="playerHealthFill" style="width: 100%; background: linear-gradient(90deg, #f43f5e, #fb7185);">
-              <span id="playerHpText">100/100</span>
-            </div>
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">プレイヤー受けたダメージ</div>
+            <div style="font-size: 20px; font-weight: 700; color: #f43f5e;" id="playerDamageDisplay">0</div>
           </div>
-          <div class="info-grid" style="margin-top: 15px;">
-            <div class="info-card">
-              <div class="info-label">攻撃力</div>
-              <div class="info-value" id="playerAtkDisplay">1.0x</div>
-            </div>
-            <div class="info-card">
-              <div class="info-label">防御力</div>
-              <div class="info-value" id="playerDefDisplay">0.0x</div>
-            </div>
-            <div class="info-card">
-              <div class="info-label">武器ボーナス</div>
-              <div class="info-value" id="weaponBonusDisplay">0%</div>
-            </div>
-            <div class="info-card">
-              <div class="info-label">仲間ボーナス</div>
-              <div class="info-value" id="heroBonusDisplay">0%</div>
-            </div>
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">プレイヤーのダメージ</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--gold-color);" id="playerDamageDealtDisplay">0</div>
           </div>
         </div>
       </div>
 
-      <div class="skill-buttons">
-        <button class="skill-btn" onclick="attackEnemy()">🗡️ 通常攻撃</button>
-        <button class="skill-btn" onclick="useSkill()">✨ スキル</button>
-        <button class="skill-btn" onclick="defend()">🛡️ 防御</button>
+      <div class="battle-buttons">
+        <button class="battle-btn" onclick="attackEnemy()">🗡️ 通常攻撃</button>
+        <button class="battle-btn" onclick="useSkill()">✨ スキル (3秒クール)</button>
       </div>
 
       <div class="info-grid">
         <div class="info-card">
-          <div class="info-label">ダメージ</div>
-          <div class="info-value" id="damageDisplay">0</div>
+          <div class="info-label">攻撃力</div>
+          <div class="info-value" id="playerAtkDisplay">1.0x</div>
         </div>
         <div class="info-card">
-          <div class="info-label">獲得Gold</div>
-          <div class="info-value" id="goldRewardDisplay">0</div>
+          <div class="info-label">武器ボーナス</div>
+          <div class="info-value" id="weaponBonusDisplay">0%</div>
         </div>
         <div class="info-card">
-          <div class="info-label">獲得Gems</div>
-          <div class="info-value" id="gemsRewardDisplay">0</div>
+          <div class="info-label">仲間ボーナス</div>
+          <div class="info-value" id="heroBonusDisplay">0%</div>
         </div>
         <div class="info-card">
-          <div class="info-label">クリア数</div>
-          <div class="info-value" id="clearDisplay">0</div>
+          <div class="info-label">施設ボーナス</div>
+          <div class="info-value" id="facilityBonusDisplay">0%</div>
         </div>
       </div>
 
       <div class="party-section">
-        <div class="party-title">🎭 ガチャヒーロー</div>
+        <div class="section-title">🎭 ガチャヒーロー</div>
         <div class="party-grid" id="partyDisplay"></div>
       </div>
     </div>
 
     <!-- 強化タブ -->
     <div class="tab-content">
+      <h2 style="margin-bottom: 15px;">基本ステータス強化</h2>
       <div class="enhance-grid">
         <div class="enhance-card">
           <div class="enhance-label">攻撃力</div>
-          <div class="enhance-value" id="atkLevelDisplay">1</div>
+          <div class="enhance-value" id="atkLvDisplay">1</div>
           <div class="enhance-cost">Cost: <span id="atkCostDisplay">100</span>G</div>
           <button class="enhance-btn" onclick="upgradeAttack()">強化</button>
         </div>
         <div class="enhance-card">
-          <div class="enhance-label">防御力</div>
-          <div class="enhance-value" id="defLevelDisplay">0</div>
-          <div class="enhance-cost">Cost: <span id="defCostDisplay">150</span>G</div>
-          <button class="enhance-btn" onclick="upgradeDefense()">強化</button>
-        </div>
-        <div class="enhance-card">
-          <div class="enhance-label">最大HP</div>
-          <div class="enhance-value" id="hpLevelDisplay">100</div>
+          <div class="enhance-label">HP</div>
+          <div class="enhance-value" id="hpLvDisplay">100</div>
           <div class="enhance-cost">Cost: <span id="hpCostDisplay">80</span>G</div>
           <button class="enhance-btn" onclick="upgradeHP()">強化</button>
         </div>
         <div class="enhance-card">
-          <div class="enhance-label">武器</div>
-          <div class="enhance-value" style="font-size: 18px;">⚔️</div>
-          <div class="enhance-cost"><span id="weaponCountDisplay">0</span>個所持</div>
-          <button class="enhance-btn" onclick="openMenu('weapon')">管理</button>
+          <div class="enhance-label">クリティカル</div>
+          <div class="enhance-value" id="critLvDisplay">0%</div>
+          <div class="enhance-cost">Cost: <span id="critCostDisplay">120</span>G</div>
+          <button class="enhance-btn" onclick="upgradeCrit()">強化</button>
+        </div>
+        <div class="enhance-card">
+          <div class="enhance-label">ドレイン</div>
+          <div class="enhance-value" id="drainLvDisplay">0%</div>
+          <div class="enhance-cost">Cost: <span id="drainCostDisplay">200</span>G</div>
+          <button class="enhance-btn" onclick="upgradeDrain()">強化</button>
         </div>
       </div>
 
+      <h2 style="margin-bottom: 15px; margin-top: 30px;">武器管理</h2>
+      <button class="battle-btn" style="width: 100%; margin-bottom: 15px;" onclick="openMenu('weapon')">⚔️ 武器一覧 (<span id="weaponCountDisplay">0</span>個)</button>
+
+      <h2 style="margin-bottom: 15px; margin-top: 30px;">転生</h2>
       <div class="panel">
-        <div style="text-align: center;">
-          <button class="skill-btn" onclick="prestige()" style="width: 100%;">✨ 転生する</button>
-          <div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;">
-            獲得報酬: <span id="prestigeRewardDisplay">0</span>個の武器
-          </div>
+        <button class="battle-btn" style="width: 100%; padding: 15px; font-size: 16px;" onclick="prestige()">✨ 転生する</button>
+        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px; text-align: center;">
+          獲得報酬: <strong style="color: var(--gold-color);">最大 <span id="prestigeRewardDisplay">0</span>個の武器</strong>
         </div>
       </div>
     </div>
@@ -667,76 +672,104 @@
     <div class="tab-content">
       <div class="gacha-section">
         <div class="gacha-title">🎁 武器ガチャ</div>
+        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">
+          コモン: 60% | レア: 25% | スーパーレア: 12% | レジェンド: 3%
+        </div>
         <div class="gacha-buttons">
-          <button class="gacha-btn" onclick="gachaWeapon(1)">
-            1回<br>
-            <span class="gacha-cost">10💎</span>
-          </button>
-          <button class="gacha-btn" onclick="gachaWeapon(3)">
-            3回<br>
-            <span class="gacha-cost">28💎</span>
-          </button>
-          <button class="gacha-btn" onclick="gachaWeapon(10)">
-            10回<br>
-            <span class="gacha-cost">90💎</span>
-          </button>
+          <button class="gacha-btn" onclick="gachaWeapon(1)">1回<br><span class="gacha-cost">10💎</span></button>
+          <button class="gacha-btn" onclick="gachaWeapon(3)">3回<br><span class="gacha-cost">28💎</span></button>
+          <button class="gacha-btn" onclick="gachaWeapon(10)">10回<br><span class="gacha-cost">90💎</span></button>
         </div>
       </div>
 
       <div class="gacha-section">
         <div class="gacha-title">⭐ 仲間ガチャ</div>
+        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">
+          レア: 70% | スーパーレア: 25% | レジェンド: 5%
+        </div>
         <div class="gacha-buttons">
-          <button class="gacha-btn" onclick="gachaHero(1)">
-            1回<br>
-            <span class="gacha-cost">15💎</span>
-          </button>
-          <button class="gacha-btn" onclick="gachaHero(3)">
-            3回<br>
-            <span class="gacha-cost">40💎</span>
-          </button>
-          <button class="gacha-btn" onclick="gachaHero(10)">
-            10回<br>
-            <span class="gacha-cost">130💎</span>
-          </button>
+          <button class="gacha-btn" onclick="gachaHero(1)">1回<br><span class="gacha-cost">15💎</span></button>
+          <button class="gacha-btn" onclick="gachaHero(3)">3回<br><span class="gacha-cost">40💎</span></button>
+          <button class="gacha-btn" onclick="gachaHero(10)">10回<br><span class="gacha-cost">130💎</span></button>
         </div>
       </div>
 
       <div class="panel" style="text-align: center;">
-        <button class="skill-btn" style="width: 100%;" onclick="watchAd()">📺 広告を見る (+5💎)</button>
+        <button class="battle-btn" style="width: 100%;" onclick="watchAd()">📺 広告を見る (+5💎)</button>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;">
-          毎日3回まで
+          毎日<span id="adCountDisplay">0</span>/3回
         </div>
       </div>
 
       <div class="party-section">
-        <div class="party-title">🎭 ガチャで獲得したヒーロー</div>
+        <div class="section-title">⭐ ガチャで獲得したヒーロー</div>
         <div class="party-grid" id="gachaHeroDisplay"></div>
       </div>
     </div>
 
-    <!-- ペットタブ -->
+    <!-- 施設タブ -->
     <div class="tab-content">
-      <div class="panel">
-        <h2 style="margin-bottom: 15px;">🐾 ペット</h2>
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="font-size: 48px; margin-bottom: 15px;">🐕</div>
-          <div style="font-size: 18px; font-weight: 700; margin-bottom: 5px;">所持数: <span id="petCountDisplay">0</span>匹</div>
-          <div style="font-size: 13px; color: var(--text-secondary);">攻撃力ボーナス: +<span id="petBonusDisplay">0</span>%</div>
+      <h2 style="margin-bottom: 15px;">🏭 施設管理</h2>
+      <div class="enhance-grid">
+        <div class="enhance-card">
+          <div class="enhance-label">鍛冶場</div>
+          <div class="enhance-value" id="smithyLvDisplay">1</div>
+          <div class="enhance-cost">攻撃力 +<span id="smithyBonusDisplay">5</span>%</div>
+          <div class="enhance-cost">Cost: <span id="smithyCostDisplay">300</span>G</div>
+          <button class="enhance-btn" onclick="upgradeSmith()">アップグレード</button>
         </div>
-        <button class="skill-btn" style="width: 100%;" onclick="buyPet()">購入 (50G)</button>
+        <div class="enhance-card">
+          <div class="enhance-label">図書館</div>
+          <div class="enhance-value" id="libraryLvDisplay">1</div>
+          <div class="enhance-cost">クリ率 +<span id="libraryBonusDisplay">2</span>%</div>
+          <div class="enhance-cost">Cost: <span id="libraryCostDisplay">400</span>G</div>
+          <button class="enhance-btn" onclick="upgradeLibrary()">アップグレード</button>
+        </div>
+        <div class="enhance-card">
+          <div class="enhance-label">医療所</div>
+          <div class="enhance-value" id="hospitalLvDisplay">1</div>
+          <div class="enhance-cost">ドレイン +<span id="hospitalBonusDisplay">3</span>%</div>
+          <div class="enhance-cost">Cost: <span id="hospitalCostDisplay">350</span>G</div>
+          <button class="enhance-btn" onclick="upgradeHospital()">アップグレード</button>
+        </div>
+        <div class="enhance-card">
+          <div class="enhance-label">訓練所</div>
+          <div class="enhance-value" id="trainingLvDisplay">1</div>
+          <div class="enhance-cost">クール -<span id="trainingBonusDisplay">0</span>%</div>
+          <div class="enhance-cost">Cost: <span id="trainingCostDisplay">320</span>G</div>
+          <button class="enhance-btn" onclick="upgradeTraining()">アップグレード</button>
+        </div>
       </div>
     </div>
 
-    <!-- ギルドタブ -->
+    <!-- 統計タブ -->
     <div class="tab-content">
-      <div class="panel">
-        <h2 style="margin-bottom: 15px;">🏢 ギルド</h2>
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="font-size: 48px; margin-bottom: 15px;">⚔️</div>
-          <div style="font-size: 18px; font-weight: 700; margin-bottom: 5px;">ギルドレベル: <span id="guildLevelDisplay">1</span></div>
-          <div style="font-size: 13px; color: var(--text-secondary);">敵からのゴールド +<span id="guildBonusDisplay">10</span>%</div>
+      <h2 style="margin-bottom: 15px;">📊 統計情報</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-label">倒した敵</div>
+          <div class="info-value" id="totalKillsDisplay">0</div>
         </div>
-        <button class="skill-btn" style="width: 100%;" onclick="upgradeGuild()">アップグレード (<span id="guildCostDisplay">500</span>G)</button>
+        <div class="info-card">
+          <div class="info-label">与えたダメージ</div>
+          <div class="info-value" id="totalDamageDisplay">0</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">受けたダメージ</div>
+          <div class="info-value" id="totalReceivedDisplay">0</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">獲得ゴールド</div>
+          <div class="info-value" id="totalGoldDisplay">0</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">クリティカル数</div>
+          <div class="info-value" id="totalCritDisplay">0</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">ドレイン成功</div>
+          <div class="info-value" id="totalDrainDisplay">0</div>
+        </div>
       </div>
     </div>
   </div>
@@ -773,18 +806,29 @@
       level: 1,
       stage: 1,
       maxStage: 1,
-      clear: 0,
       atkLevel: 1,
-      defLevel: 0,
       hpLevel: 1,
       maxHealth: 100,
       currentHealth: 100,
-      petCount: 0,
-      guildLevel: 1,
+      critLevel: 0,
+      drainLevel: 0,
+      smithyLevel: 1,
+      libraryLevel: 1,
+      hospitalLevel: 1,
+      trainingLevel: 1,
       prestigeLevel: 0,
       adWatched: 0,
+      skillCooldown: 0,
       gachaHeroes: {},
-      weapons: []
+      weapons: [],
+      stats: {
+        totalKills: 0,
+        totalDamage: 0,
+        totalReceived: 0,
+        totalGold: 0,
+        totalCrit: 0,
+        totalDrain: 0
+      }
     };
 
     const HERO_IMAGES = {
@@ -807,13 +851,13 @@
     };
 
     const HEROES = [
-      { id: 'h_maoh', name: '魔王', rarity: 'legend', atkBonus: 0.80 },
-      { id: 'h_warrior', name: '戦士', rarity: 'sr', atkBonus: 0.50 },
-      { id: 'h_hime', name: '姫', rarity: 'sr', atkBonus: 0.30 },
-      { id: 'h_mahotsukai', name: '魔法使い', rarity: 'rare', atkBonus: 0.20 },
-      { id: 'h_shinigami', name: '死神', rarity: 'sr', atkBonus: 0.60 },
-      { id: 'h_oji', name: '王子', rarity: 'rare', atkBonus: 0.15 },
-      { id: 'h_gold', name: 'ゴールド', rarity: 'rare', atkBonus: 0.25 }
+      { id: 'h_maoh', name: '魔王', rarity: 'legend', atkBonus: 0.80, effect: '敵HP減少効果' },
+      { id: 'h_warrior', name: '戦士', rarity: 'sr', atkBonus: 0.50, effect: 'ダメージ +50%' },
+      { id: 'h_hime', name: '姫', rarity: 'sr', atkBonus: 0.30, effect: 'クリ率 +5%' },
+      { id: 'h_mahotsukai', name: '魔法使い', rarity: 'rare', atkBonus: 0.20, effect: 'スキルクール短縮' },
+      { id: 'h_shinigami', name: '死神', rarity: 'sr', atkBonus: 0.60, effect: 'ドレイン +10%' },
+      { id: 'h_oji', name: '王子', rarity: 'rare', atkBonus: 0.15, effect: '獲得G +5%' },
+      { id: 'h_gold', name: 'ゴールド', rarity: 'rare', atkBonus: 0.25, effect: '敵の攻撃力減少' }
     ];
 
     const RARITIES = {
@@ -823,18 +867,71 @@
       legend: { name: 'レジェンド', symbol: '🌟', rate: 0.03, baseBonus: 8.00 }
     };
 
+    const WEAPON_TYPES = [
+      { name: '木の剣', emoji: '🗡️', rarity: 'common' },
+      { name: '石の斧', emoji: '🪨', rarity: 'common' },
+      { name: '鋼の剣', emoji: '⚔️', rarity: 'rare' },
+      { name: '銀の弓', emoji: '🏹', rarity: 'rare' },
+      { name: '炎の剣', emoji: '🔥', rarity: 'sr' },
+      { name: '聖なる杖', emoji: '✨', rarity: 'sr' },
+      { name: 'エクスカリバー', emoji: '⚜️', rarity: 'legend' },
+      { name: '神秘の秘宝', emoji: '💎', rarity: 'legend' }
+    ];
+
     let currentEnemy = null;
+    let enemyLastAction = '準備中...';
 
     // 敵生成
     function spawnEnemy() {
-      const emojis = ['👹', '🧛', '👻', '🐉', '🗿'];
+      const emojis = ['👹', '🧛', '👻', '🐉', '🗿', '🦇', '🕷️', '👿'];
       const baseHp = 50 + game.stage * 20;
       currentEnemy = {
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
         name: `敵 Lv${game.stage}`,
         maxHp: baseHp,
-        hp: baseHp
+        hp: baseHp,
+        atkPower: Math.floor((5 + game.stage * 2) * 0.7)
       };
+      enemyLastAction = '準備中...';
+      updateDisplay();
+      enemyAttackLoop();
+    }
+
+    // 敵の自動攻撃ループ
+    function enemyAttackLoop() {
+      const interval = setInterval(() => {
+        if (!currentEnemy || currentEnemy.hp <= 0) {
+          clearInterval(interval);
+          return;
+        }
+        enemyAttack();
+      }, 3000);
+    }
+
+    // 敵の攻撃
+    function enemyAttack() {
+      if (!currentEnemy || currentEnemy.hp <= 0) return;
+      
+      const baseDmg = currentEnemy.atkPower * (0.8 + Math.random() * 0.4);
+      const damage = Math.floor(baseDmg);
+      
+      game.currentHealth -= damage;
+      game.stats.totalReceived += damage;
+      
+      if (Math.random() < 0.2) {
+        enemyLastAction = '🔥 特殊攻撃 (' + Math.floor(damage * 1.5) + 'ダメージ)';
+      } else {
+        enemyLastAction = '⚔️ 攻撃 (' + damage + 'ダメージ)';
+      }
+      
+      document.getElementById('playerDamageDisplay').textContent = damage;
+      
+      if (game.currentHealth <= 0) {
+        game.currentHealth = game.maxHealth;
+        enemyLastAction = '敗北...';
+        spawnEnemy();
+      }
+      
       updateDisplay();
     }
 
@@ -845,36 +942,55 @@
       document.getElementById('stageDisplay').textContent = game.stage;
       document.getElementById('levelDisplay').textContent = game.level;
       document.getElementById('prestigeDisplay').textContent = game.prestigeLevel;
-      document.getElementById('atkLevelDisplay').textContent = game.atkLevel;
-      document.getElementById('defLevelDisplay').textContent = game.defLevel;
-      document.getElementById('hpLevelDisplay').textContent = game.maxHealth;
+      document.getElementById('atkLvDisplay').textContent = game.atkLevel;
+      document.getElementById('hpLvDisplay').textContent = game.maxHealth;
+      document.getElementById('critLvDisplay').textContent = (game.critLevel * 2) + '%';
+      document.getElementById('drainLvDisplay').textContent = (game.drainLevel * 3) + '%';
       document.getElementById('playerAtkDisplay').textContent = (1 + game.atkLevel * 0.1).toFixed(1) + 'x';
-      document.getElementById('playerDefDisplay').textContent = (game.defLevel * 0.05).toFixed(2) + 'x';
       document.getElementById('weaponBonusDisplay').textContent = (getWeaponBonus() * 100).toFixed(0) + '%';
       document.getElementById('heroBonusDisplay').textContent = (getHeroBonus() * 100).toFixed(0) + '%';
-      document.getElementById('petCountDisplay').textContent = game.petCount;
-      document.getElementById('petBonusDisplay').textContent = (game.petCount * 5);
-      document.getElementById('guildLevelDisplay').textContent = game.guildLevel;
-      document.getElementById('guildBonusDisplay').textContent = (game.guildLevel * 10);
+      document.getElementById('facilityBonusDisplay').textContent = ((game.smithyLevel - 1) * 5) + '%';
       document.getElementById('weaponCountDisplay').textContent = game.weapons.length;
-      document.getElementById('clearDisplay').textContent = game.clear;
-      document.getElementById('atkCostDisplay').textContent = Math.floor(100 * Math.pow(1.1, game.atkLevel - 1));
-      document.getElementById('defCostDisplay').textContent = Math.floor(150 * Math.pow(1.15, game.defLevel));
-      document.getElementById('hpCostDisplay').textContent = Math.floor(80 * Math.pow(1.08, game.hpLevel - 1));
-      document.getElementById('guildCostDisplay').textContent = Math.floor(500 * Math.pow(1.2, game.guildLevel - 1));
+      document.getElementById('adCountDisplay').textContent = game.adWatched;
       document.getElementById('prestigeRewardDisplay').textContent = Math.min(5, 1 + Math.floor(game.maxStage / 10));
+
+      // 施設
+      document.getElementById('smithyLvDisplay').textContent = game.smithyLevel;
+      document.getElementById('smithyBonusDisplay').textContent = (game.smithyLevel - 1) * 5;
+      document.getElementById('smithyCostDisplay').textContent = Math.floor(300 * Math.pow(1.15, game.smithyLevel - 1));
+      document.getElementById('libraryLvDisplay').textContent = game.libraryLevel;
+      document.getElementById('libraryBonusDisplay').textContent = (game.libraryLevel - 1) * 2;
+      document.getElementById('libraryCostDisplay').textContent = Math.floor(400 * Math.pow(1.15, game.libraryLevel - 1));
+      document.getElementById('hospitalLvDisplay').textContent = game.hospitalLevel;
+      document.getElementById('hospitalBonusDisplay').textContent = (game.hospitalLevel - 1) * 3;
+      document.getElementById('hospitalCostDisplay').textContent = Math.floor(350 * Math.pow(1.15, game.hospitalLevel - 1));
+      document.getElementById('trainingLvDisplay').textContent = game.trainingLevel;
+      document.getElementById('trainingBonusDisplay').textContent = (game.trainingLevel - 1) * 0.5;
+      document.getElementById('trainingCostDisplay').textContent = Math.floor(320 * Math.pow(1.15, game.trainingLevel - 1));
+
+      // 統計
+      document.getElementById('totalKillsDisplay').textContent = game.stats.totalKills;
+      document.getElementById('totalDamageDisplay').textContent = game.stats.totalDamage;
+      document.getElementById('totalReceivedDisplay').textContent = game.stats.totalReceived;
+      document.getElementById('totalGoldDisplay').textContent = game.stats.totalGold;
+      document.getElementById('totalCritDisplay').textContent = game.stats.totalCrit;
+      document.getElementById('totalDrainDisplay').textContent = game.stats.totalDrain;
+
+      // コスト表示
+      document.getElementById('atkCostDisplay').textContent = Math.floor(100 * Math.pow(1.1, game.atkLevel - 1));
+      document.getElementById('hpCostDisplay').textContent = Math.floor(80 * Math.pow(1.08, game.hpLevel - 1));
+      document.getElementById('critCostDisplay').textContent = Math.floor(120 * Math.pow(1.12, game.critLevel));
+      document.getElementById('drainCostDisplay').textContent = Math.floor(200 * Math.pow(1.1, game.drainLevel));
 
       if (currentEnemy) {
         document.getElementById('enemyEmoji').textContent = currentEnemy.emoji;
-        document.getElementById('enemyNameDisplay').textContent = currentEnemy.name;
+        document.getElementById('enemyName').textContent = currentEnemy.name;
         const enemyHpPercent = (currentEnemy.hp / currentEnemy.maxHp) * 100;
-        document.getElementById('enemyHealthFill').style.width = enemyHpPercent + '%';
+        document.getElementById('enemyHealthBar').style.width = enemyHpPercent + '%';
         document.getElementById('enemyHpText').textContent = Math.max(0, currentEnemy.hp) + '/' + currentEnemy.maxHp;
       }
 
-      const playerHpPercent = (game.currentHealth / game.maxHealth) * 100;
-      document.getElementById('playerHealthFill').style.width = playerHpPercent + '%';
-      document.getElementById('playerHpText').textContent = Math.max(0, game.currentHealth) + '/' + game.maxHealth;
+      document.getElementById('enemyActionDisplay').textContent = enemyLastAction;
 
       renderParty();
       save();
@@ -886,75 +1002,93 @@
         spawnEnemy();
         return;
       }
-      const baseDmg = (1 + game.atkLevel * 0.1) * (1 + getWeaponBonus()) * (1 + getHeroBonus()) * (1 + game.petCount * 0.05);
-      const damage = Math.floor(baseDmg * (0.8 + Math.random() * 0.4));
+
+      const baseDmg = (1 + game.atkLevel * 0.1) * (1 + getWeaponBonus()) * (1 + getHeroBonus()) * (1 + (game.smithyLevel - 1) * 0.05);
+      let damage = Math.floor(baseDmg * (0.8 + Math.random() * 0.4));
+      let action = '🗡️ 通常攻撃';
+
+      // クリティカル判定
+      if (Math.random() < game.critLevel * 0.02) {
+        damage = Math.floor(damage * 1.5);
+        action = '⚡ クリティカル!';
+        game.stats.totalCrit++;
+      }
+
+      // ドレイン判定
+      if (Math.random() < game.drainLevel * 0.03) {
+        const drain = Math.floor(damage * 0.3);
+        game.currentHealth += drain;
+        if (game.currentHealth > game.maxHealth) game.currentHealth = game.maxHealth;
+        action += ' + ドレイン (' + drain + ')';
+        game.stats.totalDrain++;
+      }
+
       currentEnemy.hp -= damage;
-      document.getElementById('damageDisplay').textContent = damage;
-      
+      game.stats.totalDamage += damage;
+      document.getElementById('playerDamageDealtDisplay').textContent = damage;
+      document.getElementById('enemyActionDisplay').textContent = action;
+
       if (currentEnemy.hp <= 0) {
         killEnemy();
       }
+
       updateDisplay();
     }
 
     function useSkill() {
+      if (game.skillCooldown > 0) {
+        alert('スキルはまだ使用できません');
+        return;
+      }
+
       if (!currentEnemy || currentEnemy.hp <= 0) return;
+
       const skillDmg = Math.floor((1 + game.atkLevel * 0.15) * 50 * (1 + getWeaponBonus()));
       currentEnemy.hp -= skillDmg;
-      document.getElementById('damageDisplay').textContent = skillDmg + ' (スキル)';
+      game.stats.totalDamage += skillDmg;
+
+      document.getElementById('playerDamageDealtDisplay').textContent = skillDmg + ' (スキル)';
+      document.getElementById('enemyActionDisplay').textContent = '✨ スキル発動!';
+
+      game.skillCooldown = 3;
+      const cooldownInterval = setInterval(() => {
+        game.skillCooldown--;
+        if (game.skillCooldown <= 0) clearInterval(cooldownInterval);
+      }, 1000);
+
       if (currentEnemy.hp <= 0) killEnemy();
       updateDisplay();
     }
 
-    function defend() {
-      alert('防御中...');
-    }
-
     function killEnemy() {
-      const goldReward = Math.floor((30 + game.stage * 10) * (1 + game.guildLevel * 0.1));
+      const goldReward = Math.floor((30 + game.stage * 10) * (1 + (game.smithyLevel - 1) * 0.05));
       const gemsReward = Math.floor(Math.random() * 3) + 1;
       game.gold += goldReward;
       game.gems += gemsReward;
-      game.clear++;
-      document.getElementById('goldRewardDisplay').textContent = goldReward;
-      document.getElementById('gemsRewardDisplay').textContent = gemsReward;
+      game.stats.totalKills++;
+      game.stats.totalGold += goldReward;
+
+      document.getElementById('playerDamageDealtDisplay').textContent = '勝利!';
+
       game.stage++;
       game.maxStage = Math.max(game.maxStage, game.stage);
       setTimeout(() => {
         spawnEnemy();
-        updateDisplay();
-      }, 800);
+      }, 1000);
     }
 
     // 強化
     function upgradeAttack() {
       const cost = Math.floor(100 * Math.pow(1.1, game.atkLevel - 1));
-      if (game.gold < cost) {
-        alert('ゴールドが不足しています');
-        return;
-      }
+      if (game.gold < cost) return;
       game.gold -= cost;
       game.atkLevel++;
       updateDisplay();
     }
 
-    function upgradeDefense() {
-      const cost = Math.floor(150 * Math.pow(1.15, game.defLevel));
-      if (game.gold < cost) {
-        alert('ゴールドが不足しています');
-        return;
-      }
-      game.gold -= cost;
-      game.defLevel++;
-      updateDisplay();
-    }
-
     function upgradeHP() {
       const cost = Math.floor(80 * Math.pow(1.08, game.hpLevel - 1));
-      if (game.gold < cost) {
-        alert('ゴールドが不足しています');
-        return;
-      }
+      if (game.gold < cost) return;
       game.gold -= cost;
       game.hpLevel++;
       game.maxHealth = 100 + game.hpLevel * 20;
@@ -962,38 +1096,66 @@
       updateDisplay();
     }
 
-    function buyPet() {
-      if (game.gold < 50) {
-        alert('ゴールドが不足しています');
-        return;
-      }
-      game.gold -= 50;
-      game.petCount++;
+    function upgradeCrit() {
+      const cost = Math.floor(120 * Math.pow(1.12, game.critLevel));
+      if (game.gold < cost) return;
+      game.gold -= cost;
+      game.critLevel++;
       updateDisplay();
     }
 
-    function upgradeGuild() {
-      const cost = Math.floor(500 * Math.pow(1.2, game.guildLevel - 1));
-      if (game.gold < cost) {
-        alert('ゴールドが不足しています');
-        return;
-      }
+    function upgradeDrain() {
+      const cost = Math.floor(200 * Math.pow(1.1, game.drainLevel));
+      if (game.gold < cost) return;
       game.gold -= cost;
-      game.guildLevel++;
+      game.drainLevel++;
+      updateDisplay();
+    }
+
+    // 施設
+    function upgradeSmith() {
+      const cost = Math.floor(300 * Math.pow(1.15, game.smithyLevel - 1));
+      if (game.gold < cost) return;
+      game.gold -= cost;
+      game.smithyLevel++;
+      updateDisplay();
+    }
+
+    function upgradeLibrary() {
+      const cost = Math.floor(400 * Math.pow(1.15, game.libraryLevel - 1));
+      if (game.gold < cost) return;
+      game.gold -= cost;
+      game.libraryLevel++;
+      updateDisplay();
+    }
+
+    function upgradeHospital() {
+      const cost = Math.floor(350 * Math.pow(1.15, game.hospitalLevel - 1));
+      if (game.gold < cost) return;
+      game.gold -= cost;
+      game.hospitalLevel++;
+      updateDisplay();
+    }
+
+    function upgradeTraining() {
+      const cost = Math.floor(320 * Math.pow(1.15, game.trainingLevel - 1));
+      if (game.gold < cost) return;
+      game.gold -= cost;
+      game.trainingLevel++;
       updateDisplay();
     }
 
     // ガチャ
     async function playGachaVideo(type) {
       const videos = {
-        'weapon': 'A_dramatic_game_gacha_weapon_reveal_cinematic_The-1782643204614.mp4',
-        'hero': 'An_epic_game_gacha_character_reveal_animation_The-1782643194955.mp4',
-        'prestige': 'A_gorgeous_game_transcendence_evolution_cinematic-1782643212819.mp4'
+        'weapon': 'images/A_dramatic_game_gacha_weapon_reveal_cinematic_The-1782643204614.mp4',
+        'hero': 'images/An_epic_game_gacha_character_reveal_animation_The-1782643194955.mp4',
+        'prestige': 'images/A_gorgeous_game_transcendence_evolution_cinematic-1782643212819.mp4'
       };
 
       const videoElement = document.getElementById('gachaVideo');
       const container = document.getElementById('videoContainer');
-      
+
       videoElement.src = videos[type] || videos['weapon'];
       container.classList.add('show');
 
@@ -1005,8 +1167,8 @@
           resolve();
         };
 
-        const handleError = () => {
-          console.error('動画再生エラー:', videoElement.error);
+        const handleError = (err) => {
+          console.error('動画再生エラー:', err);
           container.classList.remove('show');
           videoElement.removeEventListener('ended', handleEnded);
           videoElement.removeEventListener('error', handleError);
@@ -1049,9 +1211,11 @@
       updateDisplay();
       await playGachaVideo('weapon');
       for (let i = 0; i < count; i++) {
-        game.weapons.push({ rarity: rollRarity() });
+        const rarity = rollRarity();
+        const weapon = WEAPON_TYPES.filter(w => w.rarity === rarity)[0];
+        game.weapons.push({ rarity, weapon });
       }
-      if (game.weapons.length > 5) game.weapons.shift();
+      if (game.weapons.length > 10) game.weapons = game.weapons.slice(-10);
       alert('武器ガチャ完了！');
       updateDisplay();
     }
@@ -1083,9 +1247,11 @@
       const weaponCount = Math.min(5, 1 + Math.floor(game.maxStage / 10));
       for (let i = 0; i < weaponCount; i++) {
         await playGachaVideo('prestige');
-        game.weapons.push({ rarity: rollRarity() });
+        const rarity = rollRarity();
+        const weapon = WEAPON_TYPES.filter(w => w.rarity === rarity)[0];
+        game.weapons.push({ rarity, weapon });
       }
-      if (game.weapons.length > 5) game.weapons = game.weapons.slice(-5);
+      if (game.weapons.length > 10) game.weapons = game.weapons.slice(-10);
       alert('✨ 転生成功！報酬を獲得しました！');
       updateDisplay();
     }
@@ -1126,7 +1292,7 @@
               <img src="${HERO_IMAGES[hero.id] || 'images/default.png'}" alt="${hero.name}" class="party-img" onerror="this.style.display='none'">
               <div class="member-name">${hero.name}</div>
               <div class="member-level">Lv${level}</div>
-              <div class="member-atk">ATK +${(hero.atkBonus * 100).toFixed(0)}%</div>
+              <div class="member-effect">${hero.effect}</div>
             </div>
           `;
         }
@@ -1151,7 +1317,7 @@
       if (type === 'weapon') {
         title.textContent = '武器一覧';
         body.innerHTML = game.weapons.length > 0
-          ? game.weapons.map((w, i) => `<div class="modal-item">${i + 1}. ${RARITIES[w.rarity].symbol} ${RARITIES[w.rarity].name} (ボーナス: +${(RARITIES[w.rarity].baseBonus * 100).toFixed(0)}%)</div>`).join('')
+          ? game.weapons.map((w, i) => `<div class="modal-item"><span class="rarity-${w.rarity}">${RARITIES[w.rarity].symbol} ${RARITIES[w.rarity].name}</span> - ${w.weapon.emoji} ${w.weapon.name} (ボーナス: +${(RARITIES[w.rarity].baseBonus * 100).toFixed(0)}%)</div>`).join('')
           : '<div class="modal-item">武器がありません</div>';
       }
     }
