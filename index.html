@@ -151,14 +151,12 @@
 
     .enemy-card {
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      user-select: none;
     }
 
-    .enemy-card:hover {
-      border-color: var(--accent-color);
-      background: rgba(255, 75, 109, 0.1);
-      box-shadow: 0 8px 20px rgba(244, 63, 94, 0.2);
-      transform: scale(1.02);
+    .enemy-card:active {
+      transform: scale(0.98);
     }
 
     .card-title {
@@ -172,6 +170,7 @@
       font-size: 64px;
       text-align: center;
       margin-bottom: 15px;
+      line-height: 1;
     }
 
     .health-bar {
@@ -487,13 +486,150 @@
     .rarity-sr { color: #f59e0b; }
     .rarity-legend { color: #ec4899; }
 
+    /* ガチャポップアップ */
+    .gacha-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gacha-popup.active {
+      display: flex;
+    }
+
+    .gacha-result {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      border: 2px solid var(--gold-color);
+      position: relative;
+      animation: popupAppear 0.5s ease;
+    }
+
+    @keyframes popupAppear {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .gacha-result-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--gold-color), var(--gem-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gacha-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .gacha-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .gacha-item-rarity {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .gacha-item-name {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .gacha-item-type {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .gacha-hero-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .gacha-hero-img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin: 0 auto 15px;
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    .gacha-hero-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gold-color);
+    }
+
+    .gacha-hero-effect {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .gacha-hero-rarity {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .gacha-hero-bonus {
+      font-size: 11px;
+      color: var(--gem-color);
+    }
+
+    .gacha-close-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .gacha-close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
     /* 動画演出 */
     #videoContainer {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.95);
-      z-index: 3000;
+      z-index: 2999;
       align-items: center;
       justify-content: center;
     }
@@ -536,6 +672,12 @@
       body { padding-bottom: 80px; }
       h1 { font-size: 28px; }
       .tab-btn { min-width: 75px; font-size: 12px; }
+      .gacha-result {
+        padding: 25px;
+      }
+      .gacha-items {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (min-width: 769px) {
@@ -581,24 +723,24 @@
         </div>
 
         <div class="battle-card">
-          <div class="card-title">相手の最新行動</div>
+          <div class="card-title">戦闘情報</div>
           <div style="font-size: 18px; font-weight: 700; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;">
-            <span id="enemyActionDisplay">準備中...</span>
+            <span id="battleInfoDisplay">準備中...</span>
           </div>
           <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">プレイヤー受けたダメージ</div>
-            <div style="font-size: 20px; font-weight: 700; color: #f43f5e;" id="playerDamageDisplay">0</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">最新ダメージ</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--gold-color);" id="latestDamageDisplay">0</div>
           </div>
           <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">プレイヤーのダメージ</div>
-            <div style="font-size: 20px; font-weight: 700; color: var(--gold-color);" id="playerDamageDealtDisplay">0</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">敵まで残りHP</div>
+            <div style="font-size: 20px; font-weight: 700; color: var(--accent-color);" id="enemyRemainingDisplay">0</div>
           </div>
         </div>
       </div>
 
       <div class="battle-buttons">
         <button class="battle-btn" onclick="attackEnemy()">🗡️ 通常攻撃</button>
-        <button class="battle-btn" onclick="useSkill()">✨ スキル (3秒クール)</button>
+        <button class="battle-btn" onclick="useSkill()">✨ スキル</button>
       </div>
 
       <div class="info-grid">
@@ -714,21 +856,21 @@
         <div class="enhance-card">
           <div class="enhance-label">鍛冶場</div>
           <div class="enhance-value" id="smithyLvDisplay">1</div>
-          <div class="enhance-cost">攻撃力 +<span id="smithyBonusDisplay">5</span>%</div>
+          <div class="enhance-cost">攻撃力 +<span id="smithyBonusDisplay">0</span>%</div>
           <div class="enhance-cost">Cost: <span id="smithyCostDisplay">300</span>G</div>
           <button class="enhance-btn" onclick="upgradeSmith()">アップグレード</button>
         </div>
         <div class="enhance-card">
           <div class="enhance-label">図書館</div>
           <div class="enhance-value" id="libraryLvDisplay">1</div>
-          <div class="enhance-cost">クリ率 +<span id="libraryBonusDisplay">2</span>%</div>
+          <div class="enhance-cost">クリ率 +<span id="libraryBonusDisplay">0</span>%</div>
           <div class="enhance-cost">Cost: <span id="libraryCostDisplay">400</span>G</div>
           <button class="enhance-btn" onclick="upgradeLibrary()">アップグレード</button>
         </div>
         <div class="enhance-card">
           <div class="enhance-label">医療所</div>
           <div class="enhance-value" id="hospitalLvDisplay">1</div>
-          <div class="enhance-cost">ドレイン +<span id="hospitalBonusDisplay">3</span>%</div>
+          <div class="enhance-cost">ドレイン +<span id="hospitalBonusDisplay">0</span>%</div>
           <div class="enhance-cost">Cost: <span id="hospitalCostDisplay">350</span>G</div>
           <button class="enhance-btn" onclick="upgradeHospital()">アップグレード</button>
         </div>
@@ -755,14 +897,6 @@
           <div class="info-value" id="totalDamageDisplay">0</div>
         </div>
         <div class="info-card">
-          <div class="info-label">受けたダメージ</div>
-          <div class="info-value" id="totalReceivedDisplay">0</div>
-        </div>
-        <div class="info-card">
-          <div class="info-label">獲得ゴールド</div>
-          <div class="info-value" id="totalGoldDisplay">0</div>
-        </div>
-        <div class="info-card">
           <div class="info-label">クリティカル数</div>
           <div class="info-value" id="totalCritDisplay">0</div>
         </div>
@@ -770,7 +904,24 @@
           <div class="info-label">ドレイン成功</div>
           <div class="info-value" id="totalDrainDisplay">0</div>
         </div>
+        <div class="info-card">
+          <div class="info-label">獲得ゴールド</div>
+          <div class="info-value" id="totalGoldDisplay">0</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">最大ステージ</div>
+          <div class="info-value" id="maxStageDisplay">1</div>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ガチャポップアップ -->
+  <div class="gacha-popup" id="gachaPopup">
+    <div class="gacha-result">
+      <div class="gacha-result-title" id="gachaPopupTitle">ガチャ結果</div>
+      <div id="gachaPopupContent"></div>
+      <button class="gacha-close-btn" onclick="closeGachaPopup()">閉じる</button>
     </div>
   </div>
 
@@ -824,10 +975,9 @@
       stats: {
         totalKills: 0,
         totalDamage: 0,
-        totalReceived: 0,
-        totalGold: 0,
         totalCrit: 0,
-        totalDrain: 0
+        totalDrain: 0,
+        totalGold: 0
       }
     };
 
@@ -879,7 +1029,6 @@
     ];
 
     let currentEnemy = null;
-    let enemyLastAction = '準備中...';
 
     // 敵生成
     function spawnEnemy() {
@@ -889,49 +1038,9 @@
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
         name: `敵 Lv${game.stage}`,
         maxHp: baseHp,
-        hp: baseHp,
-        atkPower: Math.floor((5 + game.stage * 2) * 0.7)
+        hp: baseHp
       };
-      enemyLastAction = '準備中...';
-      updateDisplay();
-      enemyAttackLoop();
-    }
-
-    // 敵の自動攻撃ループ
-    function enemyAttackLoop() {
-      const interval = setInterval(() => {
-        if (!currentEnemy || currentEnemy.hp <= 0) {
-          clearInterval(interval);
-          return;
-        }
-        enemyAttack();
-      }, 3000);
-    }
-
-    // 敵の攻撃
-    function enemyAttack() {
-      if (!currentEnemy || currentEnemy.hp <= 0) return;
-      
-      const baseDmg = currentEnemy.atkPower * (0.8 + Math.random() * 0.4);
-      const damage = Math.floor(baseDmg);
-      
-      game.currentHealth -= damage;
-      game.stats.totalReceived += damage;
-      
-      if (Math.random() < 0.2) {
-        enemyLastAction = '🔥 特殊攻撃 (' + Math.floor(damage * 1.5) + 'ダメージ)';
-      } else {
-        enemyLastAction = '⚔️ 攻撃 (' + damage + 'ダメージ)';
-      }
-      
-      document.getElementById('playerDamageDisplay').textContent = damage;
-      
-      if (game.currentHealth <= 0) {
-        game.currentHealth = game.maxHealth;
-        enemyLastAction = '敗北...';
-        spawnEnemy();
-      }
-      
+      document.getElementById('battleInfoDisplay').textContent = '準備完了';
       updateDisplay();
     }
 
@@ -965,16 +1074,16 @@
       document.getElementById('hospitalBonusDisplay').textContent = (game.hospitalLevel - 1) * 3;
       document.getElementById('hospitalCostDisplay').textContent = Math.floor(350 * Math.pow(1.15, game.hospitalLevel - 1));
       document.getElementById('trainingLvDisplay').textContent = game.trainingLevel;
-      document.getElementById('trainingBonusDisplay').textContent = (game.trainingLevel - 1) * 0.5;
+      document.getElementById('trainingBonusDisplay').textContent = ((game.trainingLevel - 1) * 0.5).toFixed(1);
       document.getElementById('trainingCostDisplay').textContent = Math.floor(320 * Math.pow(1.15, game.trainingLevel - 1));
 
       // 統計
       document.getElementById('totalKillsDisplay').textContent = game.stats.totalKills;
       document.getElementById('totalDamageDisplay').textContent = game.stats.totalDamage;
-      document.getElementById('totalReceivedDisplay').textContent = game.stats.totalReceived;
-      document.getElementById('totalGoldDisplay').textContent = game.stats.totalGold;
       document.getElementById('totalCritDisplay').textContent = game.stats.totalCrit;
       document.getElementById('totalDrainDisplay').textContent = game.stats.totalDrain;
+      document.getElementById('totalGoldDisplay').textContent = game.stats.totalGold;
+      document.getElementById('maxStageDisplay').textContent = game.maxStage;
 
       // コスト表示
       document.getElementById('atkCostDisplay').textContent = Math.floor(100 * Math.pow(1.1, game.atkLevel - 1));
@@ -988,9 +1097,8 @@
         const enemyHpPercent = (currentEnemy.hp / currentEnemy.maxHp) * 100;
         document.getElementById('enemyHealthBar').style.width = enemyHpPercent + '%';
         document.getElementById('enemyHpText').textContent = Math.max(0, currentEnemy.hp) + '/' + currentEnemy.maxHp;
+        document.getElementById('enemyRemainingDisplay').textContent = Math.max(0, currentEnemy.hp);
       }
-
-      document.getElementById('enemyActionDisplay').textContent = enemyLastAction;
 
       renderParty();
       save();
@@ -1025,8 +1133,8 @@
 
       currentEnemy.hp -= damage;
       game.stats.totalDamage += damage;
-      document.getElementById('playerDamageDealtDisplay').textContent = damage;
-      document.getElementById('enemyActionDisplay').textContent = action;
+      document.getElementById('battleInfoDisplay').textContent = action;
+      document.getElementById('latestDamageDisplay').textContent = damage;
 
       if (currentEnemy.hp <= 0) {
         killEnemy();
@@ -1037,7 +1145,7 @@
 
     function useSkill() {
       if (game.skillCooldown > 0) {
-        alert('スキルはまだ使用できません');
+        alert('スキルはまだ使用できません (' + game.skillCooldown + '秒)');
         return;
       }
 
@@ -1047,10 +1155,12 @@
       currentEnemy.hp -= skillDmg;
       game.stats.totalDamage += skillDmg;
 
-      document.getElementById('playerDamageDealtDisplay').textContent = skillDmg + ' (スキル)';
-      document.getElementById('enemyActionDisplay').textContent = '✨ スキル発動!';
+      document.getElementById('battleInfoDisplay').textContent = '✨ スキル発動!';
+      document.getElementById('latestDamageDisplay').textContent = skillDmg;
 
-      game.skillCooldown = 3;
+      game.skillCooldown = 5 - Math.floor((game.trainingLevel - 1) * 0.5);
+      if (game.skillCooldown < 1) game.skillCooldown = 1;
+
       const cooldownInterval = setInterval(() => {
         game.skillCooldown--;
         if (game.skillCooldown <= 0) clearInterval(cooldownInterval);
@@ -1068,7 +1178,7 @@
       game.stats.totalKills++;
       game.stats.totalGold += goldReward;
 
-      document.getElementById('playerDamageDealtDisplay').textContent = '勝利!';
+      document.getElementById('battleInfoDisplay').textContent = '🎉 勝利!';
 
       game.stage++;
       game.maxStage = Math.max(game.maxStage, game.stage);
@@ -1210,13 +1320,18 @@
       game.gems -= costs[count];
       updateDisplay();
       await playGachaVideo('weapon');
+
+      const results = [];
       for (let i = 0; i < count; i++) {
         const rarity = rollRarity();
-        const weapon = WEAPON_TYPES.filter(w => w.rarity === rarity)[0];
+        const weaponTypes = WEAPON_TYPES.filter(w => w.rarity === rarity);
+        const weapon = weaponTypes[Math.floor(Math.random() * weaponTypes.length)];
         game.weapons.push({ rarity, weapon });
+        results.push({ rarity, weapon });
       }
       if (game.weapons.length > 10) game.weapons = game.weapons.slice(-10);
-      alert('武器ガチャ完了！');
+
+      showGachaPopup('武器ガチャ結果', results, 'weapon');
       updateDisplay();
     }
 
@@ -1229,14 +1344,60 @@
       game.gems -= costs[count];
       updateDisplay();
       await playGachaVideo('hero');
+
+      const results = [];
       for (let i = 0; i < count; i++) {
         const rarity = rollHeroRarity();
         const heroList = HEROES.filter(h => h.rarity === rarity || rarity === 'legend');
         const hero = heroList[Math.floor(Math.random() * heroList.length)];
         game.gachaHeroes[hero.id] = (game.gachaHeroes[hero.id] || 0) + 1;
+        results.push(hero);
       }
-      alert('仲間ガチャ完了！');
+
+      showGachaPopup('仲間ガチャ結果', results, 'hero');
       updateDisplay();
+    }
+
+    function showGachaPopup(title, results, type) {
+      const popup = document.getElementById('gachaPopup');
+      const titleEl = document.getElementById('gachaPopupTitle');
+      const contentEl = document.getElementById('gachaPopupContent');
+
+      titleEl.textContent = title;
+
+      let html = '<div class="gacha-items">';
+
+      if (type === 'weapon') {
+        results.forEach(result => {
+          html += `
+            <div class="gacha-item">
+              <div class="gacha-item-rarity">${result.weapon.emoji}</div>
+              <div class="gacha-item-name">${result.weapon.name}</div>
+              <div class="gacha-item-type rarity-${result.rarity}">${RARITIES[result.rarity].symbol} ${RARITIES[result.rarity].name}</div>
+            </div>
+          `;
+        });
+      } else if (type === 'hero') {
+        results.forEach(hero => {
+          html += `
+            <div class="gacha-hero-card">
+              <img src="${HERO_IMAGES[hero.id] || 'images/default.png'}" alt="${hero.name}" class="gacha-hero-img" onerror="this.style.display='none'">
+              <div class="gacha-hero-name">${hero.name}</div>
+              <div class="gacha-hero-rarity rarity-${hero.rarity}">${RARITIES[hero.rarity].symbol} ${RARITIES[hero.rarity].name}</div>
+              <div class="gacha-hero-effect">${hero.effect}</div>
+              <div class="gacha-hero-bonus">ATK Bonus: +${(hero.atkBonus * 100).toFixed(0)}%</div>
+            </div>
+          `;
+        });
+      }
+
+      html += '</div>';
+      contentEl.innerHTML = html;
+      popup.classList.add('active');
+    }
+
+    function closeGachaPopup() {
+      document.getElementById('gachaPopup').classList.remove('active');
     }
 
     async function prestige() {
@@ -1245,14 +1406,19 @@
       game.stage = 1;
       game.currentHealth = game.maxHealth;
       const weaponCount = Math.min(5, 1 + Math.floor(game.maxStage / 10));
+      
+      const results = [];
       for (let i = 0; i < weaponCount; i++) {
         await playGachaVideo('prestige');
         const rarity = rollRarity();
-        const weapon = WEAPON_TYPES.filter(w => w.rarity === rarity)[0];
+        const weaponTypes = WEAPON_TYPES.filter(w => w.rarity === rarity);
+        const weapon = weaponTypes[Math.floor(Math.random() * weaponTypes.length)];
         game.weapons.push({ rarity, weapon });
+        results.push({ rarity, weapon });
       }
       if (game.weapons.length > 10) game.weapons = game.weapons.slice(-10);
-      alert('✨ 転生成功！報酬を獲得しました！');
+
+      showGachaPopup('✨ 転生報酬', results, 'weapon');
       updateDisplay();
     }
 
@@ -1263,7 +1429,7 @@
       }
       game.gems += 5;
       game.adWatched++;
-      alert('広告をご視聴ありがとうございました！');
+      alert('広告をご視聴ありがとうございました！ +5💎');
       updateDisplay();
     }
 
