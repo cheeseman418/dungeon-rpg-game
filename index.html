@@ -55,7 +55,6 @@
       padding: 10px 14px;
       display: flex; justify-content: space-between; align-items: center;
       box-shadow: 0 4px 20px rgba(244,63,94,0.3);
-      position: relative; overflow: hidden;
     }
     .player-info { font-size: 12px; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .resources { display: flex; gap: 6px; font-size: 10px; font-weight: 900; }
@@ -106,23 +105,18 @@
       animation: enemyFloat 4s ease-in-out infinite;
       position: relative;
     }
-    .enemy-emoji img {
-      width: 50px;
-      height: 50px;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-    }
+    .enemy-emoji img { width: 50px; height: 50px; image-rendering: pixelated; image-rendering: crisp-edges; }
     @keyframes enemyFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
     .enemy-emoji.hit { animation: enemyHit 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) both; }
-    @keyframes enemyHit { 0%{transform:scale(1); filter:brightness(3) drop-shadow(0 0 30px var(--accent-color));} 25%{transform:scale(0.9) rotate(-10deg);} 50%{transform:scale(1.15) rotate(5deg);} 75%{transform:scale(0.95) rotate(-2deg);} 100%{transform:scale(1) rotate(0); filter:drop-shadow(0 10px 20px rgba(0,0,0,0.6));} }
+    @keyframes enemyHit { 0%{transform:scale(1); filter:brightness(3);} 50%{transform:scale(1.1);} 100%{transform:scale(1);} }
     
-    .enemy-name { font-size: 11px; font-weight: 900; color: #fda4af; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+    .enemy-name { font-size: 11px; font-weight: 900; color: #fda4af; margin-bottom: 8px; }
     .bars-container { width: 90%; max-width: 240px; margin: 0 auto 8px; }
     .bar-row { margin-bottom: 4px; }
     .bar-label { display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; margin-bottom: 1px; }
     .bar-bg { background: rgba(0,0,0,0.6); border-radius: var(--border-radius-md); height: 10px; overflow: hidden; border: 1px solid var(--glass-border); }
-    .hp-bar { background: linear-gradient(90deg, #dc2626, var(--accent-color), #fb7185); height: 100%; transition: width 0.3s; box-shadow: 0 0 15px rgba(244,63,94,0.6); }
-    .mp-bar { background: linear-gradient(90deg, #1e40af, var(--primary-color), #7dd3fc); height: 100%; transition: width 0.3s; box-shadow: 0 0 15px rgba(59,130,246,0.6); }
+    .hp-bar { background: linear-gradient(90deg, #dc2626, var(--accent-color)); height: 100%; transition: width 0.3s; }
+    .mp-bar { background: linear-gradient(90deg, #1e40af, var(--primary-color)); height: 100%; transition: width 0.3s; }
 
     .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 10px; }
     .skill-btn {
@@ -132,7 +126,6 @@
       color: var(--text-primary); font-family: inherit; font-weight: 700; font-size: 8px; cursor: pointer;
       text-align: center;
     }
-    .skill-btn.active { border-color: var(--gold-color); color: var(--gold-color); background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(15,23,42,0.8)); }
 
     .party-display { background: rgba(0,0,0,0.2); padding: 6px; border-radius: var(--border-radius-md); margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 3px; min-height: 20px; }
     .member-chip {
@@ -143,7 +136,7 @@
       display: flex; align-items: center; gap: 2px;
       font-size: 8px; font-weight: 700;
     }
-    .member-chip img { width: 16px; height: 16px; image-rendering: pixelated; image-rendering: crisp-edges; border-radius: 2px; }
+    .member-chip img { width: 16px; height: 16px; image-rendering: pixelated; border-radius: 2px; }
     .pixel-chip {
       display: flex; align-items: center; gap: 2px;
       background: linear-gradient(135deg, rgba(217,70,239,0.18), rgba(217,70,239,0.06));
@@ -152,30 +145,23 @@
       padding: 2px 4px;
       font-size: 8px; font-weight: 700; color:#f0abfc;
     }
-    .pixel-chip img { width: 16px; height: 16px; image-rendering: pixelated; image-rendering: crisp-edges; border-radius: 2px; }
+    .pixel-chip img { width: 16px; height: 16px; image-rendering: pixelated; border-radius: 2px; }
 
     .upgrade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
     .upgrade-btn {
-      padding: 8px 6px; background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9));
+      padding: 12px 8px; background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9));
       border: 1px solid var(--glass-border); border-radius: var(--border-radius-md); color: var(--text-primary);
       font-family: inherit; font-weight: 700; cursor: pointer; font-size: 10px;
       display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
       transition: all 0.3s;
     }
     .upgrade-btn:active { transform: scale(0.95); }
-    .upgrade-btn.disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-label { font-size: 9px; font-weight: 900; margin-bottom: 2px; }
+    .btn-label { font-size: 10px; font-weight: 900; margin-bottom: 3px; }
     .btn-cost { font-size: 8px; color: var(--gold-color); }
 
-    .stat-box { background: rgba(0,0,0,0.2); padding: 6px; border-radius: var(--border-radius-md); text-align: center; margin-bottom: 8px; }
-    .stat-label { font-size: 8px; color: var(--text-secondary); margin-bottom: 2px; }
-    .stat-value { font-size: 16px; font-weight: 900; color: var(--gold-color); }
-
-    .enhance-section { padding: 10px; background: rgba(0,0,0,0.15); border-radius: var(--border-radius-md); margin-bottom: 8px; }
-    .enhance-title { font-size: 11px; font-weight: 900; margin-bottom: 6px; color: var(--gem-color); }
-    .enhance-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 4px; background: rgba(0,0,0,0.2); border-radius: var(--border-radius-sm); }
-    .enhance-name { font-size: 9px; flex: 1; }
-    .enhance-action { font-size: 8px; padding: 3px 6px; background: linear-gradient(135deg, var(--primary-color), #1e40af); border: none; border-radius: var(--border-radius-sm); color: var(--text-primary); cursor: pointer; font-weight: 700; }
+    .stat-box { background: rgba(0,0,0,0.2); padding: 8px; border-radius: var(--border-radius-md); text-align: center; margin-bottom: 8px; }
+    .stat-label { font-size: 9px; color: var(--text-secondary); margin-bottom: 2px; }
+    .stat-value { font-size: 18px; font-weight: 900; color: var(--gold-color); }
 
     .gacha-section { padding: 10px; }
     .gacha-tabs { display: flex; gap: 4px; margin-bottom: 8px; }
@@ -183,7 +169,7 @@
     .gacha-tab.active { background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.5); color: var(--text-primary); }
     .gacha-panel { display: none; }
     .gacha-panel.active { display: block; }
-    .gacha-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+    .gacha-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
     .gacha-btn { padding: 10px 5px; border: none; border-radius: var(--border-radius-md); font-weight: 900; font-size: 9px; cursor: pointer; }
     .gacha-single { background: linear-gradient(135deg, var(--primary-color), #1e40af); color: var(--text-primary); }
     .gacha-ten { background: linear-gradient(135deg, var(--accent-color), #be123c); color: var(--text-primary); grid-column: 1/-1; }
@@ -191,55 +177,175 @@
     .gem-count { font-size: 18px; font-weight: 900; color: var(--gem-color); }
 
     .damage-effect { position: fixed; pointer-events: none; font-size: 16px; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--accent-color); z-index: 1000; animation: damageFloat 1s forwards; }
-    @keyframes damageFloat { 0%{opacity:1; transform:translateY(0) scale(0.6);} 25%{transform:translateY(-20px) scale(1.2);} 100%{opacity:0; transform:translateY(-60px) scale(1);} }
+    @keyframes damageFloat { 0%{opacity:1; transform:translateY(0) scale(0.6);} 100%{opacity:0; transform:translateY(-60px) scale(1);} }
 
-    .sparkle-effect { position: fixed; pointer-events: none; z-index: 1002; width: 30px; height: 30px; animation: sparkleAnim 0.8s forwards; }
-    @keyframes sparkleAnim { 0%{opacity:1; transform:scale(0);} 50%{opacity:1;} 100%{opacity:0; transform:scale(1);} }
+    /* モーダルメニューシステム */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius-lg); padding: 16px; width: 90%; max-width: 360px; max-height: 70vh; overflow-y: auto; }
+    .modal-header { font-size: 14px; font-weight: 900; margin-bottom: 12px; color: var(--gem-color); display: flex; justify-content: space-between; align-items: center; }
+    .modal-close { background: none; border: none; color: var(--text-primary); font-size: 20px; cursor: pointer; }
 
-    /* ガチャ演出コンテナ */
-    #gachaEffectContainer { position: fixed; inset: 0; z-index: 3000; pointer-events: none; display: none; align-items: center; justify-content: center; }
-    #gachaSvg { width: 100vw; height: 100vh; max-width: 100%; max-height: 100%; }
-
-    @keyframes boxFall {
-      0% { transform: translateY(-150px) rotate(0deg) scale(0.4); opacity: 1; }
-      70% { transform: translateY(80px) rotate(360deg) scale(1); opacity: 1; }
-      100% { transform: translateY(80px) rotate(400deg) scale(1); opacity: 1; }
-    }
-
-    @keyframes sparkRadiate {
-      0% { opacity: 1; transform: translate(0, 0) scale(0); }
-      50% { opacity: 1; }
-      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1); }
-    }
-
-    @keyframes levelUpPop {
-      0% { opacity: 0; transform: scale(0) rotate(-180deg); }
-      50% { opacity: 1; }
-      100% { opacity: 0; transform: scale(1.2) rotate(180deg); }
-    }
-
-    @keyframes prestigeFlash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    .menu-item { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: var(--border-radius-md); padding: 10px; margin-bottom: 8px; }
+    .menu-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .menu-item-name { font-size: 11px; font-weight: 900; }
+    .menu-item-stat { font-size: 9px; color: var(--text-secondary); }
+    .menu-item-actions { display: flex; gap: 4px; }
+    .menu-btn { padding: 5px 8px; background: linear-gradient(135deg, var(--primary-color), #1e40af); border: none; border-radius: var(--border-radius-sm); color: var(--text-primary); font-weight: 700; font-size: 8px; cursor: pointer; }
+    .menu-btn.equip { background: linear-gradient(135deg, var(--gold-color), #f59e0b); color: #0f172a; }
+    .menu-btn.active { background: linear-gradient(135deg, #10b981, #34d399); }
 
     .drop-notice {
       position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95));
       color: #fff; font-weight: 900; font-size: 10px;
       padding: 6px 10px; border-radius: var(--border-radius-md);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4); z-index: 1500;
-      border: 1px solid rgba(255,255,255,0.3);
+      z-index: 1500;
       animation: dropNoticeAnim 3s forwards;
     }
     @keyframes dropNoticeAnim {
       0% { opacity:0; transform:translateX(-50%) translateY(-10px); }
       10% { opacity:1; transform:translateX(-50%) translateY(0); }
-      80% { opacity:1; transform:translateX(-50%) translateY(0); }
-      100% { opacity:0; transform:translateX(-50%) translateY(-10px); }
+      80% { opacity:1; }
+      100% { opacity:0; }
     }
 
-    /* 下部バナー広告 */
+    /* ガチャ演出コンテナ */
+    #gachaEffectContainer {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      pointer-events: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1a0d33 0%, #0a0515 70%, #000000 100%);
+    }
+    #gachaEffectContainer.active {
+      display: flex;
+    }
+
+    .gacha-stage {
+      position: relative;
+      width: 500px;
+      height: 700px;
+      max-width: 95vw;
+      max-height: 95vh;
+    }
+
+    /* ドラゴンの基本アニメーション */
+    .dragon-container {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: dragonFloat 3s ease-in-out infinite;
+    }
+    @keyframes dragonFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    .belly-glow { animation: bellyPulse 2s ease-in-out infinite; }
+    @keyframes bellyPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .belly-crack {
+      opacity: 0;
+      animation: crackAnimation 5s ease-in-out infinite;
+    }
+    @keyframes crackAnimation {
+      0%, 20% { opacity: 0; transform: scaleX(0.1); }
+      30%, 60% { opacity: 1; transform: scaleX(1); }
+      70%, 100% { opacity: 0; transform: scaleX(0.1); }
+    }
+
+    .egg-container {
+      position: absolute;
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: eggEmerge 5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+    @keyframes eggEmerge {
+      0%, 25% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(80px) scale(0.3);
+      }
+      35% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0px) scale(1.1);
+      }
+      45%, 70% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0px) scale(1);
+      }
+      80%, 100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100px) scale(0.8);
+      }
+    }
+
+    .egg-wobble {
+      animation: wobble 5s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes wobble {
+      0%, 30% { transform: rotate(0deg); }
+      40% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+      60% { transform: rotate(-2deg); }
+      70% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .light-burst {
+      position: absolute;
+      top: 280px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: lightBurst 5s ease-out infinite;
+    }
+    @keyframes lightBurst {
+      0%, 25% { opacity: 0; transform: translateX(-50%) scale(0); }
+      35% { opacity: 1; transform: translateX(-50%) scale(2); }
+      45% { opacity: 0; transform: translateX(-50%) scale(0); }
+      100% { opacity: 0; }
+    }
+
+    .particle {
+      position: absolute;
+      opacity: 0;
+      animation: particleFloat 5s ease-out infinite;
+    }
+    .particle:nth-child(1) { animation-delay: 1.5s; }
+    .particle:nth-child(2) { animation-delay: 1.7s; }
+    .particle:nth-child(3) { animation-delay: 1.9s; }
+    .particle:nth-child(4) { animation-delay: 2.1s; }
+    @keyframes particleFloat {
+      0%, 30% { opacity: 0; transform: translateY(0) scale(0); }
+      40% { opacity: 1; transform: translateY(-50px) scale(1); }
+      70% { opacity: 0.5; transform: translateY(-120px) scale(0.5); }
+      100% { opacity: 0; transform: translateY(-200px) scale(0); }
+    }
+
+    .title {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: titleGlow 2s ease-in-out infinite;
+    }
+    @keyframes titleGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px #ffcc00); }
+      50% { filter: drop-shadow(0 0 20px #ff8800); }
+    }
+
+    /* 広告 */
     .banner-ad {
       position: fixed;
       bottom: 0;
@@ -256,21 +362,18 @@
     .ad-pc { display: none; width: 728px; height: 100px; overflow: hidden; }
 
     @media screen and (max-width: 600px) {
-      .ad-mobile { display: flex !important; justify-content: center; align-items: center; }
+      .ad-mobile { display: flex !important; }
       .ad-pc { display: none !important; }
       body { padding-bottom: 70px; }
       .banner-ad { height: 60px; }
       .game-container { width: 98%; }
-      .header { padding: 8px 10px; }
-      .player-info { font-size: 11px; }
-      .resources { gap: 5px; font-size: 9px; }
-      .battle-area { min-height: 160px; }
-      .upgrade-grid { grid-template-columns: 1fr; }
+      .modal-content { width: 95%; max-height: 60vh; }
+      .gacha-stage { width: 100vw; height: 100vh; }
     }
 
     @media screen and (min-width: 601px) {
       .ad-mobile { display: none !important; }
-      .ad-pc { display: flex !important; justify-content: center; align-items: center; }
+      .ad-pc { display: flex !important; }
       body { padding-bottom: 110px; }
       .banner-ad { height: 100px; }
       .game-container { width: 440px; }
@@ -318,10 +421,10 @@
     </div>
 
     <div class="skill-grid">
-      <button class="skill-btn" onclick="useSkill('burst')">⚡ 魔力<br>MP50</button>
-      <button class="skill-btn" onclick="useSkill('autotap')">👆 自動<br>MP30</button>
-      <button class="skill-btn" onclick="useSkill('tapboost')">💥 強化<br>MP40</button>
-      <button class="skill-btn" onclick="useSkill('heal')">💧 回復<br>💎5</button>
+      <button class="skill-btn" onclick="useSkill('burst')">⚡ 魔力</button>
+      <button class="skill-btn" onclick="useSkill('autotap')">👆 自動</button>
+      <button class="skill-btn" onclick="useSkill('tapboost')">💥 強化</button>
+      <button class="skill-btn" onclick="useSkill('heal')">💧 回復</button>
     </div>
 
     <div class="party-display" id="partyDisplay"></div>
@@ -335,38 +438,35 @@
   <!-- 強化タブ -->
   <div class="tab-content" id="tab-enhance">
     <div class="upgrade-grid">
-      <button class="upgrade-btn" id="btnAttack" onclick="upgradeAttack()">
+      <button class="upgrade-btn" onclick="upgradeAttack()">
         <div class="btn-label">⚔️ 攻撃力</div>
         <div class="btn-cost">💰 <span id="attackCost">10</span></div>
       </button>
-      <button class="upgrade-btn" id="btnHire" onclick="hireMember()">
+      <button class="upgrade-btn" onclick="hireMember()">
         <div class="btn-label">👥 仲間</div>
         <div class="btn-cost">💰 <span id="hireCost">50</span></div>
       </button>
-      <button class="upgrade-btn btn-ad" onclick="watchAd()">
+      <button class="upgrade-btn" onclick="openMenu('weapon')">
+        <div class="btn-label">🗡️ 武器</div>
+        <div class="btn-cost">変更</div>
+      </button>
+      <button class="upgrade-btn" onclick="openMenu('pet')">
+        <div class="btn-label">🐾 ペット</div>
+        <div class="btn-cost">変更</div>
+      </button>
+      <button class="upgrade-btn" onclick="openMenu('guild')">
+        <div class="btn-label">🏰 ギルド</div>
+        <div class="btn-cost">変更</div>
+      </button>
+      <button class="upgrade-btn" onclick="watchAd()">
         <div class="btn-label">📺 広告</div>
         <div class="btn-cost">FREE</div>
       </button>
-      <button class="upgrade-btn btn-prestige" id="btnPrestige" onclick="prestige()" style="display:none;">
-        <div class="btn-label">✨ 転生</div>
-        <div class="btn-cost">Lv.10+</div>
-      </button>
     </div>
-
-    <div class="enhance-section">
-      <div class="enhance-title">🗡️ 武器</div>
-      <div id="weaponList" style="max-height:150px; overflow-y:auto;"></div>
-    </div>
-
-    <div class="enhance-section">
-      <div class="enhance-title">🐾 ペット</div>
-      <div id="petList" style="max-height:150px; overflow-y:auto;"></div>
-    </div>
-
-    <div class="enhance-section">
-      <div class="enhance-title">🏰 ギルド</div>
-      <div id="guildList" style="max-height:150px; overflow-y:auto;"></div>
-    </div>
+    <button class="upgrade-btn" id="btnPrestige" onclick="prestige()" style="display:none; grid-column: 1/-1;">
+      <div class="btn-label">✨ 転生</div>
+      <div class="btn-cost">Lv.10+</div>
+    </button>
   </div>
 
   <!-- ガチャタブ -->
@@ -385,7 +485,7 @@
       <div class="gacha-buttons">
         <button class="gacha-btn gacha-single" onclick="doGacha(1)">1回<br>💎10</button>
         <button class="gacha-btn gacha-single" onclick="doGacha(3)">3回<br>💎28</button>
-        <button class="gacha-btn gacha-ten" onclick="doGacha(10)">10連💎90</button>
+        <button class="gacha-btn gacha-ten" onclick="doGacha(10)">10連<br>💎90</button>
       </div>
     </div>
 
@@ -393,33 +493,178 @@
       <div class="gacha-buttons">
         <button class="gacha-btn gacha-single" onclick="doHeroGacha(1)">1回<br>💎15</button>
         <button class="gacha-btn gacha-single" onclick="doHeroGacha(3)">3回<br>💎40</button>
-        <button class="gacha-btn gacha-ten" onclick="doHeroGacha(10)">10連💎130</button>
+        <button class="gacha-btn gacha-ten" onclick="doHeroGacha(10)">10連<br>💎130</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- メニューモーダル -->
+<div class="modal-overlay" id="menuModal" onclick="closeMenu(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span id="menuTitle">武器</span>
+      <button class="modal-close" onclick="closeMenu()">✕</button>
+    </div>
+    <div id="menuBody"></div>
+  </div>
+</div>
+
 <!-- ガチャ演出 -->
 <div id="gachaEffectContainer">
-  <svg id="gachaSvg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <g id="treasureBox" style="animation: boxFall 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
-      <rect x="150" y="200" width="100" height="80" rx="8" fill="url(#goldGrad)" stroke="#d97706" stroke-width="2"/>
-      <circle cx="200" cy="260" r="8" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
-      <rect x="165" y="250" width="70" height="4" rx="2" fill="#f59e0b" opacity="0.6"/>
-    </g>
-    <g id="sparkles">
-      <circle cx="200" cy="260" r="4" fill="#fbbf24" style="animation: sparkRadiate 1s ease-out forwards; --tx: 80px; --ty: -100px; animation-delay: 0.5s;"/>
-      <circle cx="200" cy="260" r="3" fill="#fbbf24" style="animation: sparkRadiate 1s ease-out forwards; --tx: -80px; --ty: -80px; animation-delay: 0.55s;"/>
-      <circle cx="200" cy="260" r="3.5" fill="#fbbf24" style="animation: sparkRadiate 1s ease-out forwards; --tx: 100px; --ty: 20px; animation-delay: 0.6s;"/>
-      <circle cx="200" cy="260" r="2.5" fill="#fbbf24" style="animation: sparkRadiate 1s ease-out forwards; --tx: -100px; --ty: 40px; animation-delay: 0.65s;"/>
-    </g>
-  </svg>
+  <div class="gacha-stage">
+    <!-- タイトル -->
+    <div class="title">
+      <svg width="400" height="50" viewBox="0 0 400 50">
+        <defs>
+          <linearGradient id="titleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="50%" stop-color="#ffee88"/>
+            <stop offset="100%" stop-color="#ff8800"/>
+          </linearGradient>
+        </defs>
+        <text x="200" y="35" text-anchor="middle" font-size="24" font-weight="bold"
+              font-family="Arial, sans-serif" letter-spacing="3"
+              fill="url(#titleGrad)" stroke="#aa4400" stroke-width="1">
+          ✦ GACHA ✦
+        </text>
+      </svg>
+    </div>
+
+    <!-- ドラゴン本体 -->
+    <div class="dragon-container">
+      <svg width="350" height="400" viewBox="0 0 350 400">
+        <defs>
+          <radialGradient id="dragonBody" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#2d5016"/>
+            <stop offset="50%" stop-color="#1a3009"/>
+            <stop offset="100%" stop-color="#0f1a05"/>
+          </radialGradient>
+          
+          <radialGradient id="bellyGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#e6d4a3"/>
+            <stop offset="60%" stop-color="#c4a570"/>
+            <stop offset="100%" stop-color="#8b7355"/>
+          </radialGradient>
+          
+          <radialGradient id="bellyLight" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="40%" stop-color="#ffe066" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#ff8800" stop-opacity="0"/>
+          </radialGradient>
+
+          <radialGradient id="burstLight" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="30%" stop-color="#ffee00"/>
+            <stop offset="70%" stop-color="#ff6600"/>
+            <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- ドラゴンの翼（左） -->
+        <path d="M 80,180 Q 20,120 30,80 Q 50,60 75,90 Q 50,140 90,170 Z"
+              fill="#1a4009" stroke="#0f1a05" stroke-width="2"/>
+        
+        <!-- ドラゴンの翼（右） -->
+        <path d="M 270,180 Q 330,120 320,80 Q 300,60 275,90 Q 300,140 260,170 Z"
+              fill="#1a4009" stroke="#0f1a05" stroke-width="2"/>
+
+        <!-- ドラゴンの胴体 -->
+        <ellipse cx="175" cy="220" rx="80" ry="110"
+                 fill="url(#dragonBody)" stroke="#0f1a05" stroke-width="3"/>
+
+        <!-- お腹の基本部分 -->
+        <ellipse cx="175" cy="230" rx="50" ry="70" fill="url(#bellyGrad)"/>
+
+        <!-- お腹の光る部分 -->
+        <ellipse cx="175" cy="230" rx="40" ry="55" fill="url(#bellyLight)" class="belly-glow"/>
+
+        <!-- お腹の割れ目 -->
+        <ellipse cx="175" cy="230" rx="35" ry="45" 
+                 fill="none" stroke="#fff8e0" stroke-width="4" 
+                 stroke-dasharray="10 5" class="belly-crack"/>
+
+        <!-- ドラゴンの頭 -->
+        <ellipse cx="175" cy="120" rx="45" ry="40" fill="url(#dragonBody)"/>
+
+        <!-- 角 -->
+        <path d="M 150,90 Q 140,60 145,45 Q 150,40 155,50 Q 150,70 160,90 Z" fill="#8b6914"/>
+        <path d="M 200,90 Q 210,60 205,45 Q 200,40 195,50 Q 200,70 190,90 Z" fill="#8b6914"/>
+
+        <!-- 目 -->
+        <ellipse cx="160" cy="110" rx="8" ry="6" fill="#ff4500"/>
+        <ellipse cx="190" cy="110" rx="8" ry="6" fill="#ff4500"/>
+        <ellipse cx="160" cy="110" rx="3" ry="3" fill="#000"/>
+        <ellipse cx="190" cy="110" rx="3" ry="3" fill="#000"/>
+
+        <!-- 鼻 -->
+        <ellipse cx="175" cy="130" rx="6" ry="4" fill="#0f1a05"/>
+
+        <!-- 腕 -->
+        <ellipse cx="120" cy="200" rx="25" ry="40" fill="url(#dragonBody)" transform="rotate(-20 120 200)"/>
+        <ellipse cx="230" cy="200" rx="25" ry="40" fill="url(#dragonBody)" transform="rotate(20 230 200)"/>
+      </svg>
+    </div>
+
+    <!-- 光の爆発 -->
+    <div class="light-burst">
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="url(#burstLight)"/>
+      </svg>
+    </div>
+
+    <!-- 卵 -->
+    <div class="egg-container">
+      <div class="egg-wobble">
+        <svg width="80" height="100" viewBox="0 0 80 100">
+          <defs>
+            <radialGradient id="eggGrad" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="30%" stop-color="#ffe8b0"/>
+              <stop offset="70%" stop-color="#ffd700"/>
+              <stop offset="100%" stop-color="#b8860b"/>
+            </radialGradient>
+          </defs>
+          
+          <!-- 卵本体 -->
+          <ellipse cx="40" cy="55" rx="30" ry="40" fill="url(#eggGrad)" stroke="#b8860b" stroke-width="2"/>
+          
+          <!-- 卵の模様 -->
+          <path d="M 25,45 Q 40,35 55,45" fill="none" stroke="#b8860b" stroke-width="1.5" opacity="0.7"/>
+          <path d="M 20,65 Q 40,55 60,65" fill="none" stroke="#b8860b" stroke-width="1.5" opacity="0.6"/>
+          
+          <!-- ハイライト -->
+          <ellipse cx="32" cy="40" rx="8" ry="12" fill="white" opacity="0.6"/>
+          
+          <!-- 星マーク -->
+          <polygon points="40,25 42,32 49,32 44,37 46,44 40,40 34,44 36,37 31,32 38,32" 
+                   fill="#ffffff" opacity="0.8"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- パーティクル -->
+    <div class="particle" style="top: 300px; left: 180px;">
+      <svg width="20" height="20" viewBox="0 0 20 20">
+        <polygon points="10,2 12,8 18,8 13,12 15,18 10,14 5,18 7,12 2,8 8,8" fill="#ffee00"/>
+      </svg>
+    </div>
+    <div class="particle" style="top: 320px; left: 280px;">
+      <svg width="15" height="15" viewBox="0 0 15 15">
+        <circle cx="7.5" cy="7.5" r="6" fill="#ff8800"/>
+      </svg>
+    </div>
+    <div class="particle" style="top: 310px; left: 120px;">
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <polygon points="9,1 11,7 17,7 12,11 14,17 9,13 4,17 6,11 1,7 7,7" fill="#ffffff"/>
+      </svg>
+    </div>
+    <div class="particle" style="top: 290px; left: 320px;">
+      <svg width="12" height="12" viewBox="0 0 12 12">
+        <circle cx="6" cy="6" r="5" fill="#ffcc00"/>
+      </svg>
+    </div>
+  </div>
 </div>
 
 <!-- 広告 -->
@@ -451,10 +696,10 @@ const HERO_IMAGES = {
   'h_warrior': 'images/character_senshi_red.png'
 };
 
-const RARITIES = { common:{name:'コモン',symbol:'⚪',rate:0.60,baseBonus:0.15}, rare:{name:'レア',symbol:'🔵',rate:0.25,baseBonus:0.50}, sr:{name:'スーパーレア',symbol:'🟠',rate:0.12,baseBonus:2.00}, legend:{name:'レジェンド',symbol:'🌟',rate:0.03,baseBonus:8.00} };
+const RARITIES = { common:{name:'コモン',symbol:'⚪',rate:0.60,baseBonus:0.15}, rare:{name:'レア',symbol:'🔵',rate:0.25,baseBonus:0.50}, sr:{name:'SR',symbol:'🟠',rate:0.12,baseBonus:2.00}, legend:{name:'レジェンド',symbol:'🌟',rate:0.03,baseBonus:8.00} };
 function getWeaponNeededForNextLevel(lv) { return Math.pow(2, lv); }
 const WEAPONS = { common:[{id:'w1',name:'木の剣',emoji:'🗡️'},{id:'w2',name:'革の弓',emoji:'🏹'}], rare:[{id:'w4',name:'鋼の剣',emoji:'⚔️'},{id:'w5',name:'狩人の弓',emoji:'🎯'}], sr:[{id:'w7',name:'炎の剣',emoji:'🔥'},{id:'w8',name:'エルフの弓',emoji:'✨'}], legend:[{id:'w10',name:'エクスカリバー',emoji:'🌟'},{id:'w11',name:'神弓オリオン',emoji:'💫'}] };
-const WEAPON_SKILLS = [ {id:'gold_boost',name:'💰 黄金加護',desc:'ゴールド+50%'}, {id:'drop_boost',name:'🎁 幸運加護',desc:'ドロップ2倍'}, {id:'mp_regen',name:'💧 魔力の泉',desc:'MP+100%'} ];
+const WEAPON_SKILLS = [ {id:'gold_boost',name:'💰 ゴールド加護',desc:'ゴールド+50%'}, {id:'drop_boost',name:'🎁 幸運加護',desc:'ドロップ2倍'}, {id:'mp_regen',name:'💧 魔力の泉',desc:'MP+100%'} ];
 
 const GACHA_HEROES = [
   {id:'h_maoh',name:'魔王',rarity:'legend',img:'h_maoh',atkBonus:0.80}, {id:'h_gold',name:'ゴールド',rarity:'legend',img:'h_gold',atkBonus:0.70}, {id:'h_silver',name:'シルバー',rarity:'legend',img:'h_silver',atkBonus:0.60},
@@ -464,12 +709,12 @@ const GACHA_HEROES = [
 ];
 const HERO_RARITY_RATES = { common:0.50, rare:0.30, sr:0.15, legend:0.05 };
 
-const MEMBER_TYPES = [ {name:'剣士',emoji:'🗡️',color:'#f43f5e',attackType:'slash'}, {name:'弓使い',emoji:'🏹',color:'#38bdf8',attackType:'arrow'}, {name:'魔法使い',emoji:'🔮',color:'#d946ef',attackType:'magic'} ];
+const MEMBER_TYPES = [ {name:'剣士',emoji:'🗡️',color:'#f43f5e'}, {name:'弓使い',emoji:'🏹',color:'#38bdf8'}, {name:'魔法使い',emoji:'🔮',color:'#d946ef'} ];
 const ENEMIES = { normal:[{name:'ラット',emoji:'🐀'},{name:'コウモリ',emoji:'🦇'},{name:'スライム',emoji:'🟢'},{name:'グモ',emoji:'🕷️'}], boss:[{name:'ドラゴン',emoji:'🐉'},{name:'悪魔',emoji:'😈'},{name:'死神',emoji:'💀'},{name:'魔王',emoji:'👿'}] };
-const PET_DEFS = [ {id:'p1',name:'スライム',emoji:'🟢',cost:50,effect:'atk',value:0.20,desc:'攻撃+20%'}, {id:'p2',name:'コウモリ',emoji:'🦇',cost:80,effect:'gold',value:0.30,desc:'ゴールド+30%'}, {id:'p3',name:'フェニックス',emoji:'🦅',cost:150,effect:'mp_regen',value:0.50,desc:'MP+50%'} ];
-const GUILD_UPGRADES = [ {id:'g1',name:'訓練場',emoji:'⚔️',cost:100,effect:'atk',value:0.10,desc:'攻撃+10%'}, {id:'g2',name:'金庫',emoji:'💰',cost:200,effect:'gold',value:0.15,desc:'ゴールド+15%'} ];
+const PET_DEFS = [ {id:'p1',name:'スライム',emoji:'🟢',cost:50,effect:'atk',value:0.20,desc:'攻撃+20%'}, {id:'p2',name:'コウモリ',emoji:'🦇',cost:80,effect:'gold',value:0.30,desc:'ゴールド+30%'}, {id:'p3',name:'フェニックス',emoji:'🦅',cost:150,effect:'mp_regen',value:0.50,desc:'MP+50%'}, {id:'p4',name:'ドラゴン',emoji:'🐲',cost:300,effect:'drop',value:0.50,desc:'ドロップ+50%'}, {id:'p5',name:'天使',emoji:'👼',cost:500,effect:'all',value:0.25,desc:'全能力+25%'} ];
+const GUILD_UPGRADES = [ {id:'g1',name:'訓練場',emoji:'⚔️',cost:100,effect:'atk',value:0.10,desc:'攻撃+10%'}, {id:'g2',name:'金庫',emoji:'💰',cost:200,effect:'gold',value:0.15,desc:'ゴールド+15%'}, {id:'g3',name:'魔法陣',emoji:'🔮',cost:400,effect:'mp',value:0.20,desc:'MP+20%'}, {id:'g4',name:'神殿',emoji:'⛩️',cost:800,effect:'all',value:0.05,desc:'全能力+5%'} ];
 
-let game = { playerName:'冒険者', gold:0, gems:0, stage:1, maxStage:1, attackLevel:1, prestigeLevel:0, enemyHp:10, enemyMaxHp:10, mp:100, maxMp:100, boostTimer:0, totalKills:0, totalWeapons:0, members:[], weapons:{}, equippedWeapon:null, pets:{}, activePet:null, guild:{upgrades:{}}, gachaHeroes:{} };
+let game = { playerName:'冒険者', gold:0, gems:0, stage:1, maxStage:1, attackLevel:1, prestigeLevel:0, enemyHp:10, enemyMaxHp:10, mp:100, maxMp:100, boostTimer:0, totalKills:0, members:[], weapons:{}, equippedWeapon:null, pets:{}, activePet:null, guild:{upgrades:{}}, gachaHeroes:{} };
 
 function getGachaHeroBonus() { let bonus=0; Object.entries(game.gachaHeroes).forEach(([id,d])=>{ const def=GACHA_HEROES.find(h=>h.id===id); if(def) bonus+=def.atkBonus*(1+(d.level-1)*0.3); }); return bonus; }
 function getActiveWeaponSkills() { if(!game.equippedWeapon||!game.weapons[game.equippedWeapon])return[]; return (game.weapons[game.equippedWeapon].skills||[]).map(sid=>WEAPON_SKILLS.find(s=>s.id===sid)).filter(Boolean); }
@@ -500,12 +745,11 @@ function spawnEnemy() {
   document.getElementById('bossCrown').style.display=isBoss?'block':'none'; updateDisplay();
 }
 
-function attackEnemy(e) {
-  dealDamage(getPlayerAttack(), e.clientX, e.clientY);
-}
+function attackEnemy(e) { dealDamage(getPlayerAttack(), e.clientX, e.clientY); }
 
 function dealDamage(dmg, x, y) {
-  game.enemyHp-=dmg; if(x&&y){const el=document.createElement('div');el.className='damage-effect';el.textContent='-'+Math.floor(dmg);el.style.left=(x-30)+'px';el.style.top=(y-30)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);}
+  game.enemyHp-=dmg; 
+  if(x&&y){const el=document.createElement('div');el.className='damage-effect';el.textContent='-'+Math.floor(dmg);el.style.left=(x-30)+'px';el.style.top=(y-30)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);}
   const el=document.getElementById('enemyEmoji'); el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
   if(game.enemyHp<=0) killEnemy(); updateDisplay();
 }
@@ -527,60 +771,105 @@ function generateWeaponSkills(r) { if(r==='sr')return [WEAPON_SKILLS[Math.floor(
 function addWeapon(id, r) {
   if(!game.weapons[id]) { game.weapons[id]={rarity:r,level:1,count:1,skills:generateWeaponSkills(r)}; if(!game.equippedWeapon)game.equippedWeapon=id; }
   else { game.weapons[id].count++; tryWeaponLevelUp(id); }
-  game.totalWeapons++; renderEnhance(); updateDisplay(); saveGame();
+  game.totalWeapons++; updateDisplay(); saveGame();
 }
 
-function tryWeaponLevelUp(id) { const w=game.weapons[id]; if(!w)return; const n=getWeaponNeededForNextLevel(w.level); if(w.count>=n){w.count-=n; w.level++; showLevelUpEffect(); tryWeaponLevelUp(id);} }
+function tryWeaponLevelUp(id) { const w=game.weapons[id]; if(!w)return; const n=getWeaponNeededForNextLevel(w.level); if(w.count>=n){w.count-=n; w.level++; tryWeaponLevelUp(id);} }
 
-function showLevelUpEffect() {
-  const el=document.createElement('div');
-  el.className='sparkle-effect';
-  el.textContent='⭐';
-  el.style.left=(Math.random()*window.innerWidth)+'px';
-  el.style.top=(Math.random()*window.innerHeight*0.5)+'px';
-  el.style.fontSize='24px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),800);
-}
-
-function equipWeapon(id) { game.equippedWeapon=id; renderEnhance(); updateDisplay(); saveGame(); }
+function equipWeapon(id) { game.equippedWeapon=id; updateDisplay(); saveGame(); renderMenuContent(currentMenuType); }
 function findWeaponById(id) { for(const r of Object.keys(WEAPONS)){const w=WEAPONS[r].find(x=>x.id===id);if(w)return w;} return null; }
 
-function renderEnhance() {
-  let wHtml='';
-  Object.entries(game.weapons).forEach(([id,w])=>{
-    const def=findWeaponById(id); if(!def)return;
-    wHtml+=`<div class="enhance-row"><div class="enhance-name">${def.emoji} ${def.name} Lv.${w.level}</div><button class="enhance-action" onclick="equipWeapon('${id}')">${id===game.equippedWeapon?'装備中':'装備'}</button></div>`;
-  });
-  document.getElementById('weaponList').innerHTML=wHtml||'<div style="font-size:9px;color:#94a3b8;padding:6px;">武器を獲得しましょう</div>';
+/* メニューシステム */
+let currentMenuType = null;
 
-  let pHtml='';
-  PET_DEFS.forEach(p=>{
-    const own=game.pets[p.id]; const lv=own?own.level:0; const cost=own?Math.floor(p.cost*Math.pow(1.5,lv)):p.cost;
-    pHtml+=`<div class="enhance-row"><div class="enhance-name">${p.emoji} ${p.name} ${own?`Lv.${lv}`:''}</div><button class="enhance-action" onclick="buyPet('${p.id}')">${own?'Lv.UP':'買う'}</button></div>`;
-  });
-  document.getElementById('petList').innerHTML=pHtml;
+function openMenu(type) {
+  currentMenuType = type;
+  const modal = document.getElementById('menuModal');
+  const title = document.getElementById('menuTitle');
+  
+  if(type === 'weapon') {
+    title.textContent = '🗡️ 武器管理';
+  } else if(type === 'pet') {
+    title.textContent = '🐾 ペット';
+  } else if(type === 'guild') {
+    title.textContent = '🏰 ギルド';
+  }
+  
+  renderMenuContent(type);
+  modal.classList.add('active');
+}
 
-  let gHtml='';
-  GUILD_UPGRADES.forEach(u=>{
-    const lv=game.guild.upgrades[u.id]||0; const cost=Math.floor(u.cost*Math.pow(1.8,lv));
-    gHtml+=`<div class="enhance-row"><div class="enhance-name">${u.emoji} ${u.name} Lv.${lv}</div><button class="enhance-action" onclick="upgradeGuild('${u.id}')">💰${cost}</button></div>`;
-  });
-  document.getElementById('guildList').innerHTML=gHtml;
+function closeMenu(e) {
+  if(e && e.target.id !== 'menuModal') return;
+  document.getElementById('menuModal').classList.remove('active');
+}
+
+function renderMenuContent(type) {
+  const body = document.getElementById('menuBody');
+  let html = '';
+  
+  if(type === 'weapon') {
+    Object.entries(game.weapons).forEach(([id, w]) => {
+      const def = findWeaponById(id);
+      if(!def) return;
+      const rarity = RARITIES[w.rarity];
+      html += `<div class="menu-item">
+        <div class="menu-item-header">
+          <div>
+            <div class="menu-item-name">${def.emoji} ${def.name}</div>
+            <div class="menu-item-stat">${rarity.symbol} Lv.${w.level}</div>
+          </div>
+          <button class="menu-btn ${id === game.equippedWeapon ? 'active' : 'equip'}" onclick="equipWeapon('${id}')">${id === game.equippedWeapon ? '装備中' : '装備'}</button>
+        </div>
+      </div>`;
+    });
+    if(!html) html = '<div style="text-align:center;color:#94a3b8;padding:20px;">武器を獲得してください</div>';
+  } else if(type === 'pet') {
+    PET_DEFS.forEach(p => {
+      const own = game.pets[p.id];
+      const lv = own ? own.level : 0;
+      const cost = own ? Math.floor(p.cost * Math.pow(1.5, lv)) : p.cost;
+      html += `<div class="menu-item">
+        <div class="menu-item-header">
+          <div>
+            <div class="menu-item-name">${p.emoji} ${p.name}</div>
+            <div class="menu-item-stat">${own ? `Lv.${lv}` : '未所持'} - ${p.desc}</div>
+          </div>
+          <button class="menu-btn" onclick="buyPet('${p.id}')">${own ? 'Lv.UP' : '購入'}</button>
+        </div>
+      </div>`;
+    });
+  } else if(type === 'guild') {
+    GUILD_UPGRADES.forEach(u => {
+      const lv = game.guild.upgrades[u.id] || 0;
+      const cost = Math.floor(u.cost * Math.pow(1.8, lv));
+      html += `<div class="menu-item">
+        <div class="menu-item-header">
+          <div>
+            <div class="menu-item-name">${u.emoji} ${u.name}</div>
+            <div class="menu-item-stat">Lv.${lv} - ${u.desc}</div>
+          </div>
+          <button class="menu-btn" onclick="upgradeGuild('${u.id}')">💰${cost}</button>
+        </div>
+      </div>`;
+    });
+  }
+  
+  document.getElementById('menuBody').innerHTML = html;
 }
 
 function buyPet(id) {
   const p=PET_DEFS.find(x=>x.id===id); if(!p)return;
   if(game.pets[id]) { const c=Math.floor(p.cost*Math.pow(1.5,game.pets[id].level||1)); if(game.gems<c)return; game.gems-=c; game.pets[id].level++; }
   else { if(game.gems<p.cost)return; game.gems-=p.cost; game.pets[id]={level:1}; if(!game.activePet)game.activePet=id; }
-  renderEnhance(); updateDisplay(); saveGame();
+  updateDisplay(); saveGame(); renderMenuContent('pet');
 }
 
-function upgradeGuild(id) { const u=GUILD_UPGRADES.find(x=>x.id===id); if(!u)return; const lv=game.guild.upgrades[id]||0; const c=Math.floor(u.cost*Math.pow(1.8,lv)); if(game.gold<c)return; game.gold-=c; game.guild.upgrades[id]=lv+1; renderEnhance(); updateDisplay(); saveGame(); }
+function upgradeGuild(id) { const u=GUILD_UPGRADES.find(x=>x.id===id); if(!u)return; const lv=game.guild.upgrades[id]||0; const c=Math.floor(u.cost*Math.pow(1.8,lv)); if(game.gold<c)return; game.gold-=c; game.guild.upgrades[id]=lv+1; updateDisplay(); saveGame(); renderMenuContent('guild'); }
 
 function useSkill(t) {
   if(t==='burst'&&game.mp>=50){ game.mp-=50; dealDamage(getTotalAttack()*60,null,null); }
-  if(t==='autotap'&&game.mp>=30){ game.mp-=30; for(let i=0;i<20;i++) setTimeout(()=>dealDamage(getPlayerAttack()*0.5,null,null), i*100); }
+  if(t==='autotap'&&game.mp>=30){ game.mp-=30; for(let i=0;i<15;i++) setTimeout(()=>dealDamage(getPlayerAttack()*0.4,null,null), i*80); }
   if(t==='tapboost'&&game.mp>=40){ game.mp-=40; game.boostTimer=10; }
   if(t==='heal'&&game.gems>=5&&game.mp<game.maxMp){ game.gems-=5; game.mp=game.maxMp; }
   updateDisplay(); saveGame();
@@ -594,11 +883,12 @@ function switchGachaTab(t) {
 
 function playGachaEffect() {
   return new Promise(resolve => {
-    document.getElementById('gachaEffectContainer').style.display = 'flex';
+    const container = document.getElementById('gachaEffectContainer');
+    container.classList.add('active');
     setTimeout(() => {
-      document.getElementById('gachaEffectContainer').style.display = 'none';
+      container.classList.remove('active');
       resolve();
-    }, 1200);
+    }, 5000);
   });
 }
 
@@ -635,7 +925,7 @@ async function doHeroGacha(c) {
   saveGame();
 }
 
-function hireMember() { const c=getHireCost(); if(game.gold<c)return; game.gold-=c; const t=MEMBER_TYPES[Math.floor(Math.random()*MEMBER_TYPES.length)]; game.members.push({id:Date.now(),name:t.name,emoji:t.emoji,color:t.color,level:1,attackType:t.attackType}); renderParty(); updateDisplay(); saveGame(); }
+function hireMember() { const c=getHireCost(); if(game.gold<c)return; game.gold-=c; const t=MEMBER_TYPES[Math.floor(Math.random()*MEMBER_TYPES.length)]; game.members.push({id:Date.now(),name:t.name,emoji:t.emoji,color:t.color,level:1}); renderParty(); updateDisplay(); saveGame(); }
 
 function renderParty() {
   let html='';
@@ -644,10 +934,10 @@ function renderParty() {
     const def=GACHA_HEROES.find(h=>h.id===id); 
     if(def) { 
       const imgPath = HERO_IMAGES[id];
-      html+=`<div class="pixel-chip"><img src="${imgPath}" alt="${def.name}" onerror="this.style.display='none'" style="width:14px;height:14px;"> ${RARITIES[def.rarity].symbol} ${def.name}</div>`; 
+      html+=`<div class="pixel-chip"><img src="${imgPath}" alt="${def.name}" onerror="this.style.display='none'" style="width:14px;height:14px;"> ${RARITIES[def.rarity].symbol}</div>`; 
     }
   });
-  document.getElementById('partyDisplay').innerHTML=html||'<div style="font-size:9px;color:#94a3b8;">仲間を追加してください</div>';
+  document.getElementById('partyDisplay').innerHTML=html||'<div style="font-size:9px;color:#94a3b8;">仲間を追加</div>';
 }
 
 function upgradeAttack() { const c=getAttackCost(); if(game.gold<c)return; game.gold-=c; game.attackLevel++; updateDisplay(); saveGame(); }
@@ -698,11 +988,10 @@ function showDropNotice(w,r) {
 function switchTab(t) { 
   document.querySelectorAll('.tab-btn').forEach((e,i)=>e.classList.toggle('active',i===['battle','enhance','gacha'].indexOf(t))); 
   document.querySelectorAll('.tab-content').forEach((e,i)=>e.classList.toggle('active',i===['battle','enhance','gacha'].indexOf(t))); 
-  if(t==='enhance')renderEnhance();
 }
 
-function saveGame() { localStorage.setItem('dungeonRPGv6', JSON.stringify(game)); }
-function loadGame() { const s=localStorage.getItem('dungeonRPGv6'); if(s)try{game={...game,...JSON.parse(s)}; if(!game.gachaHeroes)game.gachaHeroes={};}catch(e){} }
+function saveGame() { localStorage.setItem('dungeonRPGv8', JSON.stringify(game)); }
+function loadGame() { const s=localStorage.getItem('dungeonRPGv8'); if(s)try{game={...game,...JSON.parse(s)}; if(!game.gachaHeroes)game.gachaHeroes={};}catch(e){} }
 
 let memberIdx=0;
 setInterval(()=>{
@@ -734,7 +1023,6 @@ setInterval(saveGame,8000);
 loadGame(); 
 document.getElementById('playerNameDisplay').textContent=game.playerName; 
 renderParty(); 
-renderEnhance(); 
 spawnEnemy(); 
 updateDisplay();
 </script>
