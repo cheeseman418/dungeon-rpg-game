@@ -326,6 +326,82 @@
       100% { opacity:0; transform:translateX(-50%) translateY(-15px); }
     }
 
+    /* ガチャ演出スタイル */
+    #gachaEffect {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      pointer-events: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+    }
+    
+    #gachaEffect svg {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    @keyframes boxFall {
+      0% {
+        transform: translateY(-200px) rotate(0deg) scale(0.5);
+        opacity: 1;
+      }
+      60% {
+        transform: translateY(120px) rotate(360deg) scale(1);
+        opacity: 1;
+      }
+      80% {
+        transform: translateY(150px) rotate(400deg) scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(120px) rotate(400deg) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes sparkRadiate {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1);
+      }
+    }
+
+    @keyframes charAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes boxGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+      }
+      50% {
+        filter: drop-shadow(0 0 25px rgba(251, 191, 36, 1));
+      }
+    }
+
     /* 下部バナー広告 - 固定 */
     .banner-ad {
       position: fixed;
@@ -617,6 +693,65 @@
   </div>
 </div>
 
+<!-- ガチャ演出エフェクト -->
+<div id="gachaEffect">
+  <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+    <!-- 宝箱グループ -->
+    <g id="treasureBox" style="animation: boxFall 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
+      <!-- 宝箱本体 -->
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#6b4423;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+
+      <!-- 宝箱の蓋 -->
+      <path d="M 150 200 Q 200 150 250 200 L 250 220 Q 200 240 150 220 Z" fill="url(#goldGrad)" stroke="#d97706" stroke-width="2" filter="url(#boxShadow)"/>
+      
+      <!-- 宝箱の本体 -->
+      <rect x="150" y="220" width="100" height="80" rx="8" fill="url(#woodGrad)" stroke="#5a3a1a" stroke-width="2"/>
+      
+      <!-- 宝箱の前面装飾 -->
+      <circle cx="200" cy="260" r="8" fill="url(#goldGrad)" stroke="#d97706" stroke-width="1"/>
+      <rect x="165" y="250" width="70" height="4" rx="2" fill="#f59e0b" opacity="0.6"/>
+      
+      <!-- 光の効果 -->
+      <circle cx="200" cy="200" r="60" fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.3" style="animation: boxGlow 1.8s infinite;"/>
+    </g>
+
+    <!-- 星パーティクル -->
+    <g id="sparkles">
+      <circle cx="200" cy="260" r="4" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: 80px; --ty: -100px; animation-delay: 0.6s;"/>
+      <circle cx="200" cy="260" r="3" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: -80px; --ty: -80px; animation-delay: 0.65s;"/>
+      <circle cx="200" cy="260" r="3.5" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: 100px; --ty: 20px; animation-delay: 0.7s;"/>
+      <circle cx="200" cy="260" r="2.5" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: -100px; --ty: 40px; animation-delay: 0.75s;"/>
+      <circle cx="200" cy="260" r="3" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: 60px; --ty: 80px; animation-delay: 0.8s;"/>
+      <circle cx="200" cy="260" r="3.5" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: -70px; --ty: 100px; animation-delay: 0.85s;"/>
+      <circle cx="200" cy="260" r="2.5" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: 120px; --ty: -30px; animation-delay: 0.9s;"/>
+      <circle cx="200" cy="260" r="3" fill="#fbbf24" style="animation: sparkRadiate 1.2s ease-out forwards; --tx: -110px; --ty: -50px; animation-delay: 0.95s;"/>
+    </g>
+
+    <!-- キャラ出現領域（ここに画像が挿入される） -->
+    <g id="charAppearArea" style="animation: charAppear 1.8s ease-out forwards;">
+      <circle cx="200" cy="150" r="50" fill="none" stroke="#06b6d4" stroke-width="2" opacity="0.5" stroke-dasharray="5,5"/>
+      <text x="200" y="160" font-size="24" text-anchor="middle" fill="#06b6d4" font-weight="bold" opacity="0.7">★</text>
+    </g>
+
+    <!-- デフォルトシャドウフィルタ -->
+    <defs>
+      <filter id="boxShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.6"/>
+      </filter>
+    </defs>
+  </svg>
+</div>
+
 <!-- 下部バナー広告（admax） -->
 <div class="banner-ad">
   <!-- モバイル用広告 (320x50) -->
@@ -827,8 +962,49 @@ function useSkill(t) {
 function updateMpDisplay() { document.getElementById('currentMp').textContent=Math.floor(game.mp); document.getElementById('mpBar').style.width=(game.mp/game.maxMp*100)+'%'; }
 
 function switchGachaTab(t) { document.querySelectorAll('.gacha-tab').forEach((el,i)=>el.classList.toggle('active',i===(t==='weapon'?0:1))); document.getElementById('gacha-weapon-panel').classList.toggle('active',t==='weapon'); document.getElementById('gacha-hero-panel').classList.toggle('active',t==='hero'); }
-function doGacha(c) { const costs={1:10,3:28,10:90}; if(game.gems<costs[c])return; game.gems-=costs[c]; for(let i=0;i<c;i++){addWeapon(getRandomWeapon(rollRarity()).id, rollRarity());} alert('武器ガチャ完了！'); updateDisplay(); saveGame(); }
-function doHeroGacha(c) { const costs={1:15,3:40,10:130}; if(game.gems<costs[c])return; game.gems-=costs[c]; for(let i=0;i<c;i++){ const h=getRandomHero(rollHeroRarity()); if(!game.gachaHeroes[h.id])game.gachaHeroes[h.id]={level:1}; else game.gachaHeroes[h.id].level++; } alert('仲間ガチャ完了！'); renderParty(); updateDisplay(); saveGame(); }
+
+function doGacha(c) { 
+  const costs={1:10,3:28,10:90}; 
+  if(game.gems<costs[c])return; 
+  game.gems-=costs[c]; 
+  
+  // ガチャ演出表示
+  document.getElementById('gachaEffect').style.display = 'flex';
+  
+  setTimeout(() => {
+    // 演出終了後に結果表示
+    for(let i=0;i<c;i++){
+      addWeapon(getRandomWeapon(rollRarity()).id, rollRarity());
+    }
+    document.getElementById('gachaEffect').style.display = 'none';
+    alert('武器ガチャ完了！');
+    updateDisplay();
+    saveGame();
+  }, 1800);
+}
+
+function doHeroGacha(c) { 
+  const costs={1:15,3:40,10:130}; 
+  if(game.gems<costs[c])return; 
+  game.gems-=costs[c]; 
+  
+  // ガチャ演出表示
+  document.getElementById('gachaEffect').style.display = 'flex';
+  
+  setTimeout(() => {
+    // 演出終了後に結果表示
+    for(let i=0;i<c;i++){ 
+      const h=getRandomHero(rollHeroRarity()); 
+      if(!game.gachaHeroes[h.id])game.gachaHeroes[h.id]={level:1}; 
+      else game.gachaHeroes[h.id].level++; 
+    } 
+    document.getElementById('gachaEffect').style.display = 'none';
+    alert('仲間ガチャ完了！');
+    renderParty();
+    updateDisplay();
+    saveGame();
+  }, 1800);
+}
 
 function hireMember() { const c=getHireCost(); if(game.gold<c)return; game.gold-=c; const t=MEMBER_TYPES[Math.floor(Math.random()*MEMBER_TYPES.length)]; game.members.push({id:Date.now(),name:t.name,emoji:t.emoji,color:t.color,level:1,attackType:t.attackType}); renderParty(); updateDisplay(); saveGame(); }
 function renderParty() {
@@ -894,7 +1070,7 @@ function updateDisplay() {
   document.getElementById('attackCost').textContent=getAttackCost(); document.getElementById('hireCost').textContent=getHireCost();
   updateMpDisplay();
 }
-function showDropNotice(w,r,isPrestige) { const el=document.createElement('div'); el.className='drop-notice'; const rd=RARITIES[r]; el.innerHTML=`${isPrestige?'✨ ':''} ${rd?rd.symbol:''} ${w.name}`; document.body.appendChild(el); setTimeout(()=>el.remove(),3500); }
+function showDropNotice(w,r,isPrestige) { const el=document.createElement('div'); el.className='drop-notice'; el.innerHTML=`${isPrestige?'✨ ':''} ${r?RARITIES[r].symbol:''} ${w.name}`; document.body.appendChild(el); setTimeout(()=>el.remove(),3500); }
 function showFloorClear() { const el=document.createElement('div'); el.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:gold;z-index:1002;animation:damageFloat 2s forwards;`; el.textContent='CLEAR'; document.body.appendChild(el); setTimeout(()=>el.remove(),2000); }
 function switchTab(t) { document.querySelectorAll('.tab-btn').forEach((e,i)=>e.classList.toggle('active',i===['battle','weapon','pet','guild','gacha','ranking'].indexOf(t))); document.querySelectorAll('.tab-content').forEach((e,i)=>e.classList.toggle('active',i===['battle','weapon','pet','guild','gacha','ranking'].indexOf(t))); if(t==='weapon')renderWeapons(); if(t==='pet')renderPets(); if(t==='guild')renderGuild(); if(t==='ranking')renderRanking(); }
 
