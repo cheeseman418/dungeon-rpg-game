@@ -137,7 +137,7 @@
     /* バトル画面 */
     .battle-section {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 20px;
       margin-bottom: 20px;
     }
@@ -171,8 +171,8 @@
     }
 
     .enemy-image-container {
-      width: 180px;
-      height: 180px;
+      width: 200px;
+      height: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -555,6 +555,8 @@
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
+      max-height: 400px;
+      overflow-y: auto;
     }
 
     .gacha-item {
@@ -585,7 +587,6 @@
       padding: 20px;
       border-radius: 12px;
       border: 2px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 20px;
     }
 
     .gacha-hero-img {
@@ -661,7 +662,54 @@
       border-radius: 15px;
     }
 
-    /* 広告 */
+    /* 広告モーダル */
+    #adModal .modal-content {
+      max-width: 500px;
+    }
+
+    .ad-display {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    .ad-display-mobile {
+      display: none;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .ad-display-pc {
+      display: none;
+      width: 100%;
+      max-width: 728px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      .ad-display-mobile {
+        display: block;
+      }
+      .ad-display-pc {
+        display: none;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .ad-display-mobile {
+        display: none;
+      }
+      .ad-display-pc {
+        display: block;
+      }
+    }
+
+    /* 広告バナー */
     .banner-ad {
       position: fixed;
       bottom: 0;
@@ -681,23 +729,9 @@
 
     @media (max-width: 768px) {
       .ad-mobile { display: block; }
-      .battle-section { grid-template-columns: 1fr; }
-      .enhance-grid { grid-template-columns: repeat(2, 1fr); }
-      .info-grid { grid-template-columns: repeat(2, 1fr); }
-      .gacha-buttons { grid-template-columns: 1fr; }
       body { padding-bottom: 80px; }
       h1 { font-size: 28px; }
       .tab-btn { min-width: 75px; font-size: 12px; }
-      .gacha-result {
-        padding: 25px;
-      }
-      .gacha-items {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .enemy-image-container {
-        width: 150px;
-        height: 150px;
-      }
     }
 
     @media (min-width: 769px) {
@@ -743,21 +777,6 @@
           </div>
           <div class="hp-text">タップで攻撃</div>
         </div>
-
-        <div class="battle-card">
-          <div class="card-title">戦闘情報</div>
-          <div style="font-size: 18px; font-weight: 700; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;">
-            <span id="battleInfoDisplay">準備完了</span>
-          </div>
-          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">最新ダメージ</div>
-            <div style="font-size: 20px; font-weight: 700; color: var(--gold-color);" id="latestDamageDisplay">0</div>
-          </div>
-          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">敵まで残りHP</div>
-            <div style="font-size: 20px; font-weight: 700; color: var(--accent-color);" id="enemyRemainingDisplay">0</div>
-          </div>
-        </div>
       </div>
 
       <div class="battle-buttons">
@@ -801,22 +820,16 @@
           <button class="enhance-btn" onclick="upgradeAttack()">強化</button>
         </div>
         <div class="enhance-card">
-          <div class="enhance-label">HP</div>
-          <div class="enhance-value" id="hpLvDisplay">100</div>
-          <div class="enhance-cost">Cost: <span id="hpCostDisplay">80</span>G</div>
-          <button class="enhance-btn" onclick="upgradeHP()">強化</button>
-        </div>
-        <div class="enhance-card">
           <div class="enhance-label">クリティカル</div>
           <div class="enhance-value" id="critLvDisplay">0%</div>
           <div class="enhance-cost">Cost: <span id="critCostDisplay">120</span>G</div>
           <button class="enhance-btn" onclick="upgradeCrit()">強化</button>
         </div>
         <div class="enhance-card">
-          <div class="enhance-label">ドレイン</div>
-          <div class="enhance-value" id="drainLvDisplay">0%</div>
-          <div class="enhance-cost">Cost: <span id="drainCostDisplay">200</span>G</div>
-          <button class="enhance-btn" onclick="upgradeDrain()">強化</button>
+          <div class="enhance-label">施設ボーナス</div>
+          <div class="enhance-value" id="facilityLvDisplay">0%</div>
+          <div class="enhance-cost">Cost: <span id="facilityCostDisplay">150</span>G</div>
+          <button class="enhance-btn" onclick="upgradeFacility()">強化</button>
         </div>
       </div>
 
@@ -859,10 +872,7 @@
       </div>
 
       <div class="panel" style="text-align: center;">
-        <button class="battle-btn" style="width: 100%;" onclick="watchAd()">📺 広告を見る (+5💎)</button>
-        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;">
-          毎日<span id="adCountDisplay">0</span>/3回
-        </div>
+        <button class="battle-btn" style="width: 100%;" onclick="openAdModal()">📺 広告を見る (+5💎)</button>
       </div>
 
       <div class="party-section">
@@ -888,13 +898,6 @@
           <div class="enhance-cost">クリ率 +<span id="libraryBonusDisplay">0</span>%</div>
           <div class="enhance-cost">Cost: <span id="libraryCostDisplay">400</span>G</div>
           <button class="enhance-btn" onclick="upgradeLibrary()">アップグレード</button>
-        </div>
-        <div class="enhance-card">
-          <div class="enhance-label">医療所</div>
-          <div class="enhance-value" id="hospitalLvDisplay">1</div>
-          <div class="enhance-cost">ドレイン +<span id="hospitalBonusDisplay">0</span>%</div>
-          <div class="enhance-cost">Cost: <span id="hospitalCostDisplay">350</span>G</div>
-          <button class="enhance-btn" onclick="upgradeHospital()">アップグレード</button>
         </div>
         <div class="enhance-card">
           <div class="enhance-label">訓練所</div>
@@ -923,16 +926,16 @@
           <div class="info-value" id="totalCritDisplay">0</div>
         </div>
         <div class="info-card">
-          <div class="info-label">ドレイン成功</div>
-          <div class="info-value" id="totalDrainDisplay">0</div>
-        </div>
-        <div class="info-card">
           <div class="info-label">獲得ゴールド</div>
           <div class="info-value" id="totalGoldDisplay">0</div>
         </div>
         <div class="info-card">
           <div class="info-label">最大ステージ</div>
           <div class="info-value" id="maxStageDisplay">1</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">ヒーロー数</div>
+          <div class="info-value" id="heroCountDisplay">0</div>
         </div>
       </div>
     </div>
@@ -944,6 +947,25 @@
       <div class="gacha-result-title" id="gachaPopupTitle">ガチャ結果</div>
       <div id="gachaPopupContent"></div>
       <button class="gacha-close-btn" onclick="closeGachaPopup()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 広告モーダル -->
+  <div class="modal" id="adModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAdModal()">✕</button>
+      <div class="modal-title">広告を見て報酬をGET!</div>
+      
+      <div class="ad-display">
+        <div class="ad-display-mobile">
+          <script src="https://adm.shinobi.jp/s/238e85d72e7749383cf9c35b230c7584"></script>
+        </div>
+        <div class="ad-display-pc">
+          <script src="https://adm.shinobi.jp/s/264d330811e8cbfd41d7281d4c408fbf"></script>
+        </div>
+      </div>
+
+      <button class="gacha-close-btn" style="width: 100%;" onclick="claimAdReward()">✨ +5💎 受け取る</button>
     </div>
   </div>
 
@@ -995,25 +1017,20 @@
       stage: 1,
       maxStage: 1,
       atkLevel: 1,
-      hpLevel: 1,
-      maxHealth: 100,
-      currentHealth: 100,
       critLevel: 0,
-      drainLevel: 0,
+      facilityLevel: 0,
       smithyLevel: 1,
       libraryLevel: 1,
-      hospitalLevel: 1,
       trainingLevel: 1,
       prestigeLevel: 0,
-      adWatched: 0,
       skillCooldown: 0,
+      heroAttackInterval: null,
       gachaHeroes: {},
       weapons: [],
       stats: {
         totalKills: 0,
         totalDamage: 0,
         totalCrit: 0,
-        totalDrain: 0,
         totalGold: 0
       }
     };
@@ -1078,8 +1095,28 @@
         hp: baseHp
       };
       document.getElementById('enemyImage').src = randomImage;
-      document.getElementById('battleInfoDisplay').textContent = '準備完了';
       updateDisplay();
+      startHeroAttack();
+    }
+
+    // ヒーロー自動攻撃
+    function startHeroAttack() {
+      if (game.heroAttackInterval) clearInterval(game.heroAttackInterval);
+      
+      game.heroAttackInterval = setInterval(() => {
+        if (!currentEnemy || currentEnemy.hp <= 0) {
+          clearInterval(game.heroAttackInterval);
+          return;
+        }
+
+        const heroBonus = getHeroBonus();
+        if (heroBonus > 0) {
+          const heroDmg = Math.floor(heroBonus * (0.8 + Math.random() * 0.4));
+          currentEnemy.hp -= heroDmg;
+          if (currentEnemy.hp <= 0) killEnemy();
+          updateDisplay();
+        }
+      }, 1000);
     }
 
     // UI更新
@@ -1090,15 +1127,13 @@
       document.getElementById('levelDisplay').textContent = game.level;
       document.getElementById('prestigeDisplay').textContent = game.prestigeLevel;
       document.getElementById('atkLvDisplay').textContent = game.atkLevel;
-      document.getElementById('hpLvDisplay').textContent = game.maxHealth;
       document.getElementById('critLvDisplay').textContent = (game.critLevel * 2) + '%';
-      document.getElementById('drainLvDisplay').textContent = (game.drainLevel * 3) + '%';
+      document.getElementById('facilityLvDisplay').textContent = (game.facilityLevel * 5) + '%';
       document.getElementById('playerAtkDisplay').textContent = (1 + game.atkLevel * 0.1).toFixed(1) + 'x';
       document.getElementById('weaponBonusDisplay').textContent = (getWeaponBonus() * 100).toFixed(0) + '%';
       document.getElementById('heroBonusDisplay').textContent = (getHeroBonus() * 100).toFixed(0) + '%';
-      document.getElementById('facilityBonusDisplay').textContent = ((game.smithyLevel - 1) * 5) + '%';
+      document.getElementById('facilityBonusDisplay').textContent = (game.facilityLevel * 5) + '%';
       document.getElementById('weaponCountDisplay').textContent = game.weapons.length;
-      document.getElementById('adCountDisplay').textContent = game.adWatched;
       document.getElementById('prestigeRewardDisplay').textContent = Math.min(5, 1 + Math.floor(game.maxStage / 10));
 
       // 施設
@@ -1108,9 +1143,6 @@
       document.getElementById('libraryLvDisplay').textContent = game.libraryLevel;
       document.getElementById('libraryBonusDisplay').textContent = (game.libraryLevel - 1) * 2;
       document.getElementById('libraryCostDisplay').textContent = Math.floor(400 * Math.pow(1.15, game.libraryLevel - 1));
-      document.getElementById('hospitalLvDisplay').textContent = game.hospitalLevel;
-      document.getElementById('hospitalBonusDisplay').textContent = (game.hospitalLevel - 1) * 3;
-      document.getElementById('hospitalCostDisplay').textContent = Math.floor(350 * Math.pow(1.15, game.hospitalLevel - 1));
       document.getElementById('trainingLvDisplay').textContent = game.trainingLevel;
       document.getElementById('trainingBonusDisplay').textContent = ((game.trainingLevel - 1) * 0.5).toFixed(1);
       document.getElementById('trainingCostDisplay').textContent = Math.floor(320 * Math.pow(1.15, game.trainingLevel - 1));
@@ -1119,22 +1151,20 @@
       document.getElementById('totalKillsDisplay').textContent = game.stats.totalKills;
       document.getElementById('totalDamageDisplay').textContent = game.stats.totalDamage;
       document.getElementById('totalCritDisplay').textContent = game.stats.totalCrit;
-      document.getElementById('totalDrainDisplay').textContent = game.stats.totalDrain;
       document.getElementById('totalGoldDisplay').textContent = game.stats.totalGold;
       document.getElementById('maxStageDisplay').textContent = game.maxStage;
+      document.getElementById('heroCountDisplay').textContent = Object.keys(game.gachaHeroes).length;
 
       // コスト表示
       document.getElementById('atkCostDisplay').textContent = Math.floor(100 * Math.pow(1.1, game.atkLevel - 1));
-      document.getElementById('hpCostDisplay').textContent = Math.floor(80 * Math.pow(1.08, game.hpLevel - 1));
       document.getElementById('critCostDisplay').textContent = Math.floor(120 * Math.pow(1.12, game.critLevel));
-      document.getElementById('drainCostDisplay').textContent = Math.floor(200 * Math.pow(1.1, game.drainLevel));
+      document.getElementById('facilityCostDisplay').textContent = Math.floor(150 * Math.pow(1.15, game.facilityLevel));
 
       if (currentEnemy) {
         document.getElementById('enemyName').textContent = currentEnemy.name;
         const enemyHpPercent = (currentEnemy.hp / currentEnemy.maxHp) * 100;
         document.getElementById('enemyHealthBar').style.width = enemyHpPercent + '%';
         document.getElementById('enemyHpText').textContent = Math.max(0, currentEnemy.hp) + '/' + currentEnemy.maxHp;
-        document.getElementById('enemyRemainingDisplay').textContent = Math.max(0, currentEnemy.hp);
       }
 
       renderParty();
@@ -1148,30 +1178,16 @@
         return;
       }
 
-      const baseDmg = (1 + game.atkLevel * 0.1) * (1 + getWeaponBonus()) * (1 + getHeroBonus()) * (1 + (game.smithyLevel - 1) * 0.05);
+      const baseDmg = (1 + game.atkLevel * 0.1) * (1 + getWeaponBonus());
       let damage = Math.floor(baseDmg * (0.8 + Math.random() * 0.4));
-      let action = '🗡️ 通常攻撃';
-
-      // クリティカル判定
+      
       if (Math.random() < game.critLevel * 0.02) {
         damage = Math.floor(damage * 1.5);
-        action = '⚡ クリティカル!';
         game.stats.totalCrit++;
-      }
-
-      // ドレイン判定
-      if (Math.random() < game.drainLevel * 0.03) {
-        const drain = Math.floor(damage * 0.3);
-        game.currentHealth += drain;
-        if (game.currentHealth > game.maxHealth) game.currentHealth = game.maxHealth;
-        action += ' + ドレイン (' + drain + ')';
-        game.stats.totalDrain++;
       }
 
       currentEnemy.hp -= damage;
       game.stats.totalDamage += damage;
-      document.getElementById('battleInfoDisplay').textContent = action;
-      document.getElementById('latestDamageDisplay').textContent = damage;
 
       if (currentEnemy.hp <= 0) {
         killEnemy();
@@ -1191,9 +1207,6 @@
       const skillDmg = Math.floor((1 + game.atkLevel * 0.15) * 50 * (1 + getWeaponBonus()));
       currentEnemy.hp -= skillDmg;
       game.stats.totalDamage += skillDmg;
-
-      document.getElementById('battleInfoDisplay').textContent = '✨ スキル発動!';
-      document.getElementById('latestDamageDisplay').textContent = skillDmg;
 
       game.skillCooldown = 5 - Math.floor((game.trainingLevel - 1) * 0.5);
       if (game.skillCooldown < 1) game.skillCooldown = 1;
@@ -1215,8 +1228,6 @@
       game.stats.totalKills++;
       game.stats.totalGold += goldReward;
 
-      document.getElementById('battleInfoDisplay').textContent = '🎉 勝利!';
-
       game.stage++;
       game.maxStage = Math.max(game.maxStage, game.stage);
       setTimeout(() => {
@@ -1233,16 +1244,6 @@
       updateDisplay();
     }
 
-    function upgradeHP() {
-      const cost = Math.floor(80 * Math.pow(1.08, game.hpLevel - 1));
-      if (game.gold < cost) return;
-      game.gold -= cost;
-      game.hpLevel++;
-      game.maxHealth = 100 + game.hpLevel * 20;
-      game.currentHealth = game.maxHealth;
-      updateDisplay();
-    }
-
     function upgradeCrit() {
       const cost = Math.floor(120 * Math.pow(1.12, game.critLevel));
       if (game.gold < cost) return;
@@ -1251,11 +1252,11 @@
       updateDisplay();
     }
 
-    function upgradeDrain() {
-      const cost = Math.floor(200 * Math.pow(1.1, game.drainLevel));
+    function upgradeFacility() {
+      const cost = Math.floor(150 * Math.pow(1.15, game.facilityLevel));
       if (game.gold < cost) return;
       game.gold -= cost;
-      game.drainLevel++;
+      game.facilityLevel++;
       updateDisplay();
     }
 
@@ -1273,14 +1274,6 @@
       if (game.gold < cost) return;
       game.gold -= cost;
       game.libraryLevel++;
-      updateDisplay();
-    }
-
-    function upgradeHospital() {
-      const cost = Math.floor(350 * Math.pow(1.15, game.hospitalLevel - 1));
-      if (game.gold < cost) return;
-      game.gold -= cost;
-      game.hospitalLevel++;
       updateDisplay();
     }
 
@@ -1441,12 +1434,12 @@
       if (!confirm('転生しますか？')) return;
       game.prestigeLevel++;
       game.stage = 1;
-      game.currentHealth = game.maxHealth;
       const weaponCount = Math.min(5, 1 + Math.floor(game.maxStage / 10));
+      
+      await playGachaVideo('prestige');
       
       const results = [];
       for (let i = 0; i < weaponCount; i++) {
-        await playGachaVideo('prestige');
         const rarity = rollRarity();
         const weaponTypes = WEAPON_TYPES.filter(w => w.rarity === rarity);
         const weapon = weaponTypes[Math.floor(Math.random() * weaponTypes.length)];
@@ -1459,14 +1452,18 @@
       updateDisplay();
     }
 
-    function watchAd() {
-      if (game.adWatched >= 3) {
-        alert('本日の広告視聴回数は上限に達しました');
-        return;
-      }
+    function openAdModal() {
+      document.getElementById('adModal').classList.add('active');
+    }
+
+    function closeAdModal() {
+      document.getElementById('adModal').classList.remove('active');
+    }
+
+    function claimAdReward() {
       game.gems += 5;
-      game.adWatched++;
-      alert('広告をご視聴ありがとうございました！ +5💎');
+      alert('✨ +5💎 獲得しました！');
+      closeAdModal();
       updateDisplay();
     }
 
@@ -1519,9 +1516,13 @@
 
       if (type === 'weapon') {
         title.textContent = '武器一覧';
-        body.innerHTML = game.weapons.length > 0
-          ? game.weapons.map((w, i) => `<div class="modal-item"><span class="rarity-${w.rarity}">${RARITIES[w.rarity].symbol} ${RARITIES[w.rarity].name}</span> - ${w.weapon.emoji} ${w.weapon.name} (ボーナス: +${(RARITIES[w.rarity].baseBonus * 100).toFixed(0)}%)</div>`).join('')
-          : '<div class="modal-item">武器がありません</div>';
+        if (game.weapons.length === 0) {
+          body.innerHTML = '<div class="modal-item">武器がありません</div>';
+        } else {
+          body.innerHTML = game.weapons.map((w, i) => {
+            return `<div class="modal-item"><span class="rarity-${w.rarity}">${RARITIES[w.rarity].symbol} ${RARITIES[w.rarity].name}</span> - ${w.weapon.emoji} ${w.weapon.name} <br><span style="font-size: 10px; color: var(--text-secondary);">ボーナス: +${(RARITIES[w.rarity].baseBonus * 100).toFixed(0)}%</span></div>`;
+          }).join('');
+        }
       }
     }
 
